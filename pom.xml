@@ -10,7 +10,6 @@
     <packaging>pom</packaging>
     <modules>
         <module>core</module>
-        <module>dispatch</module>
         <module>http</module>
         <module>common</module>
     </modules>

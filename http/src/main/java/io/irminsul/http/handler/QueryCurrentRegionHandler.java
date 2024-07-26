@@ -14,8 +14,6 @@ import spark.Response;
 import spark.Route;
 
 import java.time.Instant;
-import java.util.Arrays;
-import java.util.Base64;
 
 @RequiredArgsConstructor
 public class QueryCurrentRegionHandler implements Route {
@@ -30,7 +28,7 @@ public class QueryCurrentRegionHandler implements Route {
         String region = request.params(":region");
         String keyID = request.queryParams("key_id");
         DispatchRegion resolvedRegion = null;
-        this.server.getLogger().info("Incoming /query_cur_region request for region {}", region);
+        this.server.getLogger().info("Incoming /query_cur_region request for region {} with key id {}", region, keyID);
 
         for (DispatchRegion serverRegion : this.server.getRegions()) {
             if (serverRegion.name().equals(region)) {
@@ -50,8 +48,8 @@ public class QueryCurrentRegionHandler implements Route {
             .build();
 
 //        QueryCurrRegionHttpRspOuterClass.QueryCurrRegionHttpRsp queryResponse =
-//            QueryCurrRegionHttpRspOuterClass.QueryCurrRegionHttpRsp
-//                .newBuilder()
+//            QueryCurrRegionHttpRspOuterClass.QueryCurrRegionHttpRsp.newBuilder()
+//                .setRetcode(RetcodeOuterClass.Retcode.RET_SUCC_VALUE)
 //                .setRegionInfo(regionInfo)
 //                .setClientSecretKey(ByteString.copyFrom(CryptoUtil.DISPATCH_SEED))
 //                .build();
@@ -71,6 +69,11 @@ public class QueryCurrentRegionHandler implements Route {
                 )
                 .buildPartial();
 
-        return Base64.getEncoder().encode(queryResponse.toByteString().toByteArray());
+        try {
+            return CryptoUtil.encodeCurrentRegion(queryResponse.toByteArray(), keyID);
+        } catch (Exception e) {
+            this.server.getLogger().error("Failed to encode current region!", e);
+            return null;
+        }
     }
 }

@@ -2,7 +2,6 @@ package io.irminsul.core;
 
 import io.irminsul.core.config.ConfigEntry;
 import io.irminsul.core.config.IrminsulConfig;
-import io.irminsul.dispatch.DispatchServer;
 import io.irminsul.http.HTTPServer;
 import lombok.Getter;
 import org.slf4j.Logger;
@@ -13,14 +12,12 @@ import java.io.IOException;
 @Getter
 public class Irminsul {
 
-    public static final String GAME_VERSION = "4.8.0";
+    public static final String GAME_VERSION = "4.0.0";
     public static final String SERVER_VERSION = "1.0.0";
 
     private final Logger logger = LoggerFactory.getLogger("Irminsul");
 
     private IrminsulConfig config;
-
-    private DispatchServer dispatchServer;
 
     private HTTPServer httpServer;
 
@@ -31,7 +28,6 @@ public class Irminsul {
         this.loadConfig();
 
         this.startHttpServer();
-        this.startDispatchServer();
 
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
     }
@@ -67,10 +63,5 @@ public class Irminsul {
 
     private void startHttpServer() {
         this.httpServer = new HTTPServer((Integer) this.config.getValue(ConfigEntry.HTTP_PORT));
-    }
-
-    private void startDispatchServer() {
-        this.dispatchServer = new DispatchServer((Integer) this.config.getValue(ConfigEntry.DISPATCH_PORT));
-        this.dispatchServer.start();
     }
 }

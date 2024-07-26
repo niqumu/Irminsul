@@ -22,6 +22,9 @@ public class CryptoUtil {
 
     private final Logger LOGGER = LoggerFactory.getLogger("CryptoUtil");
 
+    /**
+     * The key and seed used for the dispatch exchange
+     */
     public byte[] DISPATCH_SEED;
     public byte[] DISPATCH_KEY;
     static {
@@ -33,6 +36,9 @@ public class CryptoUtil {
         }
     }
 
+    /**
+     * The key used to sign region data
+     */
     public PrivateKey REGION_SIGNING_KEY;
     static {
         try {
@@ -43,6 +49,15 @@ public class CryptoUtil {
         }
     }
 
+    /**
+     * Keys used to encrypt traffic.
+     *
+     * <pre>
+     *     2 -> ? TODO
+     *     3 -> ? TODO
+     *     4 -> CN PC
+     *     5 -> OS PC</pre>
+     */
     public HashMap<Integer, PublicKey> ENCRYPTION_KEYS = new HashMap<>();
     static {
         try {

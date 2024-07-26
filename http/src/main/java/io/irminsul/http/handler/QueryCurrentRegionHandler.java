@@ -47,27 +47,27 @@ public class QueryCurrentRegionHandler implements Route {
             .setGateserverPort(resolvedRegion.port())
             .build();
 
-//        QueryCurrRegionHttpRspOuterClass.QueryCurrRegionHttpRsp queryResponse =
-//            QueryCurrRegionHttpRspOuterClass.QueryCurrRegionHttpRsp.newBuilder()
-//                .setRetcode(RetcodeOuterClass.Retcode.RET_SUCC_VALUE)
-//                .setRegionInfo(regionInfo)
-//                .setClientSecretKey(ByteString.copyFrom(CryptoUtil.DISPATCH_SEED))
-//                .build();
-
         QueryCurrRegionHttpRspOuterClass.QueryCurrRegionHttpRsp queryResponse =
             QueryCurrRegionHttpRspOuterClass.QueryCurrRegionHttpRsp.newBuilder()
-                .setRetcode(RetcodeOuterClass.Retcode.RET_STOP_SERVER_VALUE)
-                .setMsg("Testing message")
-                .setRegionInfo(RegionInfoOuterClass.RegionInfo.newBuilder())
-                .setStopServer(
-                    StopServerInfoOuterClass.StopServerInfo.newBuilder()
-                        .setUrl("https://github.com/niqumu")
-                        .setStopBeginTime((int) Instant.now().getEpochSecond())
-                        .setStopEndTime((int) Instant.now().getEpochSecond() + 1)
-                        .setContentMsg("Hello world!")
-                        .build()
-                )
-                .buildPartial();
+                .setRetcode(RetcodeOuterClass.Retcode.RET_SUCC_VALUE)
+                .setRegionInfo(regionInfo)
+                .setClientSecretKey(ByteString.copyFrom(CryptoUtil.DISPATCH_SEED))
+                .build();
+
+//        QueryCurrRegionHttpRspOuterClass.QueryCurrRegionHttpRsp queryResponse =
+//            QueryCurrRegionHttpRspOuterClass.QueryCurrRegionHttpRsp.newBuilder()
+//                .setRetcode(RetcodeOuterClass.Retcode.RET_STOP_SERVER_VALUE)
+//                .setMsg("Testing message")
+//                .setRegionInfo(RegionInfoOuterClass.RegionInfo.newBuilder())
+//                .setStopServer(
+//                    StopServerInfoOuterClass.StopServerInfo.newBuilder()
+//                        .setUrl("https://github.com/niqumu")
+//                        .setStopBeginTime((int) Instant.now().getEpochSecond())
+//                        .setStopEndTime((int) Instant.now().getEpochSecond() + 1)
+//                        .setContentMsg("Hello world!")
+//                        .build()
+//                )
+//                .buildPartial();
 
         try {
             return CryptoUtil.encodeCurrentRegion(queryResponse.toByteArray(), keyID);

@@ -12,6 +12,8 @@ import java.util.HashMap;
 
 public class PacketManager implements Manager {
 
+    public static final boolean PACKET_LOGGING = false;
+
     private final Logger logger = LoggerFactory.getLogger("Packet Manager");
 
     private final HashMap<Integer, PacketHandler> handlers = new HashMap<>();
@@ -22,6 +24,7 @@ public class PacketManager implements Manager {
     public PacketManager(GameServer server) {
         this.server = server;
 
+        this.registerHandler(new HandlerEnterSceneReadyReq());
         this.registerHandler(new HandlerGetChatEmojiCollectionReq());
         this.registerHandler(new HandlerGetPlayerBlacklistReq());
         this.registerHandler(new HandlerGetPlayerTokenReq());

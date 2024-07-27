@@ -1,11 +1,14 @@
 package io.irminsul.common.game;
 
+import io.irminsul.common.game.world.Position;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 // todo javadocs
 public interface Player {
+
+    @NotNull Session getSession();
 
     @NotNull String getNickname();
 
@@ -23,5 +26,11 @@ public interface Player {
 
     void setNameCard(int nameCard);
 
-    List<Integer> getChatEmojis();
+    @NotNull List<Integer> getChatEmojis();
+
+    @NotNull Position getPosition();
+
+    int getSceneID();
+
+    void enterWorld();
 }

@@ -72,7 +72,10 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
         InboundPacket packet;
         try {
             packet = new InboundPacket(Unpooled.wrappedBuffer(raw), session);
-            this.getLogger().info("INCOMING: {}", packet);
+
+            if (PacketManager.PACKET_LOGGING) {
+                this.getLogger().info("INCOMING: {}", packet);
+            }
         } catch (MalformedPacketException e) {
             this.logger.error("Failed to decode packet, bytes: {}", Arrays.toString(raw), e);
             return;

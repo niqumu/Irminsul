@@ -25,10 +25,17 @@ public class HandlerPlayerLoginReq implements PacketHandler {
      */
     @Override
     public void handle(InboundPacket packet, Session session) throws Exception {
+        if (session.getPlayer() == null) {
+            session.getServer().getLogger().warn("Tried to handle packet {} in a bad state: player cannot be null!", this);
+            return;
+        }
+
         PlayerLoginReqOuterClass.PlayerLoginReq loginReq =
             PlayerLoginReqOuterClass.PlayerLoginReq.parseFrom(packet.getData());
 
         // TODO authenticate - this always works!
+
+        session.getPlayer().enterWorld();
 
         new PacketPlayerLoginRsp(session).send();
     }

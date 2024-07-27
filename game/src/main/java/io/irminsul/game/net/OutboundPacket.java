@@ -78,7 +78,10 @@ public abstract class OutboundPacket {
             }
 
             this.session.getTunnel().writeData(bytes);
-            this.session.getServer().getLogger().info("OUTGOING: {}", this);
+
+            if (PacketManager.PACKET_LOGGING) {
+                this.session.getServer().getLogger().info("OUTGOING: {}", this);
+            }
         } catch (Exception e) {
             this.session.getServer().getLogger().error("Failed to encode packet: {}", this, e);
         }

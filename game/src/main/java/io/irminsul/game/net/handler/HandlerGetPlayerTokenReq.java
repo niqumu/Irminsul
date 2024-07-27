@@ -5,6 +5,7 @@ import io.irminsul.common.game.SessionState;
 import io.irminsul.common.net.PacketIds;
 import io.irminsul.common.proto.GetPlayerTokenReqOuterClass;
 import io.irminsul.common.util.CryptoUtil;
+import io.irminsul.game.IrminsulPlayer;
 import io.irminsul.game.net.InboundPacket;
 import io.irminsul.game.net.PacketHandler;
 import io.irminsul.game.net.packet.PacketGetPlayerTokenRsp;
@@ -36,6 +37,9 @@ public class HandlerGetPlayerTokenReq implements PacketHandler {
             GetPlayerTokenReqOuterClass.GetPlayerTokenReq.parseFrom(packet.getData());
 
         // TODO authentication, this just always works!
+
+        // TODO load from database
+        session.setPlayer(new IrminsulPlayer());
 
         session.enableEncryption();
         session.setState(SessionState.WAITING_FOR_LOGIN);

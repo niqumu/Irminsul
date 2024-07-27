@@ -1,6 +1,7 @@
 package io.irminsul.game;
 
 import io.irminsul.common.game.GameServer;
+import io.irminsul.common.game.Player;
 import io.irminsul.common.game.Session;
 import io.irminsul.common.game.SessionState;
 import io.irminsul.common.game.net.KcpTunnel;
@@ -8,6 +9,7 @@ import io.irminsul.common.util.CryptoUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.jetbrains.annotations.Nullable;
 
 @Getter
 @RequiredArgsConstructor
@@ -28,6 +30,12 @@ public class IrminsulSession implements Session {
      */
     @Setter
     private SessionState state = SessionState.CLOSED;
+
+    /**
+     * The {@link Player} associated with the session, or null if none exists yet
+     */
+    @Setter
+    private Player player = null;
 
     private boolean useEncryption = false;
 

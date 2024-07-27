@@ -15,7 +15,9 @@ public class PacketManager {
 
     public PacketManager() {
         this.registerHandler(new HandlerGetPlayerTokenReq());
+        this.registerHandler(new HandlerGetPlayerFriendListReq());
         this.registerHandler(new HandlerPingReq());
+        this.registerHandler(new HandlerPlayerLoginReq());
     }
 
     private void registerHandler(PacketHandler handler) {

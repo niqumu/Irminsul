@@ -70,6 +70,28 @@ public class CryptoUtil {
         }
     }
 
+    public long ENCRYPT_SEED = Long.parseUnsignedLong("11468049314633205968");
+    public byte[] ENCRYPT_SEED_BUFFER;
+    public byte[] ENCRYPT_KEY;
+    static {
+        try {
+            ENCRYPT_SEED_BUFFER = Files.readAllBytes(new File("secretKeyBuffer.bin").toPath());
+            ENCRYPT_KEY = Files.readAllBytes(new File("secretKey.bin").toPath());
+        } catch (Exception e) {
+            LOGGER.error("Failed reading secret key!", e);
+        }
+    }
+
+    public PrivateKey SIGNING_KEY;
+    static {
+        try {
+            SIGNING_KEY = KeyFactory.getInstance("RSA").generatePrivate(new PKCS8EncodedKeySpec(
+                Files.readAllBytes(new File("SigningKey.der").toPath())));
+        } catch (Exception e) {
+            LOGGER.error("Failed reading signing key!", e);
+        }
+    }
+
     public void xor(byte[] bytes, byte[] key) {
         for (int i = 0; i < bytes.length; i++) {
             bytes[i] ^= key[i % key.length];

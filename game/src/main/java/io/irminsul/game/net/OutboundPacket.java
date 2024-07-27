@@ -1,6 +1,9 @@
 package io.irminsul.game.net;
 
 import io.irminsul.common.game.Session;
+import io.irminsul.common.proto.PacketEncryptionMode;
+import io.irminsul.common.proto.game.PacketHeadOuterClass;
+import io.irminsul.common.util.CryptoUtil;
 import lombok.Data;
 
 import java.io.ByteArrayOutputStream;
@@ -30,12 +33,26 @@ public abstract class OutboundPacket {
      */
     protected byte[] data = new byte[0];
 
+    protected PacketEncryptionMode encryptionMode = PacketEncryptionMode.FULL;
+
+    private void buildHeader() {
+        this.header = PacketHeadOuterClass.PacketHead.newBuilder()
+            .setClientSequenceId(this.session.getNextClientSequence())
+            .setSentMs(System.currentTimeMillis())
+            .build()
+            .toByteArray();
+    }
+
     private int getLength() {
         return 2 + 2 + 2 + 4 + 4 + this.header.length + this.data.length + 2;
     }
 
     public final void send() {
         try {
+            if (this.header.length == 0) {
+                this.buildHeader();
+            }
+
             ByteArrayOutputStream baos = new ByteArrayOutputStream(this.getLength());
 
             this.writeUnsignedShort(baos, GenericPacket.TOP_MAGIC);
@@ -46,7 +63,14 @@ public abstract class OutboundPacket {
             baos.write(this.data);
             this.writeUnsignedShort(baos, GenericPacket.BOTTOM_MAGIC);
 
-            this.session.getTunnel().writeData(baos.toByteArray());
+            byte[] bytes = baos.toByteArray();
+            if (!this.encryptionMode.equals(PacketEncryptionMode.NONE)) {
+                CryptoUtil.xor(bytes, this.encryptionMode.equals(PacketEncryptionMode.DISPATCH) ?
+                        CryptoUtil.DISPATCH_KEY : CryptoUtil.ENCRYPT_KEY);
+            }
+
+            this.session.getTunnel().writeData(bytes);
+            this.session.getServer().getLogger().info("OUTGOING: {}", this);
         } catch (Exception e) {
             this.session.getServer().getLogger().error("Failed to encode packet: {}", this, e);
         }

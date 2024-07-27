@@ -61,17 +61,18 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
      * @param session The session that sent the packet
      */
     @Override
-    public void handlePacket(byte[] raw, Session session) {
+    public void handlePacket(byte[] raw, Session session, byte[] key) {
 
         // Decrypt the packet
-        CryptoUtil.xor(raw, CryptoUtil.DISPATCH_KEY);
+        CryptoUtil.xor(raw, key);
 
         // Decode the packet
         GenericPacket packet;
         try {
             packet = new GenericPacket(Unpooled.wrappedBuffer(raw));
+            this.getLogger().info("INCOMING: {}", packet);
         } catch (MalformedPacketException e) {
-            this.logger.error("Failed to recode packet, bytes: {}", Arrays.toString(raw), e);
+            this.logger.error("Failed to decode packet, bytes: {}", Arrays.toString(raw), e);
             return;
         }
 

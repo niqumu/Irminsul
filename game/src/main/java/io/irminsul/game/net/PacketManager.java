@@ -27,6 +27,10 @@ public class PacketManager {
             return;
         }
 
-        this.handlers.get(packet.getId()).handle(packet, session);
+        try {
+            this.handlers.get(packet.getId()).handle(packet, session);
+        } catch (Exception e) {
+            this.logger.warn("Failed to handle packet: {}", packet, e);
+        }
     }
 }

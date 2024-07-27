@@ -19,16 +19,6 @@ public class GenericPacket {
     private final int id;
 
     /**
-     * The length, in bytes, of the packet header
-     */
-    private final int headerLength;
-
-    /**
-     * The length, in bytes, of the packet data
-     */
-    private final int dataLength;
-
-    /**
      * The packet header, of the specified size
      */
     private final byte[] header;
@@ -50,12 +40,12 @@ public class GenericPacket {
         }
 
         this.id = buffer.readShort();
-        this.headerLength = buffer.readShort();
-        this.dataLength = buffer.readInt();
+        int headerLength = buffer.readShort();
+        int dataLength = buffer.readInt();
 
-        this.header = new byte[this.headerLength];
+        this.header = new byte[headerLength];
         buffer.readBytes(header);
-        this.data = new byte[this.dataLength];
+        this.data = new byte[dataLength];
         buffer.readBytes(data);
 
         int bottomMagic = buffer.readShort();

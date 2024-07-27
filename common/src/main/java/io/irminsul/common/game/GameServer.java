@@ -26,6 +26,7 @@ public interface GameServer {
      * Handles a packet
      * @param raw The raw bytes of the packet
      * @param session The session that sent the packet
+     * @param key The key used to decrypt the packet
      */
-    void handlePacket(byte[] raw, Session session);
+    void handlePacket(byte[] raw, Session session, byte[] key);
 }

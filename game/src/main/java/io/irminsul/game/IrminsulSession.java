@@ -5,13 +5,9 @@ import io.irminsul.common.game.Session;
 import io.irminsul.common.game.SessionState;
 import io.irminsul.common.game.net.KcpTunnel;
 import io.irminsul.common.util.CryptoUtil;
-import io.irminsul.game.net.MalformedPacketException;
-import io.irminsul.game.net.GenericPacket;
-import io.netty.buffer.Unpooled;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-
-import java.util.Arrays;
+import lombok.Setter;
 
 @Getter
 @RequiredArgsConstructor
@@ -30,7 +26,12 @@ public class IrminsulSession implements Session {
     /**
      * The current {@link SessionState} of the session
      */
+    @Setter
     private SessionState state = SessionState.CLOSED;
+
+    private boolean useEncryption = false;
+
+    private int clientSequence = 10;
 
     @Override
     public void onConnect(KcpTunnel tunnel) {
@@ -41,11 +42,27 @@ public class IrminsulSession implements Session {
 
     @Override
     public void onReceive(byte[] bytes) {
-        this.server.handlePacket(bytes, this);
+        this.server.handlePacket(bytes, this, this.useEncryption ? CryptoUtil.ENCRYPT_KEY : CryptoUtil.DISPATCH_KEY);
     }
 
     @Override
     public void onClose() {
         this.server.getLogger().info("Connection to {} closed", this.tunnel.getAddress().toString());
+    }
+
+    /**
+     * @return The next client sequence to use
+     */
+    @Override
+    public int getNextClientSequence() {
+        return ++this.clientSequence;
+    }
+
+    /**
+     * Enables encryption of packets
+     */
+    @Override
+    public void enableEncryption() {
+        this.useEncryption = true;
     }
 }

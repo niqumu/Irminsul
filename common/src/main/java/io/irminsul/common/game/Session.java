@@ -19,4 +19,20 @@ public interface Session extends KcpChannel {
      * @return The current {@link SessionState} of the session
      */
     SessionState getState();
+
+    /**
+     * Sets the state of the session
+     * @param state The new {@link SessionState} of the session
+     */
+    void setState(SessionState state);
+
+    /**
+     * @return The next client sequence to use
+     */
+    int getNextClientSequence();
+
+    /**
+     * Enables encryption of packets
+     */
+    void enableEncryption();
 }

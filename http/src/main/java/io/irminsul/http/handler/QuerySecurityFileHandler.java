@@ -1,20 +1,18 @@
 package io.irminsul.http.handler;
 
-import io.irminsul.http.HTTPServer;
+import io.irminsul.common.http.HttpServer;
 import lombok.RequiredArgsConstructor;
 import spark.Request;
 import spark.Response;
 import spark.Route;
 
-import java.util.Arrays;
-
 @RequiredArgsConstructor
 public class QuerySecurityFileHandler implements Route {
 
     /**
-     * The {@link HTTPServer} this handler belongs to
+     * The {@link HttpServer} this handler belongs to
      */
-    private final HTTPServer server;
+    private final HttpServer server;
 
     @Override
     public Object handle(Request request, Response response) {

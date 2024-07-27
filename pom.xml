@@ -12,6 +12,7 @@
         <module>core</module>
         <module>http</module>
         <module>common</module>
+        <module>game</module>
     </modules>
 
     <properties>

@@ -1,28 +1,42 @@
 package io.irminsul.http;
 
-import io.irminsul.http.dispatch.DispatchRegion;
+import io.irminsul.common.http.HttpServer;
+import io.irminsul.common.http.DispatchRegion;
 import io.irminsul.http.handler.*;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.Service;
+import spark.Spark;
 
 import java.util.List;
 
 @Getter
-public class HTTPServer {
+public class IrminsulHttpServer implements HttpServer {
 
+    /**
+     * This server's logger
+     */
     private final Logger logger = LoggerFactory.getLogger("HTTP Server");
 
+    /**
+     * The {@link Spark} instance of this web server
+     */
     private final Service spark = Service.ignite();
 
+    /**
+     * The port this web server is running on
+     */
     private final int port;
 
+    /**
+     * A list of regions registered on this web server
+     */
     private final List<DispatchRegion> regions = List.of(
         new DispatchRegion("os_usa", "Irminsul", "127.0.0.1", 22102)
     );
 
-    public HTTPServer(int port) {
+    public IrminsulHttpServer(int port) {
         this.port = port;
 
         // Set up HTTPS

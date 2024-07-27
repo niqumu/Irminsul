@@ -4,11 +4,11 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.protobuf.ByteString;
-import io.irminsul.common.GameClient;
+import io.irminsul.common.game.GameClient;
+import io.irminsul.common.http.HttpServer;
 import io.irminsul.common.proto.QueryRegionListHttpRspOuterClass;
 import io.irminsul.common.proto.RegionSimpleInfoOuterClass;
 import io.irminsul.common.util.CryptoUtil;
-import io.irminsul.http.HTTPServer;
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -19,15 +19,15 @@ import java.util.Base64;
 public class QueryRegionListHandler implements Route {
 
     /**
-     * The {@link HTTPServer} this handler belongs to
+     * The {@link HttpServer} this handler belongs to
      */
-    private final HTTPServer server;
+    private final HttpServer server;
 
     private QueryRegionListHttpRspOuterClass.QueryRegionListHttpRsp queryResponse;
 
     private String encodedQueryResponse;
 
-    public QueryRegionListHandler(HTTPServer server) {
+    public QueryRegionListHandler(HttpServer server) {
         this.server = server;
         this.buildResponse();
     }

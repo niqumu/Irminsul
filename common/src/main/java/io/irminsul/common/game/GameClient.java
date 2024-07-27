@@ -1,4 +1,4 @@
-package io.irminsul.common;
+package io.irminsul.common.game;
 
 import lombok.Data;
 
@@ -23,7 +23,22 @@ public class GameClient {
 
     /**
      * The platform the client is running on
-     * TODO values
+     * <pre>
+     *     Editor: 0,
+     *     IOS: 1,
+     *     Android: 2,
+     *     PC: 3,
+     *     PS4: 4,
+     *     Server: 5,
+     *     CloudAndroid: 6,
+     *     CloudIOS: 7,
+     *     PS5: 8,
+     *     CloudWeb: 9,
+     *     CloudTV: 10,
+     *     CloudMAC: 11,
+     *     CloudPC: 12,
+     *     Cloud3rdPartyMobile: 13,
+     *     Cloud3rdPartyPC: 14</pre>
      */
     private final String platform;
 

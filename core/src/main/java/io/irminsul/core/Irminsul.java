@@ -1,8 +1,11 @@
 package io.irminsul.core;
 
+import io.irminsul.common.game.GameServer;
+import io.irminsul.common.http.HttpServer;
 import io.irminsul.core.config.ConfigEntry;
 import io.irminsul.core.config.IrminsulConfig;
-import io.irminsul.http.HTTPServer;
+import io.irminsul.game.IrminsulGameServer;
+import io.irminsul.http.IrminsulHttpServer;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,9 +26,14 @@ public class Irminsul {
     private IrminsulConfig config;
 
     /**
-     * The {@link HTTPServer} service of this instance
+     * The {@link HttpServer} service of this instance
      */
-    private HTTPServer httpServer;
+    private HttpServer httpServer;
+
+    /**
+     * The {@link GameServer} service of this instance
+     */
+    private GameServer gameServer;
 
     /**
      * Ignite this Irminsul instance
@@ -37,6 +45,7 @@ public class Irminsul {
         this.loadConfig();
 
         this.startHttpServer();
+        this.startGameServer();
 
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
     }
@@ -82,9 +91,17 @@ public class Irminsul {
 
     /**
      * Ignite the HTTP server
-     * @see HTTPServer
+     * @see HttpServer
      */
     private void startHttpServer() {
-        this.httpServer = new HTTPServer((Integer) this.config.getValue(ConfigEntry.HTTP_PORT));
+        this.httpServer = new IrminsulHttpServer((Integer) this.config.getValue(ConfigEntry.HTTP_PORT));
+    }
+
+    /**
+     * Ignite the game server
+     * @see GameServer
+     */
+    private void startGameServer() {
+        this.gameServer = new IrminsulGameServer((Integer) this.config.getValue(ConfigEntry.GAME_PORT));
     }
 }

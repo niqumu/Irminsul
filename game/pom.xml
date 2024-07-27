@@ -9,26 +9,34 @@
         <version>1.0.0</version>
     </parent>
 
-    <artifactId>core</artifactId>
+    <artifactId>game</artifactId>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
     <dependencies>
         <dependency>
-            <groupId>io.irminsul</groupId>
-            <artifactId>http</artifactId>
-            <version>1.0.0</version>
-            <scope>compile</scope>
+            <groupId>com.github.l42111996</groupId>
+            <artifactId>java-Kcp</artifactId>
+            <version>1.6</version>
+            <type>pom</type>
         </dependency>
         <dependency>
+            <groupId>com.github.l42111996</groupId>
+            <artifactId>kcp-base</artifactId>
+            <version>1.6.1</version>
+        </dependency>
+
+        <dependency>
             <groupId>io.irminsul</groupId>
-            <artifactId>game</artifactId>
+            <artifactId>common</artifactId>
             <version>1.0.0</version>
             <scope>compile</scope>
         </dependency>
+
     </dependencies>
 
 </project>

@@ -32,5 +32,9 @@ public interface Player {
 
     int getSceneID();
 
+    int getEnterSceneToken();
+
+    void setEnterSceneToken(int enterSceneToken);
+
     void enterWorld();
 }

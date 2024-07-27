@@ -6,7 +6,7 @@ import io.irminsul.common.proto.EnterScenePeerNotifyOuterClass;
 import io.irminsul.game.net.OutboundPacket;
 
 public class PacketEnterScenePeerNotify extends OutboundPacket {
-    public PacketEnterScenePeerNotify(Session session, int enterSceneToken) {
+    public PacketEnterScenePeerNotify(Session session) {
         super(PacketIds.EnterScenePeerNotify, session);
 
         if (session.getPlayer() == null) {
@@ -17,7 +17,7 @@ public class PacketEnterScenePeerNotify extends OutboundPacket {
         EnterScenePeerNotifyOuterClass.EnterScenePeerNotify enterScenePeerNotify =
             EnterScenePeerNotifyOuterClass.EnterScenePeerNotify.newBuilder()
                 .setDestSceneId(session.getPlayer().getSceneID())
-                .setEnterSceneToken(enterSceneToken)
+                .setEnterSceneToken(session.getPlayer().getEnterSceneToken())
                 .build();
 
         this.setData(enterScenePeerNotify.toByteArray());

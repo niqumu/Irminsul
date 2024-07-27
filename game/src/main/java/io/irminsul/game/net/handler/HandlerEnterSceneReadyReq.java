@@ -26,10 +26,16 @@ public class HandlerEnterSceneReadyReq implements PacketHandler {
      */
     @Override
     public void handle(InboundPacket packet, Session session) throws Exception {
+        if (session.getPlayer() == null) {
+            session.getServer().getLogger().warn("Tried to handle packet {} in a bad state: player cannot be null!", this);
+            return;
+        }
+
         EnterSceneReadyReqOuterClass.EnterSceneReadyReq request =
             EnterSceneReadyReqOuterClass.EnterSceneReadyReq.parseFrom(packet.getData());
 
-        new PacketEnterScenePeerNotify(session, request.getEnterSceneToken()).send();
-        new PacketEnterSceneReadyRsp(session, request.getEnterSceneToken()).send();
+        session.getPlayer().setEnterSceneToken(request.getEnterSceneToken());
+        new PacketEnterScenePeerNotify(session).send();
+        new PacketEnterSceneReadyRsp(session).send();
     }
 }

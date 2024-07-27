@@ -32,6 +32,7 @@ public class PacketManager implements Manager {
         this.registerHandler(new HandlerGetShopReq());
         this.registerHandler(new HandlerPingReq());
         this.registerHandler(new HandlerPlayerLoginReq());
+        this.registerHandler(new HandlerSceneInitFinishReq());
     }
 
     private void registerHandler(PacketHandler handler) {

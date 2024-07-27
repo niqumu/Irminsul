@@ -17,7 +17,7 @@ public class IrminsulPlayer implements Player {
 
     private String nickname = "Traveler";
 
-    private String signature = "";
+    private String signature = "Using Irminsul PS";
 
     private int avatar = 1001;
 
@@ -28,6 +28,8 @@ public class IrminsulPlayer implements Player {
     private Position position = GameConstants.SPAWN;
 
     private int sceneID = 3; // todo: why 3?
+
+    private int enterSceneToken = 0;
 
     @Override
     public void enterWorld() {

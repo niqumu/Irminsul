@@ -19,15 +19,17 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.github.l42111996</groupId>
-            <artifactId>java-Kcp</artifactId>
-            <version>1.6</version>
-            <type>pom</type>
+            <groupId>kcp.highway</groupId>
+            <artifactId>kcp</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/../lib/kcp-1.5.1.jar</systemPath>
         </dependency>
+
         <dependency>
-            <groupId>com.github.l42111996</groupId>
-            <artifactId>kcp-base</artifactId>
-            <version>1.6.1</version>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>4.1.108.Final</version>
         </dependency>
 
         <dependency>

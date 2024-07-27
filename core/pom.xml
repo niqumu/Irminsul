@@ -29,6 +29,13 @@
             <version>1.0.0</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>kcp.highway</groupId>
+            <artifactId>kcp</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/../lib/kcp-1.5.1.jar</systemPath>
+        </dependency>
     </dependencies>
 
 </project>

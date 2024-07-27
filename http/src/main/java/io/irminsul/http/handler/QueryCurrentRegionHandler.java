@@ -2,9 +2,9 @@ package io.irminsul.http.handler;
 
 import com.google.protobuf.ByteString;
 import io.irminsul.common.http.HttpServer;
-import io.irminsul.common.proto.QueryCurrRegionHttpRspOuterClass;
-import io.irminsul.common.proto.RegionInfoOuterClass;
-import io.irminsul.common.proto.RetcodeOuterClass;
+import io.irminsul.common.proto.http.QueryCurrRegionHttpRspOuterClass;
+import io.irminsul.common.proto.http.RegionInfoOuterClass;
+import io.irminsul.common.proto.http.RetcodeOuterClass;
 import io.irminsul.common.util.CryptoUtil;
 import io.irminsul.common.http.DispatchRegion;
 import lombok.RequiredArgsConstructor;

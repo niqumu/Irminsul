@@ -70,9 +70,9 @@ public class CryptoUtil {
         }
     }
 
-    public void xor(byte[] packet, byte[] key) {
-        for (int i = 0; i < packet.length; i++) {
-            packet[i] ^= key[i % key.length];
+    public void xor(byte[] bytes, byte[] key) {
+        for (int i = 0; i < bytes.length; i++) {
+            bytes[i] ^= key[i % key.length];
         }
     }
 

@@ -1,7 +1,7 @@
 package io.irminsul.common.http;
 
 import org.slf4j.Logger;
-import spark.Spark;
+import spark.Service;
 
 import java.util.List;
 
@@ -13,9 +13,9 @@ public interface HttpServer {
     Logger getLogger();
 
     /**
-     * @return The {@link Spark} instance of this web server
+     * @return The Spark {@link Service} instance of this web server
      */
-    Spark getSpark();
+    Service getSpark();
 
     /**
      * @return The port this web server is running on

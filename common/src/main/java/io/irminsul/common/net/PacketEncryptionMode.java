@@ -1,4 +1,4 @@
-package io.irminsul.common.proto;
+package io.irminsul.common.net;
 
 public enum PacketEncryptionMode {
     FULL,

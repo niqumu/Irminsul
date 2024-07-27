@@ -2,8 +2,8 @@ package io.irminsul.game.net.handler;
 
 import io.irminsul.common.game.Session;
 import io.irminsul.common.game.SessionState;
-import io.irminsul.common.proto.PacketIds;
-import io.irminsul.common.proto.game.GetPlayerTokenReqOuterClass;
+import io.irminsul.common.net.PacketIds;
+import io.irminsul.common.proto.GetPlayerTokenReqOuterClass;
 import io.irminsul.common.util.CryptoUtil;
 import io.irminsul.game.net.GenericPacket;
 import io.irminsul.game.net.PacketHandler;
@@ -37,7 +37,7 @@ public class HandlerGetPlayerTokenReq implements PacketHandler {
 
         // TODO authentication, this just always works!
 
-//        session.enableEncryption();
+        session.enableEncryption();
         session.setState(SessionState.WAITING_FOR_LOGIN);
 
         Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");

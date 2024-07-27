@@ -1,8 +1,9 @@
 package io.irminsul.game.net;
 
 import io.irminsul.common.game.Session;
-import io.irminsul.common.proto.PacketEncryptionMode;
-import io.irminsul.common.proto.game.PacketHeadOuterClass;
+import io.irminsul.common.net.PacketEncryptionMode;
+import io.irminsul.common.net.PacketIds;
+import io.irminsul.common.proto.PacketHeadOuterClass;
 import io.irminsul.common.util.CryptoUtil;
 import lombok.Data;
 
@@ -13,7 +14,7 @@ public abstract class OutboundPacket {
 
     /**
      * The ID of the packet
-     * @see io.irminsul.common.proto.PacketIds
+     * @see PacketIds
      */
     protected final int id;
 

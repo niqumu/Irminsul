@@ -1,21 +1,32 @@
 package io.irminsul.game.net;
 
+import io.irminsul.common.game.GameServer;
 import io.irminsul.common.game.Session;
+import io.irminsul.game.Manager;
 import io.irminsul.game.net.handler.*;
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 
-public class PacketManager {
+public class PacketManager implements Manager {
 
     private final Logger logger = LoggerFactory.getLogger("Packet Manager");
 
     private final HashMap<Integer, PacketHandler> handlers = new HashMap<>();
 
-    public PacketManager() {
+    @Getter
+    private final GameServer server;
+
+    public PacketManager(GameServer server) {
+        this.server = server;
+
+        this.registerHandler(new HandlerGetChatEmojiCollectionReq());
+        this.registerHandler(new HandlerGetPlayerBlacklistReq());
         this.registerHandler(new HandlerGetPlayerTokenReq());
         this.registerHandler(new HandlerGetPlayerFriendListReq());
+        this.registerHandler(new HandlerGetShopReq());
         this.registerHandler(new HandlerPingReq());
         this.registerHandler(new HandlerPlayerLoginReq());
     }

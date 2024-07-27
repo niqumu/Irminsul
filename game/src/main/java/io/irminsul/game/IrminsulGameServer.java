@@ -6,6 +6,7 @@ import io.irminsul.common.util.CryptoUtil;
 import io.irminsul.game.net.InboundPacket;
 import io.irminsul.game.net.MalformedPacketException;
 import io.irminsul.game.net.PacketManager;
+import io.irminsul.game.shop.ShopManager;
 import io.netty.buffer.Unpooled;
 import kcp.highway.ChannelConfig;
 import kcp.highway.KcpServer;
@@ -36,7 +37,8 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
      */
     private final HashMap<Ukcp, Session> sessions = new HashMap<>();
 
-    private final PacketManager packetManager = new PacketManager();
+    private final PacketManager packetManager = new PacketManager(this);
+    private final ShopManager shopManager = new ShopManager(this);
 
     public IrminsulGameServer(int port) {
         this.port = port;

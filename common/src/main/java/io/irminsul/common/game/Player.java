@@ -2,6 +2,8 @@ package io.irminsul.common.game;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 // todo javadocs
 public interface Player {
 
@@ -20,4 +22,6 @@ public interface Player {
     int getNameCard();
 
     void setNameCard(int nameCard);
+
+    List<Integer> getChatEmojis();
 }

@@ -3,7 +3,7 @@ package io.irminsul.game;
 import io.irminsul.common.game.GameServer;
 import io.irminsul.common.game.Session;
 import io.irminsul.common.util.CryptoUtil;
-import io.irminsul.game.net.GenericPacket;
+import io.irminsul.game.net.InboundPacket;
 import io.irminsul.game.net.MalformedPacketException;
 import io.irminsul.game.net.PacketManager;
 import io.netty.buffer.Unpooled;
@@ -67,9 +67,9 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
         CryptoUtil.xor(raw, key);
 
         // Decode the packet
-        GenericPacket packet;
+        InboundPacket packet;
         try {
-            packet = new GenericPacket(Unpooled.wrappedBuffer(raw));
+            packet = new InboundPacket(Unpooled.wrappedBuffer(raw), session);
             this.getLogger().info("INCOMING: {}", packet);
         } catch (MalformedPacketException e) {
             this.logger.error("Failed to decode packet, bytes: {}", Arrays.toString(raw), e);

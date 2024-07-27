@@ -9,8 +9,15 @@ import lombok.Data;
 
 import java.io.ByteArrayOutputStream;
 
+// +---------+---------+-------------------+-------------+------------------+------------------+---------+
+// |  Magic  |  CmdId  | PacketHead Length | Data Length | PacketHead bytes |    Data bytes    |  Magic  |
+// +---------+---------+-------------------+-------------+------------------+------------------+---------+
+// | 2 bytes | 2 bytes | 2 bytes           | 4 bytes     | size = 3rd field | size = 4th field | 2 bytes |
+// +---------+---------+-------------------+-------------+------------------+------------------+---------+
 @Data
 public abstract class OutboundPacket {
+    public static final short TOP_MAGIC = 17767;
+    public static final short BOTTOM_MAGIC = -30293;
 
     /**
      * The ID of the packet
@@ -56,13 +63,13 @@ public abstract class OutboundPacket {
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream(this.getLength());
 
-            this.writeUnsignedShort(baos, GenericPacket.TOP_MAGIC);
+            this.writeUnsignedShort(baos, TOP_MAGIC);
             this.writeUnsignedShort(baos, this.id);
             this.writeUnsignedShort(baos, this.header.length);
             this.writeUnsignedInt(baos, this.data.length);
             baos.write(this.header);
             baos.write(this.data);
-            this.writeUnsignedShort(baos, GenericPacket.BOTTOM_MAGIC);
+            this.writeUnsignedShort(baos, BOTTOM_MAGIC);
 
             byte[] bytes = baos.toByteArray();
             if (!this.encryptionMode.equals(PacketEncryptionMode.NONE)) {

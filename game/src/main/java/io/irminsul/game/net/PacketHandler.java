@@ -14,5 +14,5 @@ public interface PacketHandler {
      * @param packet The packet being sent
      * @param session The session that sent the packet
      */
-    void handle(GenericPacket packet, Session session) throws Exception;
+    void handle(InboundPacket packet, Session session) throws Exception;
 }

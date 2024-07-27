@@ -1,5 +1,7 @@
 package io.irminsul.game.net;
 
+import io.irminsul.common.game.Session;
+import io.irminsul.common.net.PacketIds;
 import io.netty.buffer.ByteBuf;
 import lombok.Data;
 
@@ -9,14 +11,21 @@ import lombok.Data;
 // | 2 bytes | 2 bytes | 2 bytes           | 4 bytes     | size = 3rd field | size = 4th field | 2 bytes |
 // +---------+---------+-------------------+-------------+------------------+------------------+---------+
 @Data
-public class GenericPacket {
+public class InboundPacket {
     public static final short TOP_MAGIC = 17767;
     public static final short BOTTOM_MAGIC = -30293;
 
     /**
-     * The id of the packet
+     * The ID of the packet
+     * @see PacketIds
      */
     private final int id;
+
+    /**
+     * The Session this packet was received from
+     * @see Session
+     */
+    private final Session session;
 
     /**
      * The packet header, of the specified size
@@ -33,7 +42,9 @@ public class GenericPacket {
      * @param buffer The buffer to read bytes from
      * @throws MalformedPacketException If the packet is malformed in some way
      */
-    public GenericPacket(ByteBuf buffer) throws MalformedPacketException {
+    public InboundPacket(ByteBuf buffer, Session session) throws MalformedPacketException {
+        this.session = session;
+
         int topMagic = buffer.readShort();
         if (topMagic != TOP_MAGIC) {
             throw new MalformedPacketException("Expected a top magic value of " + TOP_MAGIC + ", got " + topMagic);

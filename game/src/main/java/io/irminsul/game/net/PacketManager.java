@@ -1,7 +1,7 @@
 package io.irminsul.game.net;
 
 import io.irminsul.common.game.Session;
-import io.irminsul.game.net.handler.HandlerGetPlayerTokenReq;
+import io.irminsul.game.net.handler.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,13 +15,14 @@ public class PacketManager {
 
     public PacketManager() {
         this.registerHandler(new HandlerGetPlayerTokenReq());
+        this.registerHandler(new HandlerPingReq());
     }
 
     private void registerHandler(PacketHandler handler) {
         this.handlers.put(handler.getTargetID(), handler);
     }
 
-    public void handle(GenericPacket packet, Session session) {
+    public void handle(InboundPacket packet, Session session) {
         if (!this.handlers.containsKey(packet.getId())) {
             this.logger.warn("Packet ID {} was received but doesn't have a handler!", packet.getId());
             return;

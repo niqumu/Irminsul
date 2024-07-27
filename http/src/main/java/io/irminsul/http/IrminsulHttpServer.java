@@ -73,7 +73,11 @@ public class IrminsulHttpServer implements HttpServer {
             return null;
         });
 
+        // Set up logging handlers
+        this.spark.post("/crash/dataUpload", (request, response) -> null);
+        this.spark.post("/log", new LogHandler(this));
+
         // Set up root handler
-//        this.spark.get("/", (request, response) -> "Hello World!");
+        this.spark.get("/", (request, response) -> "Irminsul PS");
     }
 }

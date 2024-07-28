@@ -24,6 +24,7 @@ public class PacketManager implements ServerManager {
     public PacketManager(GameServer server) {
         this.server = server;
 
+        this.registerHandler(new HandlerEnterSceneDoneReq());
         this.registerHandler(new HandlerEnterSceneReadyReq());
         this.registerHandler(new HandlerGetChatEmojiCollectionReq());
         this.registerHandler(new HandlerGetPlayerBlacklistReq());
@@ -32,6 +33,7 @@ public class PacketManager implements ServerManager {
         this.registerHandler(new HandlerGetShopReq());
         this.registerHandler(new HandlerPingReq());
         this.registerHandler(new HandlerPlayerLoginReq());
+        this.registerHandler(new HandlerPostEnterSceneReq());
         this.registerHandler(new HandlerSceneInitFinishReq());
     }
 

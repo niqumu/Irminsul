@@ -1,16 +1,19 @@
 package io.irminsul.common.game;
 
+import io.irminsul.common.game.world.World;
 import kcp.highway.Ukcp;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
 import java.util.HashMap;
+import java.util.List;
 
 public interface GameServer {
 
     /**
      * @return This server's logger
      */
-    Logger getLogger();
+    @NotNull Logger getLogger();
 
     /**
      * @return The port this web server is running on
@@ -20,7 +23,12 @@ public interface GameServer {
     /**
      * @return A map of {@link Session}s connected to the server
      */
-    HashMap<Ukcp, Session> getSessions();
+    @NotNull HashMap<Ukcp, Session> getSessions();
+
+    /**
+     * @return A list of {@link World}s on the server
+     */
+    @NotNull List<World> getWorlds();
 
     /**
      * Handles a packet

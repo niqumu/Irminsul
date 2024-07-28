@@ -1,7 +1,7 @@
 package io.irminsul.game;
 
 import io.irminsul.common.game.GameServer;
-import io.irminsul.common.game.Player;
+import io.irminsul.common.game.player.Player;
 import io.irminsul.common.game.Session;
 import io.irminsul.common.game.SessionState;
 import io.irminsul.common.game.net.KcpTunnel;
@@ -9,7 +9,6 @@ import io.irminsul.common.util.CryptoUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.jetbrains.annotations.Nullable;
 
 @Getter
 @RequiredArgsConstructor

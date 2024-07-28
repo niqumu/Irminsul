@@ -1,10 +1,13 @@
-package io.irminsul.game;
+package io.irminsul.game.player;
 
 import io.irminsul.common.game.GameConstants;
-import io.irminsul.common.game.Player;
+import io.irminsul.common.game.player.Player;
 import io.irminsul.common.game.Session;
+import io.irminsul.common.game.SessionState;
 import io.irminsul.common.game.world.Position;
+import io.irminsul.common.game.world.World;
 import io.irminsul.game.net.packet.PacketPlayerEnterSceneNotify;
+import io.irminsul.game.world.IrminsulWorld;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -31,8 +34,22 @@ public class IrminsulPlayer implements Player {
 
     private int enterSceneToken = 0;
 
+    private World world;
+
+    /**
+     * Managers
+     */
+    private final IrminsulPlayerTeamManager teamManager = new IrminsulPlayerTeamManager(this);
+
     @Override
-    public void enterWorld() {
+    public void login() {
+
+        // Create world
+        this.world = new IrminsulWorld(this.session.getServer(), this);
+        this.session.getServer().getWorlds().add(this.world);
+
+        // Continue the login process
         new PacketPlayerEnterSceneNotify(this.session, this.sceneID, this.position).send();
+        this.session.setState(SessionState.ACTIVE);
     }
 }

@@ -5,7 +5,7 @@ import io.irminsul.common.game.GameServer;
 /**
  * Represents an abstract manager that belongs to a game server
  */
-public interface Manager {
+public interface ServerManager {
 
     /**
      * @return The {@link GameServer} this manager belongs to

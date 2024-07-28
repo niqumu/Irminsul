@@ -2,6 +2,7 @@ package io.irminsul.common.game;
 
 import io.irminsul.common.game.net.KcpChannel;
 import io.irminsul.common.game.net.KcpTunnel;
+import io.irminsul.common.game.player.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

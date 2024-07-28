@@ -5,7 +5,7 @@ import io.irminsul.common.game.SessionState;
 import io.irminsul.common.net.PacketIds;
 import io.irminsul.common.proto.GetPlayerTokenReqOuterClass;
 import io.irminsul.common.util.CryptoUtil;
-import io.irminsul.game.IrminsulPlayer;
+import io.irminsul.game.player.IrminsulPlayer;
 import io.irminsul.game.net.InboundPacket;
 import io.irminsul.game.net.PacketHandler;
 import io.irminsul.game.net.packet.PacketGetPlayerTokenRsp;

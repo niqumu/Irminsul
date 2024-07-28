@@ -1,11 +1,11 @@
 package io.irminsul.game.shop;
 
 import io.irminsul.common.game.GameServer;
-import io.irminsul.game.Manager;
+import io.irminsul.game.ServerManager;
 import lombok.Getter;
 
 @Getter
-public class ShopManager implements Manager {
+public class ShopManager implements ServerManager {
 
     /**
      * The {@link GameServer} this manager belongs to

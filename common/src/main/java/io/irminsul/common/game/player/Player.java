@@ -1,6 +1,8 @@
-package io.irminsul.common.game;
+package io.irminsul.common.game.player;
 
+import io.irminsul.common.game.Session;
 import io.irminsul.common.game.world.Position;
+import io.irminsul.common.game.world.World;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -8,7 +10,8 @@ import java.util.List;
 // todo javadocs
 public interface Player {
 
-    @NotNull Session getSession();
+    @NotNull
+    Session getSession();
 
     @NotNull String getNickname();
 
@@ -36,5 +39,9 @@ public interface Player {
 
     void setEnterSceneToken(int enterSceneToken);
 
-    void enterWorld();
+    @NotNull World getWorld();
+
+    @NotNull PlayerTeamManager getTeamManager();
+
+    void login();
 }

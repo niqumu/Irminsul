@@ -35,7 +35,7 @@ public class HandlerPlayerLoginReq implements PacketHandler {
 
         // TODO authenticate - this always works!
 
-        session.getPlayer().enterWorld();
+        session.getPlayer().login();
 
         new PacketPlayerLoginRsp(session).send();
     }

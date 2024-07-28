@@ -2,6 +2,7 @@ package io.irminsul.game;
 
 import io.irminsul.common.game.GameServer;
 import io.irminsul.common.game.Session;
+import io.irminsul.common.game.world.World;
 import io.irminsul.common.util.CryptoUtil;
 import io.irminsul.game.net.InboundPacket;
 import io.irminsul.game.net.MalformedPacketException;
@@ -16,8 +17,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 @Getter
 public class IrminsulGameServer extends KcpServer implements GameServer {
@@ -32,11 +35,16 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
      */
     private final int port;
 
+    private final List<World> worlds = new ArrayList<>();
+
     /**
      * A map of {@link IrminsulSession}s connected to the server
      */
     private final HashMap<Ukcp, Session> sessions = new HashMap<>();
 
+    /**
+     * Managers
+     */
     private final PacketManager packetManager = new PacketManager(this);
     private final ShopManager shopManager = new ShopManager(this);
 

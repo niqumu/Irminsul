@@ -18,11 +18,13 @@ public class IrminsulPlayer implements Player {
 
     private final Session session;
 
+    private final int uid;
+
     private String nickname = "Traveler";
 
     private String signature = "Using Irminsul PS";
 
-    private int avatar = 1001;
+    private int profilePicture = 1001;
 
     private int nameCard = 210001;
 
@@ -36,17 +38,27 @@ public class IrminsulPlayer implements Player {
 
     private World world;
 
+    private int peerId;
+
     /**
      * Managers
      */
-    private final IrminsulPlayerTeamManager teamManager = new IrminsulPlayerTeamManager(this);
+    private final IrminsulPlayerTeamManager teamManager;
 
-    @Override
-    public void login() {
+    public IrminsulPlayer(Session session, int uid) {
+        this.session = session;
+        this.uid = uid;
 
         // Create world
         this.world = new IrminsulWorld(this.session.getServer(), this);
         this.session.getServer().getWorlds().add(this.world);
+        this.peerId = this.world.getNextPeerId();
+
+        this.teamManager = new IrminsulPlayerTeamManager(this);
+    }
+
+    @Override
+    public void login() {
 
         // Continue the login process
         new PacketPlayerEnterSceneNotify(this.session, this.sceneID, this.position).send();

@@ -2,6 +2,7 @@ package io.irminsul.game.net;
 
 import io.irminsul.common.game.GameServer;
 import io.irminsul.common.game.Session;
+import io.irminsul.common.net.PacketIds;
 import io.irminsul.game.ServerManager;
 import io.irminsul.game.net.handler.*;
 import lombok.Getter;
@@ -43,7 +44,8 @@ public class PacketManager implements ServerManager {
 
     public void handle(InboundPacket packet, Session session) {
         if (!this.handlers.containsKey(packet.getId())) {
-            this.logger.warn("Packet ID {} was received but doesn't have a handler!", packet.getId());
+            this.logger.warn("Packet ID {} ({}) was received but doesn't have a handler!",
+                packet.getId(), PacketIds.getNameById(packet.getId()));
             return;
         }
 

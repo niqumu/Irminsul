@@ -41,6 +41,10 @@ public class IrminsulWorld implements World {
      */
     private boolean paused = false;
 
+    private int lastEntityId = 0;
+
+    private int lastPeerId = 0;
+
     public IrminsulWorld(GameServer server, Player host) {
         this.server = server;
         this.host = host;
@@ -48,4 +52,20 @@ public class IrminsulWorld implements World {
         this.players.add(host);
     }
 
+    /**
+     * @return The next free entity ID
+     * TODO: this should be per scene!
+     */
+    @Override
+    public int getNextEntityId() {
+        return ++this.lastEntityId;
+    }
+
+    /**
+     * @return The next free connection/peer ID
+     */
+    @Override
+    public int getNextPeerId() {
+        return ++this.lastPeerId;
+    }
 }

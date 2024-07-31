@@ -1,5 +1,7 @@
 package io.irminsul.common.net;
 
+import java.lang.reflect.Field;
+
 @SuppressWarnings("unused")
 public final class PacketIds {
     public static final int NONE = 0;
@@ -2561,4 +2563,17 @@ public final class PacketIds {
     public static final int WorldRoutineChangeNotify = 1471;
     public static final int WorldRoutineTypeCloseNotify = 4128;
     public static final int WorldRoutineTypeRefreshNotify = 26687;
+
+    public static String getNameById(int packetId) {
+        try {
+            for (Field field : PacketIds.class.getDeclaredFields()) {
+                if (field.getType().equals(Integer.TYPE) && field.getInt(null) == packetId) {
+                    return field.getName();
+                }
+            }
+        } catch (Exception ignored) {
+        }
+
+        return "";
+    }
 }

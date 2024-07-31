@@ -13,6 +13,11 @@ public interface PlayerTeam {
     @NotNull String getName();
 
     /**
+     * @return The player that this team belongs to
+     */
+    @NotNull Player getOwner();
+
+    /**
      * Set the name of the team
      * @param name The new name of the team
      */
@@ -22,4 +27,6 @@ public interface PlayerTeam {
      * @return A list of avatars on the team
      */
     @NotNull List<Avatar> getAvatars();
+
+    int getEntityId();
 }

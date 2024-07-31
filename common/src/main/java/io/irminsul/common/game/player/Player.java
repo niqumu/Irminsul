@@ -13,6 +13,8 @@ public interface Player {
     @NotNull
     Session getSession();
 
+    int getUid();
+
     @NotNull String getNickname();
 
     void setNickname(@NotNull String nickname);
@@ -21,9 +23,9 @@ public interface Player {
 
     void setSignature(@NotNull String signature);
 
-    int getAvatar();
+    int getProfilePicture();
 
-    void setAvatar(int avatar);
+    void setProfilePicture(int profilePicture);
 
     int getNameCard();
 
@@ -40,6 +42,8 @@ public interface Player {
     void setEnterSceneToken(int enterSceneToken);
 
     @NotNull World getWorld();
+
+    int getPeerId();
 
     @NotNull PlayerTeamManager getTeamManager();
 

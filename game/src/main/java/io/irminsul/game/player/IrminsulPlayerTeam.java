@@ -1,6 +1,7 @@
 package io.irminsul.game.player;
 
 import io.irminsul.common.game.avatar.Avatar;
+import io.irminsul.common.game.player.Player;
 import io.irminsul.common.game.player.PlayerTeam;
 import lombok.Data;
 
@@ -16,7 +17,19 @@ public class IrminsulPlayerTeam implements PlayerTeam {
     private String name;
 
     /**
+     * The player that this team belongs to
+     */
+    private final Player owner;
+
+    /**
      * A list of avatars on the team
      */
     private final List<Avatar> avatars = new ArrayList<>();
+
+    private final int entityId;
+
+    public IrminsulPlayerTeam(Player owner) {
+        this.owner = owner;
+        this.entityId = this.owner.getWorld().getNextEntityId();
+    }
 }

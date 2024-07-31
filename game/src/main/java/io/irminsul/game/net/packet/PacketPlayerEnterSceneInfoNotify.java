@@ -1,6 +1,7 @@
 package io.irminsul.game.net.packet;
 
 import io.irminsul.common.game.Session;
+import io.irminsul.common.game.player.Player;
 import io.irminsul.common.net.PacketIds;
 import io.irminsul.common.proto.*;
 import io.irminsul.game.net.OutboundPacket;
@@ -9,29 +10,32 @@ public class PacketPlayerEnterSceneInfoNotify extends OutboundPacket {
     public PacketPlayerEnterSceneInfoNotify(Session session) {
         super(PacketIds.PlayerEnterSceneInfoNotify, session);
 
-        if (session.getPlayer() == null) {
+        Player player = session.getPlayer();
+
+        if (player == null) {
             session.getServer().getLogger().warn("Tried to build packet {} in a bad state: player cannot be null!", this);
             return;
         }
 
         PlayerEnterSceneInfoNotifyOuterClass.PlayerEnterSceneInfoNotify.Builder builder =
             PlayerEnterSceneInfoNotifyOuterClass.PlayerEnterSceneInfoNotify.newBuilder()
-                .setEnterSceneToken(session.getPlayer().getEnterSceneToken())
-                .setCurAvatarEntityId(session.getPlayer().getTeamManager().getActiveAvatar().getId())
+                .setEnterSceneToken(player.getEnterSceneToken())
+                .setCurAvatarEntityId(player.getWorld().getNextEntityId())
                 .setTeamEnterInfo(
                     TeamEnterSceneInfoOuterClass.TeamEnterSceneInfo.newBuilder()
-                        .setTeamEntityId(150995833)
+                        .setTeamEntityId(player.getTeamManager().getActiveTeam().getEntityId())
                         .setTeamAbilityInfo(AbilitySyncStateInfoOuterClass.AbilitySyncStateInfo.newBuilder().build())
+                        .setAbilityControlBlock(AbilityControlBlockOuterClass.AbilityControlBlock.newBuilder().build())
                         .build())
                 .setMpLevelEntityInfo(
                     MPLevelEntityInfoOuterClass.MPLevelEntityInfo.newBuilder()
                         .setEntityId(184550274)
-                        .setAuthorityPeerId(0)
+                        .setAuthorityPeerId(player.getWorld().getHost().getPeerId())
                         .build())
                 .addAvatarEnterInfo(
                     AvatarEnterSceneInfoOuterClass.AvatarEnterSceneInfo.newBuilder()
-                        .setAvatarGuid(0)
-                        .setAvatarEntityId(0)
+                        .setAvatarGuid(player.getTeamManager().getActiveAvatar().getGuid())
+                        .setAvatarEntityId(player.getTeamManager().getActiveAvatar().getEntityId())
                         .setWeaponGuid(0)
                         .setWeaponEntityId(0)
                         .setAvatarAbilityInfo(AbilitySyncStateInfoOuterClass.AbilitySyncStateInfo.newBuilder().build())

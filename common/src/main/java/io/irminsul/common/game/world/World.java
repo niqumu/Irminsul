@@ -37,4 +37,15 @@ public interface World {
      * @return Whether this world is currently paused/frozen
      */
     boolean isPaused();
+
+    /**
+     * @return The next free entity ID
+     * TODO: this should be per scene!
+     */
+    int getNextEntityId();
+
+    /**
+     * @return The next free connection/peer ID
+     */
+    int getNextPeerId();
 }

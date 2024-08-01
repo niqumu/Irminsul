@@ -26,7 +26,6 @@ public class IrminsulAvatar implements Avatar {
         this.guid = owner.getNextGuid();
         this.owner = owner;
         this.entityId = owner.getWorld().getNextEntityId();
-        this.spawnEntity();
     }
 
     @Override
@@ -35,10 +34,6 @@ public class IrminsulAvatar implements Avatar {
             .setAvatarId(this.avatarId)
             .setGuid(this.guid)
             .build();
-    }
-
-    private void spawnEntity() {
-        new PacketSceneEntityAppearNotify(this.owner.getSession(), this).send();
     }
 
     @Override

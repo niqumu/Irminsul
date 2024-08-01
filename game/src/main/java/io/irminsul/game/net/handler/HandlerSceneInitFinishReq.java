@@ -27,9 +27,15 @@ public class HandlerSceneInitFinishReq implements PacketHandler {
      */
     @Override
     public void handle(InboundPacket packet, Session session) throws Exception {
-        new PacketSceneForceUnlockNotify(session).send();
+
+        // World
         new PacketWorldDataNotify(session).send();
+
+        // Scene
+        new PacketSceneForceUnlockNotify(session).send();
         new PacketPlayerEnterSceneInfoNotify(session).send();
+
+        // Finish
         new PacketSceneInitFinishRsp(session).send();
     }
 }

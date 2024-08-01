@@ -11,6 +11,7 @@ import io.irminsul.game.avatar.IrminsulAvatar;
 import io.irminsul.game.net.packet.PacketAvatarDataNotify;
 import io.irminsul.game.net.packet.PacketPlayerDataNotify;
 import io.irminsul.game.net.packet.PacketPlayerEnterSceneNotify;
+import io.irminsul.game.net.packet.PacketSceneEntityAppearNotify;
 import io.irminsul.game.world.IrminsulWorld;
 import lombok.Data;
 
@@ -89,6 +90,9 @@ public class IrminsulPlayer implements Player {
         // Continue the login process
         new PacketPlayerEnterSceneNotify(this.session, this.sceneID, this.position).send();
         this.session.setState(SessionState.ACTIVE);
+
+        // TESTING
+        new PacketSceneEntityAppearNotify(this.getSession(), this.teamManager.getActiveAvatar()).send();
     }
 
     @Override

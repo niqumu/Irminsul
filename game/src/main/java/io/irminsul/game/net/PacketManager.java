@@ -27,6 +27,7 @@ public class PacketManager implements ServerManager {
 
         this.registerHandler(new HandlerEnterSceneDoneReq());
         this.registerHandler(new HandlerEnterSceneReadyReq());
+        this.registerHandler(new HandlerGetAllUnlockNameCardReq());
         this.registerHandler(new HandlerGetChatEmojiCollectionReq());
         this.registerHandler(new HandlerGetPlayerBlacklistReq());
         this.registerHandler(new HandlerGetPlayerTokenReq());
@@ -38,6 +39,7 @@ public class PacketManager implements ServerManager {
         this.registerHandler(new HandlerPlayerLoginReq());
         this.registerHandler(new HandlerPostEnterSceneReq());
         this.registerHandler(new HandlerSceneInitFinishReq());
+        this.registerHandler(new HandlerSetNameCardReq());
     }
 
     private void registerHandler(PacketHandler handler) {

@@ -7,7 +7,6 @@ import io.irminsul.common.game.Session;
 import io.irminsul.common.game.SessionState;
 import io.irminsul.common.game.world.Position;
 import io.irminsul.common.game.world.World;
-import io.irminsul.common.proto.PropValueOuterClass;
 import io.irminsul.game.avatar.IrminsulAvatar;
 import io.irminsul.game.net.packet.PacketAvatarDataNotify;
 import io.irminsul.game.net.packet.PacketPlayerDataNotify;
@@ -45,7 +44,7 @@ public class IrminsulPlayer implements Player {
 
     private List<Integer> ownedNameCards = List.of(210001);
 
-    private Position position = GameConstants.SPAWN;
+    private Position position = GameConstants.OVERWORLD_SPAWN;
 
     private int sceneID = GameConstants.OVERWORLD_SCENE;
 

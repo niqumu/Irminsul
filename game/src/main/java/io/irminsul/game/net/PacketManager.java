@@ -30,6 +30,8 @@ public class PacketManager implements ServerManager {
         this.registerHandler(new HandlerGetChatEmojiCollectionReq());
         this.registerHandler(new HandlerGetPlayerBlacklistReq());
         this.registerHandler(new HandlerGetPlayerTokenReq());
+        this.registerHandler(new HandlerGetSceneAreaReq());
+        this.registerHandler(new HandlerGetScenePointReq());
         this.registerHandler(new HandlerGetPlayerFriendListReq());
         this.registerHandler(new HandlerGetShopReq());
         this.registerHandler(new HandlerPingReq());

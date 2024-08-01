@@ -37,7 +37,7 @@ public class IrminsulPlayerTeamManager implements PlayerTeamManager {
     public IrminsulPlayerTeamManager(Player player) {
         this.player = player;
         this.teams.add(new IrminsulPlayerTeam(player));
-        this.getActiveTeam().getAvatars().add(new IrminsulAvatar(10000007, player));
+        this.getActiveTeam().getAvatars().add(player.getAvatars().getFirst());
     }
 
     /**

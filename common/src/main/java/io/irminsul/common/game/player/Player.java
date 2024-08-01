@@ -1,6 +1,7 @@
 package io.irminsul.common.game.player;
 
 import io.irminsul.common.game.Session;
+import io.irminsul.common.game.avatar.Avatar;
 import io.irminsul.common.game.world.Position;
 import io.irminsul.common.game.world.World;
 import org.jetbrains.annotations.NotNull;
@@ -53,7 +54,11 @@ public interface Player {
 
     int getPeerId();
 
+    long getNextGuid();
+
     @NotNull PlayerTeamManager getTeamManager();
+
+    @NotNull List<Avatar> getAvatars();
 
     void login();
 }

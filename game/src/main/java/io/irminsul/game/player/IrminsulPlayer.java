@@ -1,11 +1,14 @@
 package io.irminsul.game.player;
 
 import io.irminsul.common.game.GameConstants;
+import io.irminsul.common.game.avatar.Avatar;
 import io.irminsul.common.game.player.Player;
 import io.irminsul.common.game.Session;
 import io.irminsul.common.game.SessionState;
 import io.irminsul.common.game.world.Position;
 import io.irminsul.common.game.world.World;
+import io.irminsul.common.proto.PropValueOuterClass;
+import io.irminsul.game.avatar.IrminsulAvatar;
 import io.irminsul.game.net.packet.PacketAvatarDataNotify;
 import io.irminsul.game.net.packet.PacketPlayerDataNotify;
 import io.irminsul.game.net.packet.PacketPlayerEnterSceneNotify;
@@ -52,6 +55,10 @@ public class IrminsulPlayer implements Player {
 
     private int peerId;
 
+    private int lastGuid = 0;
+
+    private List<Avatar> avatars = new ArrayList<>();
+
     /**
      * Managers
      */
@@ -66,6 +73,10 @@ public class IrminsulPlayer implements Player {
         this.session.getServer().getWorlds().add(this.world);
         this.peerId = this.world.getNextPeerId();
 
+        // Add default avatar
+        this.avatars.add(new IrminsulAvatar(10000007, this));
+
+        // Create managers
         this.teamManager = new IrminsulPlayerTeamManager(this);
     }
 
@@ -79,5 +90,10 @@ public class IrminsulPlayer implements Player {
         // Continue the login process
         new PacketPlayerEnterSceneNotify(this.session, this.sceneID, this.position).send();
         this.session.setState(SessionState.ACTIVE);
+    }
+
+    @Override
+    public long getNextGuid() {
+        return ((long) this.getUid() << 32) + ++this.lastGuid;
     }
 }

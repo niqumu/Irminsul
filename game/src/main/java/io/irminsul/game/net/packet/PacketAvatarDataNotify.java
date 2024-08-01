@@ -19,13 +19,17 @@ public class PacketAvatarDataNotify extends OutboundPacket {
         AvatarDataNotifyOuterClass.AvatarDataNotify.Builder avatarDataNotifyBuilder =
             AvatarDataNotifyOuterClass.AvatarDataNotify.newBuilder()
                 .setCurAvatarTeamId(session.getPlayer().getTeamManager().getActiveTeamIndex())
-                .setChooseAvatarGuid(1)
+                .setChooseAvatarGuid(session.getPlayer().getTeamManager().getActiveAvatar().getGuid())
                 .addAllOwnedCostumeList(session.getPlayer().getOwnedCostumes())
                 .addAllOwnedFlycloakList(session.getPlayer().getOwnedFlyCloaks());
 
-        // Add team info
+        // Add avatars
+        session.getPlayer().getAvatars().forEach(av -> avatarDataNotifyBuilder.addAvatarList(av.getAvatarInfo()));
+
+        // Iterate over teams, building an object containing all avatars
         for (int index = 0; index < session.getPlayer().getTeamManager().getTeams().size(); index++) {
             PlayerTeam team = session.getPlayer().getTeamManager().getTeams().get(index);
+
             AvatarTeamOuterClass.AvatarTeam.Builder avatarTeamBuilder =
                 AvatarTeamOuterClass.AvatarTeam.newBuilder();
 

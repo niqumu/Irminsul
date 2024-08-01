@@ -6,14 +6,16 @@ import io.irminsul.common.game.world.World;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Map;
 
 // todo javadocs
 public interface Player {
 
-    @NotNull
-    Session getSession();
+    @NotNull Session getSession();
 
     int getUid();
+
+    @NotNull Map<Integer, Integer> getProperties();
 
     @NotNull String getNickname();
 
@@ -32,6 +34,12 @@ public interface Player {
     void setNameCard(int nameCard);
 
     @NotNull List<Integer> getChatEmojis();
+
+    @NotNull List<Integer> getOwnedFlyCloaks();
+
+    @NotNull List<Integer> getOwnedCostumes();
+
+    @NotNull List<Integer> getOwnedNameCards();
 
     @NotNull Position getPosition();
 

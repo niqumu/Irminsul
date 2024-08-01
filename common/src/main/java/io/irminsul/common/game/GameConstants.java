@@ -10,4 +10,9 @@ public class GameConstants {
      * The default spawn location (the beach), as a {@link Position}
      */
     public final Position SPAWN = new Position(2747, 194, -1719);
+
+    /**
+     * The scene ID of the main world
+     */
+    public final int OVERWORLD_SCENE = 3;
 }

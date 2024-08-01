@@ -6,12 +6,16 @@ import io.irminsul.common.game.Session;
 import io.irminsul.common.game.SessionState;
 import io.irminsul.common.game.world.Position;
 import io.irminsul.common.game.world.World;
+import io.irminsul.game.net.packet.PacketAvatarDataNotify;
+import io.irminsul.game.net.packet.PacketPlayerDataNotify;
 import io.irminsul.game.net.packet.PacketPlayerEnterSceneNotify;
 import io.irminsul.game.world.IrminsulWorld;
 import lombok.Data;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Data
 public class IrminsulPlayer implements Player {
@@ -19,6 +23,8 @@ public class IrminsulPlayer implements Player {
     private final Session session;
 
     private final int uid;
+
+    private final Map<Integer, Integer> properties = new HashMap<>();
 
     private String nickname = "Traveler";
 
@@ -30,9 +36,15 @@ public class IrminsulPlayer implements Player {
 
     private List<Integer> chatEmojis = new ArrayList<>();
 
+    private List<Integer> ownedFlyCloaks = List.of(140001);
+
+    private List<Integer> ownedCostumes = List.of();
+
+    private List<Integer> ownedNameCards = List.of(210001);
+
     private Position position = GameConstants.SPAWN;
 
-    private int sceneID = 3; // todo: why 3?
+    private int sceneID = GameConstants.OVERWORLD_SCENE;
 
     private int enterSceneToken = 0;
 
@@ -59,6 +71,10 @@ public class IrminsulPlayer implements Player {
 
     @Override
     public void login() {
+
+        // Send player data
+        new PacketPlayerDataNotify(this.session).send();
+        new PacketAvatarDataNotify(this.session).send();
 
         // Continue the login process
         new PacketPlayerEnterSceneNotify(this.session, this.sceneID, this.position).send();

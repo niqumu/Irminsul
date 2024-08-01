@@ -25,12 +25,12 @@ public class IrminsulPlayerTeamManager implements PlayerTeamManager {
     private final List<PlayerTeam> teams = new ArrayList<>();
 
     /**
-     * The player's currently active team
+     * The index of the currently active team within the list of teams
      */
     private int activeTeamIndex = 0;
 
     /**
-     * The player's active avatar
+     * The index of the currently active avatar within the team
      */
     private int activeAvatarIndex = 0;
 

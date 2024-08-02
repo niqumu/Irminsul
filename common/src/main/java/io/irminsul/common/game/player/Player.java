@@ -68,4 +68,6 @@ public interface Player {
     void login();
 
     void sendToScene(int sceneId);
+
+    void sendToScene(int sceneId, Position position);
 }

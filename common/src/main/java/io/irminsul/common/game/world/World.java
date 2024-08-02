@@ -55,4 +55,6 @@ public interface World extends Entity {
      * @return The next free connection/peer ID
      */
     int getNextPeerId();
+
+    @NotNull Scene getOrCreateScene(int sceneId);
 }

@@ -86,6 +86,14 @@ public class IrminsulWorld implements World {
         return ++this.lastPeerId;
     }
 
+    @Override
+    public @NotNull Scene getOrCreateScene(int sceneId) {
+        if (!this.scenes.containsKey(sceneId)) {
+            this.registerScene(new IrminsulScene(this, sceneId));
+        }
+        return this.scenes.get(sceneId);
+    }
+
     private void registerScene(Scene scene) {
         this.scenes.put(scene.getId(), scene);
     }

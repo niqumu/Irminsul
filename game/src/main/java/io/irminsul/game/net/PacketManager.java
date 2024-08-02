@@ -36,11 +36,13 @@ public class PacketManager implements ServerManager {
         this.registerHandler(new HandlerGetScenePointReq());
         this.registerHandler(new HandlerGetPlayerFriendListReq());
         this.registerHandler(new HandlerGetShopReq());
+        this.registerHandler(new HandlerMarkMapReq());
         this.registerHandler(new HandlerPingReq());
         this.registerHandler(new HandlerPlayerLoginReq());
         this.registerHandler(new HandlerPostEnterSceneReq());
         this.registerHandler(new HandlerSceneInitFinishReq());
         this.registerHandler(new HandlerSetNameCardReq());
+        this.registerHandler(new HandlerUnionCmdNotify());
     }
 
     private void registerHandler(PacketHandler handler) {

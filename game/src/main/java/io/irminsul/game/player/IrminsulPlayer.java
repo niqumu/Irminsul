@@ -92,10 +92,24 @@ public class IrminsulPlayer implements Player {
 
     @Override
     public void sendToScene(int sceneId) {
-        this.session.getServer().getLogger().info("Sending player {} from scene {} -> {}", this.uid, this.sceneId, sceneId);
+        this.session.getServer().getLogger().info("Sending player {} from scene {} -> {}",
+            this.uid, this.sceneId, sceneId);
 
         this.enterSceneToken = 1000 + (int) (Math.random() * 10000);
-        this.position = this.world.getScenes().get(sceneId).getSceneData().getSpawn();
+        this.position = this.world.getOrCreateScene(sceneId).getSceneData().getSpawn();
+
+        this.sceneId = sceneId;
+        this.world.getScenes().get(sceneId).addPlayer(this);
+        new PacketPlayerEnterSceneNotify(this.session, sceneId, this.position).send();
+    }
+
+    @Override
+    public void sendToScene(int sceneId, Position position) {
+        this.session.getServer().getLogger().info("Sending player {} from scene {} -> {} at {}",
+            this.uid, this.sceneId, sceneId, position);
+
+        this.enterSceneToken = 1000 + (int) (Math.random() * 10000);
+        this.position = position;
 
         this.sceneId = sceneId;
         this.world.getScenes().get(sceneId).addPlayer(this);

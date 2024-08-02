@@ -6,6 +6,7 @@ import io.irminsul.common.game.player.Player;
 import io.irminsul.common.game.Session;
 import io.irminsul.common.game.SessionState;
 import io.irminsul.common.game.world.Position;
+import io.irminsul.common.game.world.Scene;
 import io.irminsul.common.game.world.World;
 import io.irminsul.game.avatar.IrminsulAvatar;
 import io.irminsul.game.net.packet.PacketAvatarDataNotify;
@@ -14,6 +15,7 @@ import io.irminsul.game.net.packet.PacketPlayerEnterSceneNotify;
 import io.irminsul.game.net.packet.PacketSceneEntityAppearNotify;
 import io.irminsul.game.world.IrminsulWorld;
 import lombok.Data;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,7 +49,7 @@ public class IrminsulPlayer implements Player {
 
     private Position position = GameConstants.OVERWORLD_SPAWN;
 
-    private int sceneID = GameConstants.OVERWORLD_SCENE;
+    private int sceneId = GameConstants.OVERWORLD_SCENE;
 
     private int enterSceneToken = 0;
 
@@ -59,9 +61,6 @@ public class IrminsulPlayer implements Player {
 
     private List<Avatar> avatars = new ArrayList<>();
 
-    /**
-     * Managers
-     */
     private final IrminsulPlayerTeamManager teamManager;
 
     public IrminsulPlayer(Session session, int uid) {
@@ -74,7 +73,7 @@ public class IrminsulPlayer implements Player {
         this.peerId = this.world.getNextPeerId();
 
         // Add default avatar
-        this.avatars.add(new IrminsulAvatar(10000007, this));
+        this.avatars.add(new IrminsulAvatar(GameConstants.TRAVELER_AVATAR_ID, this));
 
         // Create managers
         this.teamManager = new IrminsulPlayerTeamManager(this);
@@ -88,11 +87,22 @@ public class IrminsulPlayer implements Player {
         new PacketAvatarDataNotify(this.session).send();
 
         // Continue the login process
-        new PacketPlayerEnterSceneNotify(this.session, this.sceneID, this.position).send();
+        this.sendToScene(GameConstants.OVERWORLD_SCENE);
         this.session.setState(SessionState.ACTIVE);
+    }
 
-        // TESTING
-        new PacketSceneEntityAppearNotify(this.getSession(), this.teamManager.getActiveAvatar()).send();
+    @Override
+    public void sendToScene(int sceneId) {
+        this.session.getServer().getLogger().info("Sending player {} from scene {} -> {}", this.uid, this.sceneId, sceneId);
+
+        this.sceneId = sceneId;
+        this.world.getScenes().get(sceneId).addPlayer(this);
+        new PacketPlayerEnterSceneNotify(this.session, sceneId, this.position).send(); // todo position: should be scene spawn
+    }
+
+    @Override
+    public @NotNull Scene getScene() {
+        return this.world.getScenes().get(this.sceneId);
     }
 
     @Override

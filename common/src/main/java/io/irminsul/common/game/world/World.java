@@ -1,12 +1,14 @@
 package io.irminsul.common.game.world;
 
+import io.irminsul.common.game.Entity;
 import io.irminsul.common.game.GameServer;
 import io.irminsul.common.game.player.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Map;
 
-public interface World {
+public interface World extends Entity {
 
     /**
      * @return The {@link GameServer} that this world belongs to
@@ -24,6 +26,11 @@ public interface World {
     @NotNull List<Player> getPlayers();
 
     /**
+     * @return A map of loaded {@link Scene}s in this World, keyed by scene ID
+     */
+    @NotNull Map<Integer, Scene> getScenes();
+
+    /**
      * @return Whether this world is mutiplayer
      */
     boolean isMultiplayer();
@@ -37,12 +44,6 @@ public interface World {
      * @return Whether this world is currently paused/frozen
      */
     boolean isPaused();
-
-    /**
-     * @return The next free entity ID
-     * TODO: this should be per scene!
-     */
-    int getNextEntityId();
 
     /**
      * @return The next free connection/peer ID

@@ -18,7 +18,7 @@ public class PacketEnterScenePeerNotify extends OutboundPacket {
             EnterScenePeerNotifyOuterClass.EnterScenePeerNotify.newBuilder()
                 .setPeerId(session.getPlayer().getPeerId())
                 .setHostPeerId(session.getPlayer().getWorld().getHost().getPeerId())
-                .setDestSceneId(session.getPlayer().getSceneID())
+                .setDestSceneId(session.getPlayer().getSceneId())
                 .setEnterSceneToken(session.getPlayer().getEnterSceneToken())
                 .build();
 

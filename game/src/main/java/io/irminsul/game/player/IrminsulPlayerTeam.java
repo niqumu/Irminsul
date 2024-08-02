@@ -30,6 +30,6 @@ public class IrminsulPlayerTeam implements PlayerTeam {
 
     public IrminsulPlayerTeam(Player owner) {
         this.owner = owner;
-        this.entityId = this.owner.getWorld().getNextEntityId();
+        this.entityId = this.owner.getScene().getNextEntityId();
     }
 }

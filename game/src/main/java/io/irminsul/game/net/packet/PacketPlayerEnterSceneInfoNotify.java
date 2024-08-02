@@ -20,7 +20,7 @@ public class PacketPlayerEnterSceneInfoNotify extends OutboundPacket {
         PlayerEnterSceneInfoNotifyOuterClass.PlayerEnterSceneInfoNotify.Builder builder =
             PlayerEnterSceneInfoNotifyOuterClass.PlayerEnterSceneInfoNotify.newBuilder()
                 .setEnterSceneToken(player.getEnterSceneToken())
-                .setCurAvatarEntityId(player.getWorld().getNextEntityId())
+                .setCurAvatarEntityId(player.getTeamManager().getActiveAvatar().getEntityId())
                 .setTeamEnterInfo(
                     TeamEnterSceneInfoOuterClass.TeamEnterSceneInfo.newBuilder()
                         .setTeamEntityId(player.getTeamManager().getActiveTeam().getEntityId())
@@ -29,7 +29,7 @@ public class PacketPlayerEnterSceneInfoNotify extends OutboundPacket {
                         .build())
                 .setMpLevelEntityInfo(
                     MPLevelEntityInfoOuterClass.MPLevelEntityInfo.newBuilder()
-                        .setEntityId(184550274)
+                        .setEntityId(player.getWorld().getEntityId())
                         .setAuthorityPeerId(player.getWorld().getHost().getPeerId())
                         .build())
                 .addAvatarEnterInfo(

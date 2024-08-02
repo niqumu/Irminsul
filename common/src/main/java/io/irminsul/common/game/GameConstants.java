@@ -17,4 +17,9 @@ public class GameConstants {
      */
 //    public final int OVERWORLD_SCENE = 3;
     public final int OVERWORLD_SCENE = 4;
+
+    /**
+     * The avatar ID of the female traveler
+     */
+    public final int TRAVELER_AVATAR_ID = 10000007;
 }

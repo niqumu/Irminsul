@@ -2,11 +2,7 @@ package io.irminsul.game.avatar;
 
 import io.irminsul.common.game.avatar.Avatar;
 import io.irminsul.common.game.player.Player;
-import io.irminsul.common.proto.AvatarInfoOuterClass;
-import io.irminsul.common.proto.ProtEntityTypeOuterClass;
-import io.irminsul.common.proto.SceneAvatarInfoOuterClass;
-import io.irminsul.common.proto.SceneEntityInfoOuterClass;
-import io.irminsul.game.net.packet.PacketSceneEntityAppearNotify;
+import io.irminsul.common.proto.*;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,6 +13,8 @@ public class IrminsulAvatar implements Avatar {
 
     private final long guid;
 
+    private final int bornTime = (int) (System.currentTimeMillis() / 1000);
+
     private final Player owner;
 
     private final int entityId;
@@ -25,7 +23,7 @@ public class IrminsulAvatar implements Avatar {
         this.avatarId = avatarId;
         this.guid = owner.getNextGuid();
         this.owner = owner;
-        this.entityId = owner.getWorld().getNextEntityId();
+        this.entityId = owner.getScene().getNextEntityId();
     }
 
     @Override
@@ -33,6 +31,7 @@ public class IrminsulAvatar implements Avatar {
         return AvatarInfoOuterClass.AvatarInfo.newBuilder()
             .setAvatarId(this.avatarId)
             .setGuid(this.guid)
+            .setBornTime(this.bornTime)
             .build();
     }
 
@@ -42,6 +41,23 @@ public class IrminsulAvatar implements Avatar {
             .setEntityId(this.entityId)
             .setEntityType(ProtEntityTypeOuterClass.ProtEntityType.PROT_ENTITY_TYPE_AVATAR)
             .setAvatar(this.getSceneAvatarInfo())
+            .setEntityAuthorityInfo(
+                EntityAuthorityInfoOuterClass.EntityAuthorityInfo.newBuilder()
+                    .setAbilityInfo(AbilitySyncStateInfoOuterClass.AbilitySyncStateInfo.newBuilder())
+                    .setRendererChangedInfo(EntityRendererChangedInfoOuterClass.EntityRendererChangedInfo.newBuilder())
+                    .setAiInfo(SceneEntityAiInfoOuterClass.SceneEntityAiInfo.newBuilder()
+                        .setIsAiOpen(true).setBornPos(VectorOuterClass.Vector.newBuilder()))
+                    .setBornPos(VectorOuterClass.Vector.newBuilder())
+                    .build())
+            .addAnimatorParaList(AnimatorParameterValueInfoPairOuterClass.AnimatorParameterValueInfoPair.newBuilder().build())
+            .setMotionInfo(
+                MotionInfoOuterClass.MotionInfo.newBuilder()
+                    .setPos(this.owner.getPosition().asVector())
+                    .setRot(VectorOuterClass.Vector.newBuilder().build())
+                    .setSpeed(VectorOuterClass.Vector.newBuilder().build())
+                    .setState(MotionStateOuterClass.MotionState.MOTION_STATE_NONE)
+                    .build())
+            .setLifeState(1)
             .build();
     }
 
@@ -51,6 +67,7 @@ public class IrminsulAvatar implements Avatar {
             .setPeerId(this.owner.getPeerId())
             .setAvatarId(this.avatarId)
             .setGuid(this.guid)
+            .setBornTime(this.bornTime)
             .build();
     }
 }

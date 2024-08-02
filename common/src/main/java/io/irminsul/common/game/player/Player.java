@@ -3,6 +3,7 @@ package io.irminsul.common.game.player;
 import io.irminsul.common.game.Session;
 import io.irminsul.common.game.avatar.Avatar;
 import io.irminsul.common.game.world.Position;
+import io.irminsul.common.game.world.Scene;
 import io.irminsul.common.game.world.World;
 import org.jetbrains.annotations.NotNull;
 
@@ -44,7 +45,11 @@ public interface Player {
 
     @NotNull Position getPosition();
 
-    int getSceneID();
+    int getSceneId();
+
+    void setSceneId(int sceneId);
+
+    @NotNull Scene getScene();
 
     int getEnterSceneToken();
 
@@ -61,4 +66,6 @@ public interface Player {
     @NotNull List<Avatar> getAvatars();
 
     void login();
+
+    void sendToScene(int sceneId);
 }

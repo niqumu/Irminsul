@@ -79,8 +79,8 @@ public abstract class OutboundPacket {
 
             this.session.getTunnel().writeData(bytes);
 
-            if (PacketManager.PACKET_LOGGING) {
-                this.session.getServer().getLogger().info("OUTGOING: {}", this);
+            if (PacketManager.PACKET_LOGGING && this.getId() != PacketIds.PingRsp) {
+                System.out.println("\033[91m( -> ) OUTGOING: " + PacketIds.getNameById(this.getId()) + "\033[39m");
             }
         } catch (Exception e) {
             this.session.getServer().getLogger().error("Failed to encode packet: {}", this, e);

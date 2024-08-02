@@ -13,7 +13,8 @@ import java.util.HashMap;
 
 public class PacketManager implements ServerManager {
 
-    public static final boolean PACKET_LOGGING = false;
+    public static final boolean PACKET_LOGGING = true;
+    public static final boolean MISSING_HANDLER_LOGGING = false;
 
     private final Logger logger = LoggerFactory.getLogger("Packet Manager");
 
@@ -48,9 +49,17 @@ public class PacketManager implements ServerManager {
 
     public void handle(InboundPacket packet, Session session) {
         if (!this.handlers.containsKey(packet.getId())) {
-            this.logger.warn("Packet ID {} ({}) was received but doesn't have a handler!",
-                packet.getId(), PacketIds.getNameById(packet.getId()));
+
+            if (MISSING_HANDLER_LOGGING) {
+                this.logger.warn("Packet ID {} ({}) was received but doesn't have a handler!",
+                    packet.getId(), PacketIds.getNameById(packet.getId()));
+            }
+
             return;
+        }
+
+        if (PACKET_LOGGING && packet.getId() != PacketIds.PingReq) {
+            System.out.println("\033[94m( <- ) INCOMING: " + PacketIds.getNameById(packet.getId()) + "\033[39m");
         }
 
         try {

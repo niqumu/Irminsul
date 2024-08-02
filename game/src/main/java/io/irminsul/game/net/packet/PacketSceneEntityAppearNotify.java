@@ -16,7 +16,7 @@ public class PacketSceneEntityAppearNotify extends OutboundPacket {
                 .addEntityList(entity.getSceneEntityInfo())
                 .setAppearType(VisionTypeOuterClass.VisionType.VISION_TYPE_BORN)
                 .build();
-
+        
         this.setData(sceneEntityAppearNotify.toByteArray());
     }
 }

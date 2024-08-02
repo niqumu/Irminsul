@@ -10,6 +10,8 @@ public interface Avatar extends Entity {
 
     long getGuid();
 
+    int getBornTime();
+
     @NotNull Player getOwner();
 
     @NotNull AvatarInfo getAvatarInfo();

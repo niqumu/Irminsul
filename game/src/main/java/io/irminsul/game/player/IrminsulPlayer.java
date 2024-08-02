@@ -12,7 +12,6 @@ import io.irminsul.game.avatar.IrminsulAvatar;
 import io.irminsul.game.net.packet.PacketAvatarDataNotify;
 import io.irminsul.game.net.packet.PacketPlayerDataNotify;
 import io.irminsul.game.net.packet.PacketPlayerEnterSceneNotify;
-import io.irminsul.game.net.packet.PacketSceneEntityAppearNotify;
 import io.irminsul.game.world.IrminsulWorld;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
@@ -73,7 +72,7 @@ public class IrminsulPlayer implements Player {
         this.peerId = this.world.getNextPeerId();
 
         // Add default avatar
-        this.avatars.add(new IrminsulAvatar(GameConstants.TRAVELER_AVATAR_ID, this));
+        this.avatars.add(new IrminsulAvatar(GameConstants.FEMALE_TRAVELER_AVATAR_ID, this));
 
         // Create managers
         this.teamManager = new IrminsulPlayerTeamManager(this);
@@ -94,6 +93,8 @@ public class IrminsulPlayer implements Player {
     @Override
     public void sendToScene(int sceneId) {
         this.session.getServer().getLogger().info("Sending player {} from scene {} -> {}", this.uid, this.sceneId, sceneId);
+
+        this.enterSceneToken = 1000 + (int) (Math.random() * 10000);
 
         this.sceneId = sceneId;
         this.world.getScenes().get(sceneId).addPlayer(this);

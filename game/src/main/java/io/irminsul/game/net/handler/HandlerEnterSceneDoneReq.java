@@ -24,6 +24,15 @@ public class HandlerEnterSceneDoneReq implements PacketHandler {
      */
     @Override
     public void handle(InboundPacket packet, Session session) throws Exception {
+        if (session.getPlayer() == null) {
+            session.getServer().getLogger().warn("Tried to handle packet {} in a bad state: player cannot be null!", this);
+            return;
+        }
+
+        // Inform the client about entities in its scene
+        session.getPlayer().getScene().addEntitiesFor(session.getPlayer());
+
+        // Continue
         new PacketEnterSceneDoneRsp(session).send();
     }
 }

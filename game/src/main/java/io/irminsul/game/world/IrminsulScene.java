@@ -26,15 +26,7 @@ public class IrminsulScene implements Scene {
 
     private final List<Player> players = new ArrayList<>();
 
-    private int lastEntityId = 0;
-
-    /**
-     * @return The next free entity ID
-     */
-    @Override
-    public int getNextEntityId() {
-        return ++this.lastEntityId;
-    }
+    private final List<Entity> entities = new ArrayList<>();
 
     @Override
     public void addPlayer(@NotNull Player player) {
@@ -46,6 +38,18 @@ public class IrminsulScene implements Scene {
 
     @Override
     public void addEntity(@NotNull Entity entity) {
+        this.entities.add(entity);
         this.players.forEach(player -> new PacketSceneEntityAppearNotify(player.getSession(), entity).send());
+    }
+
+    @Override
+    public void removeEntity(@NotNull Entity entity) {
+        this.entities.remove(entity);
+        // todo broadcast remove packet
+    }
+
+    @Override
+    public void addEntitiesFor(@NotNull Player player) {
+        this.entities.forEach(entity -> new PacketSceneEntityAppearNotify(player.getSession(), entity).send());
     }
 }

@@ -18,14 +18,13 @@ public interface Scene {
      */
     int getId();
 
-    /**
-     * @return The next free entity ID
-     */
-    int getNextEntityId();
-
     @NotNull List<Player> getPlayers();
 
     void addPlayer(@NotNull Player player);
 
     void addEntity(@NotNull Entity entity);
+
+    void removeEntity(@NotNull Entity entity);
+
+    void addEntitiesFor(@NotNull Player player);
 }

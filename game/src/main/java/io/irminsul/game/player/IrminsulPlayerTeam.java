@@ -3,6 +3,7 @@ package io.irminsul.game.player;
 import io.irminsul.common.game.avatar.Avatar;
 import io.irminsul.common.game.player.Player;
 import io.irminsul.common.game.player.PlayerTeam;
+import io.irminsul.common.game.property.EntityIdType;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -30,6 +31,6 @@ public class IrminsulPlayerTeam implements PlayerTeam {
 
     public IrminsulPlayerTeam(Player owner) {
         this.owner = owner;
-        this.entityId = this.owner.getScene().getNextEntityId();
+        this.entityId = this.owner.getWorld().getNextEntityId(EntityIdType.TEAM);
     }
 }

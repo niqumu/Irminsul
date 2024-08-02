@@ -36,12 +36,14 @@ public class PacketPlayerEnterSceneInfoNotify extends OutboundPacket {
                     AvatarEnterSceneInfoOuterClass.AvatarEnterSceneInfo.newBuilder()
                         .setAvatarGuid(player.getTeamManager().getActiveAvatar().getGuid())
                         .setAvatarEntityId(player.getTeamManager().getActiveAvatar().getEntityId())
-                        .setWeaponGuid(0)
-                        .setWeaponEntityId(0)
+                        .setWeaponGuid(player.getTeamManager().getActiveAvatar().getWeapon().getGuid())
+                        .setWeaponEntityId(player.getTeamManager().getActiveAvatar().getWeapon().getEntityId())
                         .setAvatarAbilityInfo(AbilitySyncStateInfoOuterClass.AbilitySyncStateInfo.newBuilder().build())
                         .setWeaponAbilityInfo(AbilitySyncStateInfoOuterClass.AbilitySyncStateInfo.newBuilder().build())
                         .build());
 
+        System.out.println("PacketPlayerEnterSceneInfoNotify: CurAvatarEntityId: " + builder.getCurAvatarEntityId());
+        System.out.println("PacketPlayerEnterSceneInfoNotify: AvatarEnterInfo EntityId: " + builder.getAvatarEnterInfo(0).getAvatarEntityId());
         this.setData(builder.build().toByteArray());
     }
 }

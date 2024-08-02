@@ -3,6 +3,7 @@ package io.irminsul.common.game.world;
 import io.irminsul.common.game.Entity;
 import io.irminsul.common.game.GameServer;
 import io.irminsul.common.game.player.Player;
+import io.irminsul.common.game.property.EntityIdType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -44,6 +45,11 @@ public interface World extends Entity {
      * @return Whether this world is currently paused/frozen
      */
     boolean isPaused();
+
+    /**
+     * @return The next free entity ID
+     */
+    int getNextEntityId(EntityIdType type);
 
     /**
      * @return The next free connection/peer ID

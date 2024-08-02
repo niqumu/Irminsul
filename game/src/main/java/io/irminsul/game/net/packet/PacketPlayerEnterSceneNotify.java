@@ -20,12 +20,13 @@ public class PacketPlayerEnterSceneNotify extends OutboundPacket {
             PlayerEnterSceneNotifyOuterClass.PlayerEnterSceneNotify.newBuilder()
                 .setSceneId(scene)
                 .setSceneBeginTime(System.currentTimeMillis())
+                .setEnterSceneToken(session.getPlayer().getEnterSceneToken())
                 .setPos(position.asVector())
                 .setType(EnterTypeOuterClass.EnterType.ENTER_TYPE_SELF)
                 .setTargetUid(session.getPlayer().getUid())
                 .setWorldLevel(session.getPlayer().getWorld().getWorldLevel())
                 .setWorldType(1)
-                .setIsFirstLoginEnterScene(true)
+                .setIsFirstLoginEnterScene(false)
                 .setSceneTransaction(scene + "-" + session.getPlayer().getUid() + "-" +
                     (int) (System.currentTimeMillis() / 1000d) + "-18402") // todo: what's up with 18402?
                 .build();

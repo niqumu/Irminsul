@@ -10,7 +10,10 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ConfigEntry {
     LANGUAGE("language", "en_US"),
+    HTTP_ENABLED("http_enabled", true),
     HTTP_PORT("http_port", 3000),
+    HTTP_USE_SSL("http_ssl", false),
+    GAME_ENABLED("game_enabled", true),
     GAME_PORT("game_port", 22102);
 
     /**

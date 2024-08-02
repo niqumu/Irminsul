@@ -42,8 +42,6 @@ public class PacketPlayerEnterSceneInfoNotify extends OutboundPacket {
                         .setWeaponAbilityInfo(AbilitySyncStateInfoOuterClass.AbilitySyncStateInfo.newBuilder().build())
                         .build());
 
-        System.out.println("PacketPlayerEnterSceneInfoNotify: CurAvatarEntityId: " + builder.getCurAvatarEntityId());
-        System.out.println("PacketPlayerEnterSceneInfoNotify: AvatarEnterInfo EntityId: " + builder.getAvatarEnterInfo(0).getAvatarEntityId());
         this.setData(builder.build().toByteArray());
     }
 }

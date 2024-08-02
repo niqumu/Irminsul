@@ -36,11 +36,13 @@ public class IrminsulHttpServer implements HttpServer {
         new DispatchRegion("os_usa", "Irminsul", "127.0.0.1", 22102)
     );
 
-    public IrminsulHttpServer(int port) {
+    public IrminsulHttpServer(int port, boolean ssl) {
         this.port = port;
 
         // Set up HTTPS
-//        this.spark.secure("keystore.jks", "password", null, null);
+        if (ssl) {
+            this.spark.secure("keystore.jks", "password", null, null);
+        }
 
         // Start the server
         this.spark.port(this.port);

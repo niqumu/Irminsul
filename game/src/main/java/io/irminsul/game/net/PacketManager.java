@@ -13,8 +13,8 @@ import java.util.HashMap;
 
 public class PacketManager implements ServerManager {
 
-    public static final boolean PACKET_LOGGING = true;
-    public static final boolean MISSING_HANDLER_LOGGING = false;
+    public static final boolean PACKET_LOGGING = false;
+    public static final boolean MISSING_HANDLER_LOGGING = true;
 
     private final Logger logger = LoggerFactory.getLogger("Packet Manager");
 

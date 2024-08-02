@@ -7,7 +7,9 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class Position {
-    public static final Position ORIGIN = new Position(0,0, 0);
+    public static Position ORIGIN() {
+        return new Position(0, 0, 0);
+    }
 
     /**
      * The x-coordinate of the position

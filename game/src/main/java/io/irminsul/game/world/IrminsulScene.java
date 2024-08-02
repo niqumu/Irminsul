@@ -1,9 +1,11 @@
 package io.irminsul.game.world;
 
 import io.irminsul.common.game.Entity;
+import io.irminsul.common.game.data.SceneData;
 import io.irminsul.common.game.player.Player;
 import io.irminsul.common.game.world.Scene;
 import io.irminsul.common.game.world.World;
+import io.irminsul.game.data.DataContainer;
 import io.irminsul.game.net.packet.PacketSceneEntityAppearNotify;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
@@ -24,9 +26,17 @@ public class IrminsulScene implements Scene {
      */
     private final int id;
 
+    private final SceneData sceneData;
+
     private final List<Player> players = new ArrayList<>();
 
     private final List<Entity> entities = new ArrayList<>();
+
+    public IrminsulScene(@NotNull World world, int id) {
+        this.world = world;
+        this.id = id;
+        this.sceneData = DataContainer.getOrLoadSceneData(this.id);
+    }
 
     @Override
     public void addPlayer(@NotNull Player player) {

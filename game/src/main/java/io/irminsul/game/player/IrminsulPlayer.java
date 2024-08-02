@@ -46,9 +46,9 @@ public class IrminsulPlayer implements Player {
 
     private List<Integer> ownedNameCards = List.of(210001);
 
-    private Position position = GameConstants.OVERWORLD_SPAWN;
+    private Position position;
 
-    private int sceneId = GameConstants.OVERWORLD_SCENE;
+    private int sceneId;
 
     private int enterSceneToken = 0;
 
@@ -95,10 +95,11 @@ public class IrminsulPlayer implements Player {
         this.session.getServer().getLogger().info("Sending player {} from scene {} -> {}", this.uid, this.sceneId, sceneId);
 
         this.enterSceneToken = 1000 + (int) (Math.random() * 10000);
+        this.position = this.world.getScenes().get(sceneId).getSceneData().getSpawn();
 
         this.sceneId = sceneId;
         this.world.getScenes().get(sceneId).addPlayer(this);
-        new PacketPlayerEnterSceneNotify(this.session, sceneId, this.position).send(); // todo position: should be scene spawn
+        new PacketPlayerEnterSceneNotify(this.session, sceneId, this.position).send();
     }
 
     @Override

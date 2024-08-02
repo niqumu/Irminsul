@@ -1,6 +1,7 @@
 package io.irminsul.common.game.world;
 
 import io.irminsul.common.game.Entity;
+import io.irminsul.common.game.data.SceneData;
 import io.irminsul.common.game.player.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,6 +18,8 @@ public interface Scene {
      * @return This scene's ID
      */
     int getId();
+
+    @NotNull SceneData getSceneData();
 
     @NotNull List<Player> getPlayers();
 

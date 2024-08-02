@@ -47,7 +47,7 @@ public class IrminsulAvatar implements Avatar {
             .setLifeState(1)
             .setWearingFlycloakId(this.flyCloak)
             .setCostumeId(this.costume)
-//            .addEquipGuidList(this.weapon.getGuid())
+            .addEquipGuidList(this.weapon.getGuid())
             .build();
     }
 
@@ -78,7 +78,8 @@ public class IrminsulAvatar implements Avatar {
             .build();
     }
 
-    private SceneAvatarInfoOuterClass.SceneAvatarInfo getSceneAvatarInfo() {
+    @Override
+    public SceneAvatarInfoOuterClass.@NotNull SceneAvatarInfo getSceneAvatarInfo() {
         return SceneAvatarInfoOuterClass.SceneAvatarInfo.newBuilder()
             .setUid(this.owner.getUid())
             .setPeerId(this.owner.getPeerId())

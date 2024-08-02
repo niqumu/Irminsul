@@ -4,10 +4,7 @@ import io.irminsul.common.game.Session;
 import io.irminsul.common.net.PacketIds;
 import io.irminsul.game.net.InboundPacket;
 import io.irminsul.game.net.PacketHandler;
-import io.irminsul.game.net.packet.PacketPlayerEnterSceneInfoNotify;
-import io.irminsul.game.net.packet.PacketSceneForceUnlockNotify;
-import io.irminsul.game.net.packet.PacketSceneInitFinishRsp;
-import io.irminsul.game.net.packet.PacketWorldDataNotify;
+import io.irminsul.game.net.packet.*;
 
 public class HandlerSceneInitFinishReq implements PacketHandler {
 
@@ -34,6 +31,7 @@ public class HandlerSceneInitFinishReq implements PacketHandler {
         // Scene
         new PacketSceneForceUnlockNotify(session).send();
         new PacketPlayerEnterSceneInfoNotify(session).send();
+        new PacketSceneTeamUpdateNotify(session).send();
 
         // Finish
         new PacketSceneInitFinishRsp(session).send();

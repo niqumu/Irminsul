@@ -94,9 +94,9 @@ public class Irminsul {
      * @see HttpServer
      */
     private void startHttpServer() {
-        if ((Boolean) this.config.getValue(ConfigEntry.HTTP_ENABLED)) {
-            this.httpServer = new IrminsulHttpServer((Integer) this.config.getValue(ConfigEntry.HTTP_PORT),
-                (Boolean) this.config.getValue(ConfigEntry.HTTP_USE_SSL));
+        if (Boolean.parseBoolean(this.config.getValue(ConfigEntry.HTTP_ENABLED))) {
+            this.httpServer = new IrminsulHttpServer(Integer.parseInt(this.config.getValue(ConfigEntry.HTTP_PORT)),
+                Boolean.parseBoolean(this.config.getValue(ConfigEntry.HTTP_USE_SSL)));
         }
     }
 
@@ -105,8 +105,8 @@ public class Irminsul {
      * @see GameServer
      */
     private void startGameServer() {
-        if ((Boolean) this.config.getValue(ConfigEntry.GAME_ENABLED)) {
-            this.gameServer = new IrminsulGameServer((Integer) this.config.getValue(ConfigEntry.GAME_PORT));
+        if (Boolean.parseBoolean(this.config.getValue(ConfigEntry.GAME_ENABLED))) {
+            this.gameServer = new IrminsulGameServer(Integer.parseInt(this.config.getValue(ConfigEntry.GAME_PORT)));
         }
     }
 }

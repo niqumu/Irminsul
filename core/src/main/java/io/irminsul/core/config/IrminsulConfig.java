@@ -16,8 +16,8 @@ public class IrminsulConfig {
 
     private final HashMap<ConfigEntry, Object> config = new HashMap<>();
 
-    public @NonNull Object getValue(@NonNull ConfigEntry key) {
-        return this.config.getOrDefault(key, key.getDefaultValue());
+    public @NonNull String getValue(@NonNull ConfigEntry key) {
+        return (String) this.config.getOrDefault(key, key.getDefaultValue());
     }
 
     public void setValue(@NonNull ConfigEntry key, @NonNull Object value) {

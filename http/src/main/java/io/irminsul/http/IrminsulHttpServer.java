@@ -37,17 +37,18 @@ public class IrminsulHttpServer implements HttpServer {
     );
 
     public IrminsulHttpServer(int port, boolean ssl) {
+        this.logger.info("Starting HTTP server!");
         this.port = port;
 
         // Set up HTTPS
         if (ssl) {
             this.spark.secure("keystore.jks", "password", null, null);
+            this.logger.info("Enabled SSL/HTTPS!");
         }
 
-        // Start the server
+        // Start the spark server
         this.spark.port(this.port);
         this.spark.init();
-        this.logger.info("HTTP server started on port {}", this.port);
 
         // Set up region handlers
         this.spark.get("/query_security_file", new QuerySecurityFileHandler(this));
@@ -76,10 +77,13 @@ public class IrminsulHttpServer implements HttpServer {
         });
 
         // Set up logging handlers
-        this.spark.post("/crash/dataUpload", (request, response) -> null);
+        this.spark.post("/crash/dataUpload", (request, response) -> "");
         this.spark.post("/log", new LogHandler(this));
 
         // Set up root handler
         this.spark.get("/", (request, response) -> "Irminsul PS");
+
+        // Done
+        this.logger.info("HTTP server started on port {}", this.port);
     }
 }

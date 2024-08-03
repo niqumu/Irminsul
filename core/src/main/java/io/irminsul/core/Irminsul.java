@@ -39,6 +39,7 @@ public class Irminsul {
      * Ignite this Irminsul instance
      */
     public void startup() {
+        long startTime = System.currentTimeMillis();
         this.logger.info("Starting Irminsul...");
         this.logger.info("This server is of version {}, targeting game version {}", SERVER_VERSION, GAME_VERSION);
 
@@ -48,6 +49,7 @@ public class Irminsul {
         this.startGameServer();
 
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
+        this.logger.info("Done! Started Irminsul in {} seconds!", (System.currentTimeMillis() - startTime) /1000D);
     }
 
     /**
@@ -90,7 +92,7 @@ public class Irminsul {
     }
 
     /**
-     * Ignite the HTTP server
+     * Ignite the HTTP server if enabled
      * @see HttpServer
      */
     private void startHttpServer() {
@@ -101,7 +103,7 @@ public class Irminsul {
     }
 
     /**
-     * Ignite the game server
+     * Ignite the game server if enabled
      * @see GameServer
      */
     private void startGameServer() {

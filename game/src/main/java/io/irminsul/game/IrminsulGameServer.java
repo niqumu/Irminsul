@@ -59,6 +59,7 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
      * @param port The port to expose the server to
      */
     public IrminsulGameServer(int port) {
+        this.logger.info("Starting game server!");
         this.port = port;
 
         // Init KCP server

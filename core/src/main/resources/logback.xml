@@ -5,6 +5,10 @@
         </encoder>
     </appender>
 
+    <!-- Disable Jetty and Spark logging -->
+    <logger name="org.eclipse.jetty" level="OFF"/>
+    <logger name="spark.embeddedserver.jetty" level="OFF"/>
+
     <root level="info">
         <appender-ref ref="STDOUT" />
     </root>

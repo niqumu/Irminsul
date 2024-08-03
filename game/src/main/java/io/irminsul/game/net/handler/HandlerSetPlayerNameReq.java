@@ -2,19 +2,19 @@ package io.irminsul.game.net.handler;
 
 import io.irminsul.common.game.Session;
 import io.irminsul.common.net.PacketIds;
-import io.irminsul.common.proto.SetNameCardReqOuterClass;
+import io.irminsul.common.proto.SetPlayerNameReqOuterClass;
 import io.irminsul.game.net.InboundPacket;
 import io.irminsul.game.net.PacketHandler;
-import io.irminsul.game.net.packet.PacketSetNameCardRsp;
+import io.irminsul.game.net.packet.PacketSetPlayerNameRsp;
 
-public class HandlerSetNameCardReq implements PacketHandler {
+public class HandlerSetPlayerNameReq implements PacketHandler {
 
     /**
      * @return The ID of the packet this handler is targeting
      */
     @Override
     public int getTargetID() {
-        return PacketIds.SetNameCardReq;
+        return PacketIds.SetPlayerNameReq;
     }
 
     /**
@@ -30,10 +30,10 @@ public class HandlerSetNameCardReq implements PacketHandler {
             return;
         }
 
-        SetNameCardReqOuterClass.SetNameCardReq request =
-            SetNameCardReqOuterClass.SetNameCardReq.parseFrom(packet.getData());
+        SetPlayerNameReqOuterClass.SetPlayerNameReq request =
+            SetPlayerNameReqOuterClass.SetPlayerNameReq.parseFrom(packet.getData());
 
-        session.getPlayer().getProfile().setNameCard(request.getNameCardId());
-        new PacketSetNameCardRsp(session).send();
+        session.getPlayer().getProfile().setNickname(request.getNickName());
+        new PacketSetPlayerNameRsp(session, request.getNickName()).send();
     }
 }

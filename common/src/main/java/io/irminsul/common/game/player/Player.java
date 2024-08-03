@@ -30,53 +30,10 @@ public interface Player {
      */
     int getUid();
 
-    // ================================================================ //
-    //                             Profile                              //
-    // ================================================================ //
-
     /**
-     * @return This player's profile nickname/display name
+     * @return This player's social profile
      */
-    @NotNull String getNickname();
-
-    /**
-     * Sets this player's profile nickname/display name
-     * @param nickname The new nickname to use
-     */
-    void setNickname(@NotNull String nickname);
-
-    /**
-     * @return This player's profile signature
-     */
-    @NotNull String getSignature();
-
-    /**
-     * Sets this player's profile signature
-     * @param signature The new signature to use
-     */
-    void setSignature(@NotNull String signature);
-
-    /**
-     * @return This player's profile avatar
-     */
-    int getProfilePicture();
-
-    /**
-     * Sets this player's profile avatar
-     * @param profilePicture The new avatar to use
-     */
-    void setProfilePicture(int profilePicture);
-
-    /**
-     * @return This player's profile name card
-     */
-    int getNameCard();
-
-    /**
-     * Sets this player's profile name card
-     * @param nameCard The new name card to use
-     */
-    void setNameCard(int nameCard);
+    @NotNull PlayerProfile getProfile();
 
     // ================================================================ //
     //                               Data                               //

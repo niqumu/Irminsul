@@ -2,19 +2,19 @@ package io.irminsul.game.net.handler;
 
 import io.irminsul.common.game.Session;
 import io.irminsul.common.net.PacketIds;
-import io.irminsul.common.proto.SetNameCardReqOuterClass;
+import io.irminsul.common.proto.SetPlayerBirthdayReqOuterClass;
 import io.irminsul.game.net.InboundPacket;
 import io.irminsul.game.net.PacketHandler;
-import io.irminsul.game.net.packet.PacketSetNameCardRsp;
+import io.irminsul.game.net.packet.PacketSetPlayerBirthdayRsp;
 
-public class HandlerSetNameCardReq implements PacketHandler {
+public class HandlerSetPlayerBirthdayReq implements PacketHandler {
 
     /**
      * @return The ID of the packet this handler is targeting
      */
     @Override
     public int getTargetID() {
-        return PacketIds.SetNameCardReq;
+        return PacketIds.SetPlayerBirthdayReq;
     }
 
     /**
@@ -30,10 +30,12 @@ public class HandlerSetNameCardReq implements PacketHandler {
             return;
         }
 
-        SetNameCardReqOuterClass.SetNameCardReq request =
-            SetNameCardReqOuterClass.SetNameCardReq.parseFrom(packet.getData());
+        SetPlayerBirthdayReqOuterClass.SetPlayerBirthdayReq request =
+            SetPlayerBirthdayReqOuterClass.SetPlayerBirthdayReq.parseFrom(packet.getData());
 
-        session.getPlayer().getProfile().setNameCard(request.getNameCardId());
-        new PacketSetNameCardRsp(session).send();
+        int month = request.getBirthday().getMonth(), day = request.getBirthday().getDay();
+
+        session.getPlayer().getProfile().setBirthday(month, day);
+        new PacketSetPlayerBirthdayRsp(session, month, day).send();
     }
 }

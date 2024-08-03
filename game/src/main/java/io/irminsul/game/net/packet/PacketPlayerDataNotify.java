@@ -17,7 +17,7 @@ public class PacketPlayerDataNotify extends OutboundPacket {
 
         PlayerDataNotifyOuterClass.PlayerDataNotify.Builder playerDataNotifyBuilder =
             PlayerDataNotifyOuterClass.PlayerDataNotify.newBuilder()
-                .setNickName(session.getPlayer().getNickname())
+                .setNickName(session.getPlayer().getProfile().getNickname())
                 .setServerTime(System.currentTimeMillis())
                 .setRegionId(1) // todo temp
                 .setIsFirstLoginToday(true); // todo: what does this affect?

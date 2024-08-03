@@ -2,6 +2,7 @@ package io.irminsul.game;
 
 import io.irminsul.common.game.GameServer;
 import io.irminsul.common.game.Session;
+import io.irminsul.common.game.player.PlayerProfile;
 import io.irminsul.common.game.world.World;
 import io.irminsul.common.net.PacketIds;
 import io.irminsul.common.util.CryptoUtil;
@@ -14,6 +15,7 @@ import kcp.highway.ChannelConfig;
 import kcp.highway.KcpServer;
 import kcp.highway.Ukcp;
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,6 +74,26 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
 
         // Done
         this.logger.info("Game server started on port {}", this.port);
+    }
+
+    /**
+     * Attempt to fetch the social profile data of the player with the provided UID
+     *
+     * @param uid The UID of the player to fetch social data for
+     * @return The provided player's social profile, or null, if the player doesn't exist
+     */
+    @Override
+    public @Nullable PlayerProfile lookupPlayerProfile(int uid) {
+
+        // TODO DATABASE
+        // until we have a database, just lookup currently online players
+        for (Session session : this.sessions.values()) {
+            if (session.getUid() == uid && session.getPlayer() != null) {
+                return session.getPlayer().getProfile();
+            }
+        }
+
+        return null;
     }
 
     /**

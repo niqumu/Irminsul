@@ -16,7 +16,7 @@ public class PacketSetNameCardRsp extends OutboundPacket {
 
         SetNameCardRspOuterClass.SetNameCardRsp response =
             SetNameCardRspOuterClass.SetNameCardRsp.newBuilder()
-                .setNameCardId(session.getPlayer().getNameCard())
+                .setNameCardId(session.getPlayer().getProfile().getNameCard())
                 .build();
 
         this.setData(response.toByteArray());

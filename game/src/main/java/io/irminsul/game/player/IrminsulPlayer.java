@@ -5,6 +5,7 @@ import io.irminsul.common.game.avatar.Avatar;
 import io.irminsul.common.game.player.Player;
 import io.irminsul.common.game.Session;
 import io.irminsul.common.game.SessionState;
+import io.irminsul.common.game.player.PlayerProfile;
 import io.irminsul.common.game.player.PlayerProgress;
 import io.irminsul.common.game.player.PlayerTeamManager;
 import io.irminsul.common.game.world.Position;
@@ -43,29 +44,10 @@ public class IrminsulPlayer implements Player {
      */
     private final int uid;
 
-    // ================================================================ //
-    //                             Profile                              //
-    // ================================================================ //
-
     /**
-     * This player's profile nickname/display name
+     * This player's social profile
      */
-    private String nickname = "Traveler";
-
-    /**
-     * This player's profile signature
-     */
-    private String signature = "Using Irminsul PS";
-
-    /**
-     * This player's profile avatar
-     */
-    private int profilePicture = 1001;
-
-    /**
-     * This player's profile name card
-     */
-    private int nameCard = 210001;
+    private final PlayerProfile profile;
 
     // ================================================================ //
     //                               Data                               //
@@ -163,6 +145,9 @@ public class IrminsulPlayer implements Player {
     public IrminsulPlayer(Session session, int uid) {
         this.session = session;
         this.uid = uid;
+
+        // Create fresh social profile
+        this.profile = new IrminsulPlayerProfile(this.uid);
 
         // Create world
         this.world = new IrminsulWorld(this.session.getServer(), this);

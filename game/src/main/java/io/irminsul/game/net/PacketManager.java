@@ -61,10 +61,11 @@ public class PacketManager implements ServerManager {
         this.registerHandler(new HandlerGetAllUnlockNameCardReq());
         this.registerHandler(new HandlerGetChatEmojiCollectionReq());
         this.registerHandler(new HandlerGetPlayerBlacklistReq());
+        this.registerHandler(new HandlerGetPlayerFriendListReq());
+        this.registerHandler(new HandlerGetPlayerSocialDetailReq());
         this.registerHandler(new HandlerGetPlayerTokenReq());
         this.registerHandler(new HandlerGetSceneAreaReq());
         this.registerHandler(new HandlerGetScenePointReq());
-        this.registerHandler(new HandlerGetPlayerFriendListReq());
         this.registerHandler(new HandlerGetShopReq());
         this.registerHandler(new HandlerMarkMapReq());
         this.registerHandler(new HandlerNpcTalkReq());
@@ -73,6 +74,9 @@ public class PacketManager implements ServerManager {
         this.registerHandler(new HandlerPostEnterSceneReq());
         this.registerHandler(new HandlerSceneInitFinishReq());
         this.registerHandler(new HandlerSetNameCardReq());
+        this.registerHandler(new HandlerSetPlayerBirthdayReq());
+        this.registerHandler(new HandlerSetPlayerNameReq());
+        this.registerHandler(new HandlerSetPlayerSignatureReq());
         this.registerHandler(new HandlerUnionCmdNotify());
         this.registerHandler(new HandlerUnlockTransPointReq());
     }

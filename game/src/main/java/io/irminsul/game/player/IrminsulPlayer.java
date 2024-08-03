@@ -12,6 +12,7 @@ import io.irminsul.common.game.world.Position;
 import io.irminsul.common.game.world.Scene;
 import io.irminsul.common.game.world.World;
 import io.irminsul.game.avatar.IrminsulAvatar;
+import io.irminsul.game.data.PlayerProperty;
 import io.irminsul.game.net.packet.PacketAvatarDataNotify;
 import io.irminsul.game.net.packet.PacketPlayerDataNotify;
 import io.irminsul.game.net.packet.PacketPlayerEnterSceneNotify;
@@ -156,6 +157,9 @@ public class IrminsulPlayer implements Player {
 
         // Add default avatar
         this.avatars.add(new IrminsulAvatar(GameConstants.FEMALE_TRAVELER_AVATAR_ID, this));
+
+        // Add default properties
+        this.properties.putAll(PlayerProperty.DEFAULT_PROPERTIES);
 
         // Create managers
         this.teamManager = new IrminsulPlayerTeamManager(this);

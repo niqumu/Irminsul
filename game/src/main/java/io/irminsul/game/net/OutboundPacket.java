@@ -100,8 +100,8 @@ public abstract class OutboundPacket {
             this.session.getTunnel().writeData(bytes);
 
             // Log the packet, if enabled
-            if (PacketManager.PACKET_LOGGING && this.getId() != PacketIds.PingRsp) {
-                System.out.printf("\033[91m(S -> %d) OUTGOING: %s\033[39m",
+            if (PacketManager.PACKET_LOGGING && !PacketManager.NO_LOG_PACKETS.contains(this.getId())) {
+                System.out.printf("\033[91m(S -> %d) OUTGOING: %s\033[39m\n",
                     this.session.getUid(), PacketIds.getNameById(this.getId()));
             }
         } catch (Exception e) {

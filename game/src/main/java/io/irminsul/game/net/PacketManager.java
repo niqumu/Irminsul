@@ -14,17 +14,39 @@ import java.util.List;
 
 public class PacketManager implements ServerManager {
 
-    public static final boolean PACKET_LOGGING = false;
-    public static final boolean MISSING_HANDLER_LOGGING = true;
+    /**
+     * Whether incoming and outgoing packets should be logged by the server
+     */
+    public static final boolean PACKET_LOGGING = true;
 
-    private static final List<Integer> BLACKLISTED_PACKETS = List.of(
-        PacketIds.HJBAIOKEHPA
+    /**
+     * Whether warnings about incoming packets without a handler should be raised by the server
+     */
+    public static final boolean MISSING_HANDLER_LOGGING = false;
+
+    /**
+     * Packets that are excluded from logging (too much spam)
+     */
+    public static final List<Integer> NO_LOG_PACKETS = List.of(
+        PacketIds.HJBAIOKEHPA,
+        PacketIds.UnionCmdNotify,
+        PacketIds.PingReq,
+        PacketIds.PingRsp
     );
 
+    /**
+     * This packet manager's logger
+     */
     private final Logger logger = LoggerFactory.getLogger("Packet Manager");
 
+    /**
+     * A map of {@link PacketHandler}s, keyed by packet IDs
+     */
     private final HashMap<Integer, PacketHandler> handlers = new HashMap<>();
 
+    /**
+     * The server that this packet manager belongs to
+     */
     @Getter
     private final GameServer server;
 
@@ -65,16 +87,11 @@ public class PacketManager implements ServerManager {
      */
     public void handle(InboundPacket packet, Session session) {
 
-        // Drop blacklisted packets
-        if (BLACKLISTED_PACKETS.contains(packet.getId())) {
-            return;
-        }
-
         // Ensure that the packet has a handler
         if (!this.handlers.containsKey(packet.getId())) {
 
             // If not, log it if enabled
-            if (MISSING_HANDLER_LOGGING) {
+            if (MISSING_HANDLER_LOGGING && !NO_LOG_PACKETS.contains(packet.getId())) {
                 this.logger.warn("Packet ID {} ({}) was received but doesn't have a handler!",
                     packet.getId(), PacketIds.getNameById(packet.getId()));
             }
@@ -82,8 +99,8 @@ public class PacketManager implements ServerManager {
         }
 
         // Log the packet, if enabled
-        if (PACKET_LOGGING && packet.getId() != PacketIds.PingReq) {
-            System.out.printf("\033[94m(S <- %d) INCOMING: %s\033[39m",
+        if (PACKET_LOGGING && !NO_LOG_PACKETS.contains(packet.getId())) {
+            System.out.printf("\033[94m(S <- %d) INCOMING: %s\033[39m\n",
                 session.getUid(), PacketIds.getNameById(packet.getId()));
         }
 

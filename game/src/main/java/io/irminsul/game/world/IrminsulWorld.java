@@ -18,6 +18,9 @@ import java.util.Map;
 @Data
 public class IrminsulWorld implements World {
 
+    /**
+     * The entity id of this entity
+     */
     private final int entityId;
 
     /**
@@ -56,7 +59,6 @@ public class IrminsulWorld implements World {
     private boolean paused = false;
 
     private int lastEntityId = 0;
-
     private int lastPeerId = 0;
 
     public IrminsulWorld(GameServer server, Player host) {
@@ -86,6 +88,11 @@ public class IrminsulWorld implements World {
         return ++this.lastPeerId;
     }
 
+    /**
+     * Gets a {@link Scene} by its scene ID, creating it if it doesn't already exist
+     * @param sceneId The ID of the scene to get
+     * @return The scene with the provided ID within this world
+     */
     @Override
     public @NotNull Scene getOrCreateScene(int sceneId) {
         if (!this.scenes.containsKey(sceneId)) {
@@ -98,6 +105,9 @@ public class IrminsulWorld implements World {
         this.scenes.put(scene.getId(), scene);
     }
 
+    /**
+     * @return This entity's {@link SceneEntityInfoOuterClass.SceneEntityInfo}
+     */
     @Override
     public SceneEntityInfoOuterClass.@NotNull SceneEntityInfo getSceneEntityInfo() {
         return SceneEntityInfoOuterClass.SceneEntityInfo.newBuilder().build();

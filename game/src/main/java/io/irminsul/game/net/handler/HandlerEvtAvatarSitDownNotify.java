@@ -33,9 +33,7 @@ public class HandlerEvtAvatarSitDownNotify implements PacketHandler {
         EvtAvatarSitDownNotifyOuterClass.EvtAvatarSitDownNotify notify =
             EvtAvatarSitDownNotifyOuterClass.EvtAvatarSitDownNotify.parseFrom(packet.getData());
 
-        // TODO replace with broadcast later
-        session.getPlayer().getScene().getPlayers().forEach(player ->
-            new PacketEvtAvatarSitDownNotify(player.getSession(), notify.getChairId(), notify.getPosition(),
-                notify.getDirection(), notify.getEntityId()));
+        new PacketEvtAvatarSitDownNotify(null, notify.getChairId(), notify.getPosition(),
+            notify.getDirection(), notify.getEntityId()).broadcast(session.getPlayer().getScene().getPlayers());
     }
 }

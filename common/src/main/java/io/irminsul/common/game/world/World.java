@@ -56,5 +56,10 @@ public interface World extends Entity {
      */
     int getNextPeerId();
 
+    /**
+     * Gets a {@link Scene} by its scene ID, creating it if it doesn't already exist
+     * @param sceneId The ID of the scene to get
+     * @return The scene with the provided ID within this world
+     */
     @NotNull Scene getOrCreateScene(int sceneId);
 }

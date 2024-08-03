@@ -1,11 +1,12 @@
 package io.irminsul.common.game.player;
 
+import io.irminsul.common.game.Entity;
 import io.irminsul.common.game.avatar.Avatar;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public interface PlayerTeam {
+public interface PlayerTeam extends Entity {
 
     /**
      * @return The name of the team
@@ -27,6 +28,4 @@ public interface PlayerTeam {
      * @return A list of avatars on the team
      */
     @NotNull List<Avatar> getAvatars();
-
-    int getEntityId();
 }

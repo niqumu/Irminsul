@@ -58,25 +58,37 @@ public class PacketManager implements ServerManager {
         this.handlers.put(handler.getTargetID(), handler);
     }
 
+    /**
+     * Handle an incoming packet
+     * @param packet The packet that was received
+     * @param session The session that sent the packet
+     */
     public void handle(InboundPacket packet, Session session) {
+
+        // Drop blacklisted packets
         if (BLACKLISTED_PACKETS.contains(packet.getId())) {
             return;
         }
 
+        // Ensure that the packet has a handler
         if (!this.handlers.containsKey(packet.getId())) {
+
+            // If not, log it if enabled
             if (MISSING_HANDLER_LOGGING) {
                 this.logger.warn("Packet ID {} ({}) was received but doesn't have a handler!",
                     packet.getId(), PacketIds.getNameById(packet.getId()));
             }
-
             return;
         }
 
+        // Log the packet, if enabled
         if (PACKET_LOGGING && packet.getId() != PacketIds.PingReq) {
-            System.out.println("\033[94m( <- ) INCOMING: " + PacketIds.getNameById(packet.getId()) + "\033[39m");
+            System.out.printf("\033[94m(S <- %d) INCOMING: %s\033[39m",
+                session.getUid(), PacketIds.getNameById(packet.getId()));
         }
 
         try {
+            // Give the packet to its respective handler
             this.handlers.get(packet.getId()).handle(packet, session);
         } catch (Exception e) {
             this.logger.warn("Failed to handle packet: {}", packet, e);

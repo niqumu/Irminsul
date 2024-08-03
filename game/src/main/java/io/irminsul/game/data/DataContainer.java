@@ -15,13 +15,24 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Container class for game data
+ */
 @UtilityClass
 public class DataContainer {
 
     private final Logger logger = LoggerFactory.getLogger("Data Container");
 
+    /**
+     * A map of loaded scenes and their {@link SceneData}, keyed by scene IDs
+     */
     private final Map<Integer, SceneData> loadedScenes = new HashMap<>();
 
+    /**
+     * Gets a scene's {@link SceneData} by scene ID, attempting to load the scene data if not already loaded
+     * @param sceneId The ID of the scene to load the data for
+     * @return The scene's {@link SceneData}, or a fallback {@link SceneData} if something went wrong
+     */
     public @NotNull SceneData getOrLoadSceneData(int sceneId) {
         if (loadedScenes.containsKey(sceneId)) {
             return loadedScenes.get(sceneId);
@@ -55,7 +66,6 @@ public class DataContainer {
         for (String line : Files.readAllLines(sceneFile.toPath())) {
             if (line.startsWith("\tborn_pos")) {
                 Matcher matcher = pattern.matcher(line);
-
                 ArrayList<Float> numbers = new ArrayList<>();
 
                 while (matcher.find()) {
@@ -65,7 +75,6 @@ public class DataContainer {
                 sceneData.getSpawn().setX(numbers.getFirst());
                 sceneData.getSpawn().setY(numbers.get(1));
                 sceneData.getSpawn().setZ(numbers.get(2));
-
                 return;
             }
         }

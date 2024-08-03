@@ -10,6 +10,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.util.Objects;
+
 @Getter
 @RequiredArgsConstructor
 public class IrminsulSession implements Session {
@@ -55,6 +57,14 @@ public class IrminsulSession implements Session {
     @Override
     public void onClose() {
         this.server.getLogger().info("Connection to {} closed", this.tunnel.getAddress().toString());
+    }
+
+    /**
+     * @return The UID of the associated player, or 0 if none exists
+     */
+    @Override
+    public int getUid() {
+        return this.player != null ? this.player.getUid() : 0;
     }
 
     /**

@@ -35,9 +35,7 @@ public class HandlerEvtAvatarStandUpNotify implements PacketHandler {
         EvtAvatarStandUpNotifyOuterClass.EvtAvatarStandUpNotify notify =
             EvtAvatarStandUpNotifyOuterClass.EvtAvatarStandUpNotify.parseFrom(packet.getData());
 
-        // TODO replace with broadcast later
-        session.getPlayer().getScene().getPlayers().forEach(player ->
-            new PacketEvtAvatarStandUpNotify(player.getSession(), notify.getChairId(), notify.getPerformId(),
-                notify.getDirection(), notify.getEntityId()));
+        new PacketEvtAvatarStandUpNotify(null, notify.getChairId(), notify.getPerformId(),
+            notify.getDirection(), notify.getEntityId()).broadcast(session.getPlayer().getScene().getPlayers());
     }
 }

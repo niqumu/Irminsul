@@ -9,13 +9,25 @@ import io.irminsul.common.proto.SceneWeaponInfoOuterClass;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Implementation of {@link Weapon}, representing an instance of a weapon
+ */
 @Data
 public class IrminsulWeapon implements Weapon {
 
+    /**
+     * The ID of the weapon type
+     */
     private final int weaponId;
 
+    /**
+     * The GUID of this instance
+     */
     private final long guid;
 
+    /**
+     * The entity id of this entity
+     */
     private final int entityId;
 
     public IrminsulWeapon(int weaponId, @NotNull Player owner) {
@@ -24,11 +36,17 @@ public class IrminsulWeapon implements Weapon {
         this.entityId = owner.getWorld().getNextEntityId(EntityIdType.WEAPON);
     }
 
+    /**
+     * @return This entity's {@link SceneEntityInfoOuterClass.SceneEntityInfo}
+     */
     @Override
     public SceneEntityInfoOuterClass.@NotNull SceneEntityInfo getSceneEntityInfo() {
         return SceneEntityInfoOuterClass.SceneEntityInfo.newBuilder().build();
     }
 
+    /**
+     * @return This weapon instance's {@link SceneWeaponInfoOuterClass.SceneWeaponInfo}
+     */
     @Override
     public @NotNull SceneWeaponInfoOuterClass.SceneWeaponInfo getSceneWeaponInfo() {
         return SceneWeaponInfoOuterClass.SceneWeaponInfo.newBuilder()
@@ -36,7 +54,7 @@ public class IrminsulWeapon implements Weapon {
             .setItemId(this.weaponId)
             .setGuid(this.guid)
             .setLevel(0) // todo
-            .setGadgetId(11407) // todo hardcode testing
+            .setGadgetId(this.weaponId) // todo hardcode testing
             .setAbilityInfo(AbilitySyncStateInfoOuterClass.AbilitySyncStateInfo.newBuilder().build())
             .build();
     }

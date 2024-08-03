@@ -9,24 +9,51 @@ import io.irminsul.game.item.IrminsulWeapon;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Implementation of {@link Avatar}, representing an instance of an avatar (character)
+ */
 @Data
 public class IrminsulAvatar implements Avatar {
 
+    /**
+     * The ID of the avatar type
+     */
     private final int avatarId;
 
+    /**
+     * The GUID of this instance
+     */
     private final long guid;
 
+    /**
+     * The time this avatar was created/obtained at
+     */
     private final int bornTime = (int) (System.currentTimeMillis() / 1000);
 
-    private final Player owner;
-
-    private final int entityId;
-
-    private Weapon weapon;
-
+    /**
+     * The glider worn by this instance
+     */
     private int flyCloak = 140001;
 
+    /**
+     * The costume worn by this instance
+     */
     private int costume;
+
+    /**
+     * The weapon held by this instance
+     */
+    private Weapon weapon;
+
+    /**
+     * The {@link Player} who owns this instance
+     */
+    private final Player owner;
+
+    /**
+     * The entity id of this entity
+     */
+    private final int entityId;
 
     public IrminsulAvatar(int avatarId, @NotNull Player owner) {
         this.avatarId = avatarId;
@@ -38,6 +65,9 @@ public class IrminsulAvatar implements Avatar {
         this.weapon = new IrminsulWeapon(11407, owner);
     }
 
+    /**
+     * @return This avatar instance's {@link AvatarInfoOuterClass.AvatarInfo}
+     */
     @Override
     public @NotNull AvatarInfoOuterClass.AvatarInfo getAvatarInfo() {
         return AvatarInfoOuterClass.AvatarInfo.newBuilder()
@@ -51,6 +81,9 @@ public class IrminsulAvatar implements Avatar {
             .build();
     }
 
+    /**
+     * @return This entity's {@link SceneEntityInfoOuterClass.SceneEntityInfo}
+     */
     @Override
     public @NotNull SceneEntityInfoOuterClass.SceneEntityInfo getSceneEntityInfo() {
         return SceneEntityInfoOuterClass.SceneEntityInfo.newBuilder()
@@ -78,6 +111,9 @@ public class IrminsulAvatar implements Avatar {
             .build();
     }
 
+    /**
+     * @return This avatar instance's {@link SceneAvatarInfoOuterClass.SceneAvatarInfo}
+     */
     @Override
     public SceneAvatarInfoOuterClass.@NotNull SceneAvatarInfo getSceneAvatarInfo() {
         return SceneAvatarInfoOuterClass.SceneAvatarInfo.newBuilder()

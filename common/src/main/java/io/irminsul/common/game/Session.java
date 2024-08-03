@@ -35,6 +35,11 @@ public interface Session extends KcpChannel {
     @Nullable Player getPlayer();
 
     /**
+     * @return The UID of the associated player, or 0 if none exists
+     */
+    int getUid();
+
+    /**
      * Sets the {@link Player} associated with the session
      * @param player The new player of the session
      */

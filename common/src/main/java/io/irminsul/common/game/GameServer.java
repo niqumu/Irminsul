@@ -16,7 +16,7 @@ public interface GameServer {
     @NotNull Logger getLogger();
 
     /**
-     * @return The port this web server is running on
+     * @return The port this game server is running on
      */
     int getPort();
 

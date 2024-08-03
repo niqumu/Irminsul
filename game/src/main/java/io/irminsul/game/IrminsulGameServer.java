@@ -36,6 +36,9 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
      */
     private final int port;
 
+    /**
+     * A list of {@link World}s on the server
+     */
     private final List<World> worlds = new ArrayList<>();
 
     /**
@@ -49,9 +52,14 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
     private final PacketManager packetManager = new PacketManager(this);
     private final ShopManager shopManager = new ShopManager(this);
 
+    /**
+     * Create a new game server on the provided port
+     * @param port The port to expose the server to
+     */
     public IrminsulGameServer(int port) {
         this.port = port;
 
+        // Init KCP server
         ChannelConfig channelConfig = new ChannelConfig();
         channelConfig.nodelay(true, 20, 2, true);
         channelConfig.setMtu(1400);
@@ -60,16 +68,17 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
         channelConfig.setTimeoutMillis(30 * 1000);
         channelConfig.setUseConvChannel(true);
         channelConfig.setAckNoDelay(false);
-
         this.init(new GameServerListener(this), channelConfig, new InetSocketAddress(this.port));
+
+        // Done
         this.logger.info("Game server started on port {}", this.port);
     }
 
     /**
      * Handles a packet
-     *
-     * @param raw     The raw bytes of the packet
+     * @param raw The raw bytes of the packet
      * @param session The session that sent the packet
+     * @param key The key used to decrypt the packet
      */
     @Override
     public void handlePacket(byte[] raw, Session session, byte[] key) {
@@ -82,7 +91,7 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
         try {
             packet = new InboundPacket(Unpooled.wrappedBuffer(raw), session);
         } catch (MalformedPacketException e) {
-            this.logger.error("Failed to decode packet, bytes: {}", Arrays.toString(raw), e);
+            this.logger.error("Failed to decode packet: {}, bytes: {}", e, Arrays.toString(raw));
             return;
         }
 

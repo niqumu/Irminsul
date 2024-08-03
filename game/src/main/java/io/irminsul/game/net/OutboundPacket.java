@@ -1,6 +1,7 @@
 package io.irminsul.game.net;
 
 import io.irminsul.common.game.Session;
+import io.irminsul.common.game.player.Player;
 import io.irminsul.common.net.PacketEncryptionMode;
 import io.irminsul.common.net.PacketIds;
 import io.irminsul.common.proto.PacketHeadOuterClass;
@@ -8,6 +9,7 @@ import io.irminsul.common.util.CryptoUtil;
 import lombok.Data;
 
 import java.io.ByteArrayOutputStream;
+import java.util.List;
 
 // +---------+---------+-------------------+-------------+------------------+------------------+---------+
 // |  Magic  |  CmdId  | PacketHead Length | Data Length | PacketHead bytes |    Data bytes    |  Magic  |
@@ -52,17 +54,33 @@ public abstract class OutboundPacket {
     }
 
     private int getLength() {
-        return 2 + 2 + 2 + 4 + 4 + this.header.length + this.data.length + 2;
+        return 2 // Top magic
+            + 2 // Packet ID
+            + 2 // Header length
+            + 4 // Data length
+            + this.header.length
+            + this.data.length
+            + 2; // Bottom magic
     }
 
+    /**
+     * Sends the packet to the associated session
+     */
     public final void send() {
+
+        // The session is allowed to be null for broadcasting, but not directly sending
+        if (this.session == null) {
+            throw new IllegalStateException("Can't directly send a packet to a null session!");
+        }
+
         try {
+            // Build the packet header
             if (this.header.length == 0) {
                 this.buildHeader();
             }
 
+            // Build the packet
             ByteArrayOutputStream baos = new ByteArrayOutputStream(this.getLength());
-
             this.writeUnsignedShort(baos, TOP_MAGIC);
             this.writeUnsignedShort(baos, this.id);
             this.writeUnsignedShort(baos, this.header.length);
@@ -71,20 +89,36 @@ public abstract class OutboundPacket {
             baos.write(this.data);
             this.writeUnsignedShort(baos, BOTTOM_MAGIC);
 
+            // Encrypt the packet
             byte[] bytes = baos.toByteArray();
             if (!this.encryptionMode.equals(PacketEncryptionMode.NONE)) {
                 CryptoUtil.xor(bytes, this.encryptionMode.equals(PacketEncryptionMode.DISPATCH) ?
                         CryptoUtil.DISPATCH_KEY : CryptoUtil.ENCRYPT_KEY);
             }
 
+            // Send the packet
             this.session.getTunnel().writeData(bytes);
 
+            // Log the packet, if enabled
             if (PacketManager.PACKET_LOGGING && this.getId() != PacketIds.PingRsp) {
-                System.out.println("\033[91m( -> ) OUTGOING: " + PacketIds.getNameById(this.getId()) + "\033[39m");
+                System.out.printf("\033[91m(S -> %d) OUTGOING: %s\033[39m",
+                    this.session.getUid(), PacketIds.getNameById(this.getId()));
             }
         } catch (Exception e) {
             this.session.getServer().getLogger().error("Failed to encode packet: {}", this, e);
         }
+    }
+
+    /**
+     * Broadcasts a copy of this packet to a list of players
+     * @param players A list of players to send a copy of this packet to
+     */
+    public final void broadcast(List<Player> players) {
+        players.forEach(player -> {
+            OutboundPacket packet = new OutboundPacket(this.id, player.getSession()) {};
+            packet.setData(this.data);
+            packet.send();
+        });
     }
 
     public void writeUnsignedShort(ByteArrayOutputStream baos, int i) {

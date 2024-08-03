@@ -4,7 +4,6 @@ import io.irminsul.common.game.player.Player;
 import io.irminsul.common.game.avatar.Avatar;
 import io.irminsul.common.game.player.PlayerTeam;
 import io.irminsul.common.game.player.PlayerTeamManager;
-import io.irminsul.game.avatar.IrminsulAvatar;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 

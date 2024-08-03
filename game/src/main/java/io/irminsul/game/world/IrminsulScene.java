@@ -13,6 +13,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Implementation of {@link Scene}, representing a scene within a {@link World}
+ */
 @Data
 public class IrminsulScene implements Scene {
 
@@ -26,10 +29,19 @@ public class IrminsulScene implements Scene {
      */
     private final int id;
 
+    /**
+     * The {@link SceneData} of this scene
+     */
     private final SceneData sceneData;
 
+    /**
+     * A list of {@link Player}s within this scene
+     */
     private final List<Player> players = new ArrayList<>();
 
+    /**
+     * A list of {@link Entity}s within this scene
+     */
     private final List<Entity> entities = new ArrayList<>();
 
     public IrminsulScene(@NotNull World world, int id) {
@@ -38,26 +50,60 @@ public class IrminsulScene implements Scene {
         this.sceneData = DataContainer.getOrLoadSceneData(this.id);
     }
 
+    /**
+     * Adds a player to the scene
+     * @param player The player to add to this scene
+     */
     @Override
     public void addPlayer(@NotNull Player player) {
+
+        // Remove the player from their last scene
+        if (player.getScene() != null) {
+            player.getScene().removePlayer(player);
+        }
+
+        // Add the player to this scene
         player.setSceneId(this.id);
         this.players.add(player);
 
+        // Add the player's avatar to the scene
         this.addEntity(player.getTeamManager().getActiveAvatar());
     }
 
+    /**
+     * Removes a player from the scene
+     * @param player The player to remove from this scene
+     */
+    @Override
+    public void removePlayer(@NotNull Player player) {
+        this.players.remove(player);
+        // todo broadcast remove avatar packet
+    }
+
+    /**
+     * Adds an entity to the scene
+     * @param entity The entity to add to this scene
+     */
     @Override
     public void addEntity(@NotNull Entity entity) {
         this.entities.add(entity);
-        this.players.forEach(player -> new PacketSceneEntityAppearNotify(player.getSession(), entity).send());
+        new PacketSceneEntityAppearNotify(null, entity).broadcast(this.players);
     }
 
+    /**
+     * Removes an entity from this scene
+     * @param entity The entity to remove from this scene
+     */
     @Override
     public void removeEntity(@NotNull Entity entity) {
         this.entities.remove(entity);
         // todo broadcast remove packet
     }
 
+    /**
+     * Sends the provided player the packets needed to spawn the entities within the scene
+     * @param player The player to spawn entities for
+     */
     @Override
     public void addEntitiesFor(@NotNull Player player) {
         this.entities.forEach(entity -> new PacketSceneEntityAppearNotify(player.getSession(), entity).send());

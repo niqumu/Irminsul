@@ -5,6 +5,7 @@ import io.irminsul.common.game.avatar.Avatar;
 import io.irminsul.common.game.player.Player;
 import io.irminsul.common.game.Session;
 import io.irminsul.common.game.SessionState;
+import io.irminsul.common.game.player.PlayerProgress;
 import io.irminsul.common.game.player.PlayerTeamManager;
 import io.irminsul.common.game.world.Position;
 import io.irminsul.common.game.world.Scene;
@@ -22,8 +23,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * An implementation of {@link Player}, representing an Irminsul player
+ */
 @Data
 public class IrminsulPlayer implements Player {
+
+    // ================================================================ //
+    //                               Core                               //
+    // ================================================================ //
 
     /**
      * The {@link Session} this player is connecting through
@@ -35,10 +43,9 @@ public class IrminsulPlayer implements Player {
      */
     private final int uid;
 
-    /**
-     * A map of properties that this player has
-     */
-    private final Map<Integer, Integer> properties = new HashMap<>();
+    // ================================================================ //
+    //                             Profile                              //
+    // ================================================================ //
 
     /**
      * This player's profile nickname/display name
@@ -60,6 +67,20 @@ public class IrminsulPlayer implements Player {
      */
     private int nameCard = 210001;
 
+    // ================================================================ //
+    //                               Data                               //
+    // ================================================================ //
+
+    /**
+     * A map of properties that this player has
+     */
+    private final Map<Integer, Integer> properties = new HashMap<>();
+
+    /**
+     * A list of {@link Avatar}s owned by this player
+     */
+    private List<Avatar> avatars = new ArrayList<>();
+
     /**
      * A list, by ID, of chat emojis this player has unlocked
      */
@@ -80,6 +101,15 @@ public class IrminsulPlayer implements Player {
      */
     private List<Integer> ownedNameCards = List.of(210001);
 
+    // ================================================================ //
+    //                               World                              //
+    // ================================================================ //
+
+    /**
+     * This player's current {@link World}
+     */
+    private World world;
+
     /**
      * This player's current {@link Position} within their scene
      */
@@ -96,14 +126,13 @@ public class IrminsulPlayer implements Player {
     private int enterSceneToken = 0;
 
     /**
-     * This player's current {@link World}
-     */
-    private World world;
-
-    /**
      * This player's peer ID to their world
      */
     private int peerId;
+
+    // ================================================================ //
+    //                             Managers                             //
+    // ================================================================ //
 
     /**
      * This player's {@link PlayerTeamManager} instance
@@ -111,12 +140,26 @@ public class IrminsulPlayer implements Player {
     private final PlayerTeamManager teamManager;
 
     /**
-     * A list of {@link Avatar}s owned by this player
+     * This player's game progress container
      */
-    private List<Avatar> avatars = new ArrayList<>();
+    private final PlayerProgress progress;
 
+    // ================================================================ //
+    //                             Internal                             //
+    // ================================================================ //
+
+    /**
+     * The last assigned free GUID
+     */
     private int lastGuid = 0;
 
+    // ================================================================ //
+
+    /**
+     * Creates a new player with fresh data.
+     * @param session The session this player is connecting through
+     * @param uid The uid to assign to this player
+     */
     public IrminsulPlayer(Session session, int uid) {
         this.session = session;
         this.uid = uid;
@@ -131,6 +174,7 @@ public class IrminsulPlayer implements Player {
 
         // Create managers
         this.teamManager = new IrminsulPlayerTeamManager(this);
+        this.progress = new IrminsulPlayerProgress(this);
     }
 
     /**
@@ -142,6 +186,9 @@ public class IrminsulPlayer implements Player {
         // Send player data
         new PacketPlayerDataNotify(this.session).send();
         new PacketAvatarDataNotify(this.session).send();
+
+        // Let the managers handle this (TODO: let them sub to a login event)
+        this.progress.onLogin();
 
         // Continue the login process
         this.sendToScene(GameConstants.OVERWORLD_SCENE);

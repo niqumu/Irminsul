@@ -1,7 +1,7 @@
 package io.irminsul.game.shop;
 
 import io.irminsul.common.game.GameServer;
-import io.irminsul.game.ServerManager;
+import io.irminsul.common.game.ServerManager;
 import lombok.Getter;
 
 @Getter

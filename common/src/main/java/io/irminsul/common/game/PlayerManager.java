@@ -1,4 +1,4 @@
-package io.irminsul.game;
+package io.irminsul.common.game;
 
 import io.irminsul.common.game.player.Player;
 

@@ -11,7 +11,14 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A representation of an Irminsul player
+ */
 public interface Player {
+
+    // ================================================================ //
+    //                               Core                               //
+    // ================================================================ //
 
     /**
      * @return The {@link Session} this player is connecting through
@@ -23,10 +30,9 @@ public interface Player {
      */
     int getUid();
 
-    /**
-     * @return A map of properties that this player has
-     */
-    @NotNull Map<Integer, Integer> getProperties();
+    // ================================================================ //
+    //                             Profile                              //
+    // ================================================================ //
 
     /**
      * @return This player's profile nickname/display name
@@ -72,6 +78,20 @@ public interface Player {
      */
     void setNameCard(int nameCard);
 
+    // ================================================================ //
+    //                               Data                               //
+    // ================================================================ //
+
+    /**
+     * @return A map of properties that this player has
+     */
+    @NotNull Map<Integer, Integer> getProperties();
+
+    /**
+     * @return A list of {@link Avatar}s this player owns
+     */
+    @NotNull List<Avatar> getAvatars();
+
     /**
      * @return A list, by ID, of chat emojis this player has unlocked
      */
@@ -92,6 +112,20 @@ public interface Player {
      */
     @NotNull List<Integer> getOwnedNameCards();
 
+    // ================================================================ //
+    //                               World                              //
+    // ================================================================ //
+
+    /**
+     * @return This player's current {@link World}
+     */
+    @NotNull World getWorld();
+
+    /**
+     * @return This player's current scene, or null if none exists
+     */
+    @Nullable Scene getScene();
+
     /**
      * @return This player's current {@link Position} within their scene
      */
@@ -110,11 +144,6 @@ public interface Player {
     void setSceneId(int sceneId);
 
     /**
-     * @return This player's current scene, or null if none exists
-     */
-    @Nullable Scene getScene();
-
-    /**
      * @return This player's current token used to transfer between scenes
      */
     int getEnterSceneToken();
@@ -126,19 +155,13 @@ public interface Player {
     void setEnterSceneToken(int enterSceneToken);
 
     /**
-     * @return This player's current {@link World}
-     */
-    @NotNull World getWorld();
-
-    /**
      * @return This player's peer ID to their world
      */
     int getPeerId();
 
-    /**
-     * @return This next free GUID to assign. Calling this method will mark the returned value as used.
-     */
-    long getNextGuid();
+    // ================================================================ //
+    //                             Managers                             //
+    // ================================================================ //
 
     /**
      * @return This player's {@link PlayerTeamManager} instance
@@ -146,14 +169,23 @@ public interface Player {
     @NotNull PlayerTeamManager getTeamManager();
 
     /**
-     * @return A list of {@link Avatar}s owned by this player
+     * @return This player's game progress container
      */
-    @NotNull List<Avatar> getAvatars();
+    @NotNull PlayerProgress getProgress();
+
+    // ================================================================ //
+    //                             Function                             //
+    // ================================================================ //
 
     /**
      * Execute the login process for this player, sending them to the overworld scene
      */
     void login();
+
+    /**
+     * @return This next free GUID to assign. Calling this method will mark the returned value as used.
+     */
+    long getNextGuid();
 
     /**
      * Sends this player to a specified scene

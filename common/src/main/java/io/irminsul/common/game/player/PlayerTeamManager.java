@@ -1,16 +1,12 @@
 package io.irminsul.common.game.player;
 
+import io.irminsul.common.game.PlayerManager;
 import io.irminsul.common.game.avatar.Avatar;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public interface PlayerTeamManager {
-
-    /**
-     * @return The {@link Player} this manager belongs to
-     */
-    @NotNull Player getPlayer();
+public interface PlayerTeamManager extends PlayerManager {
 
     /**
      * @return A list of teams this manager's player has

@@ -1,6 +1,4 @@
-package io.irminsul.game;
-
-import io.irminsul.common.game.GameServer;
+package io.irminsul.common.game;
 
 /**
  * Represents an abstract manager that belongs to a game server

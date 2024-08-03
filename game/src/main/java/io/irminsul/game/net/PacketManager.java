@@ -3,7 +3,7 @@ package io.irminsul.game.net;
 import io.irminsul.common.game.GameServer;
 import io.irminsul.common.game.Session;
 import io.irminsul.common.net.PacketIds;
-import io.irminsul.game.ServerManager;
+import io.irminsul.common.game.ServerManager;
 import io.irminsul.game.net.handler.*;
 import lombok.Getter;
 import org.slf4j.Logger;
@@ -17,12 +17,12 @@ public class PacketManager implements ServerManager {
     /**
      * Whether incoming and outgoing packets should be logged by the server
      */
-    public static final boolean PACKET_LOGGING = true;
+    public static final boolean PACKET_LOGGING = false;
 
     /**
      * Whether warnings about incoming packets without a handler should be raised by the server
      */
-    public static final boolean MISSING_HANDLER_LOGGING = false;
+    public static final boolean MISSING_HANDLER_LOGGING = true;
 
     /**
      * Packets that are excluded from logging (too much spam)

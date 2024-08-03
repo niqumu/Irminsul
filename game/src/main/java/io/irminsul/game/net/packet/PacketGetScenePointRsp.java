@@ -9,12 +9,10 @@ public class PacketGetScenePointRsp extends OutboundPacket {
     public PacketGetScenePointRsp(Session session, int sceneId) {
         super(PacketIds.GetScenePointRsp, session);
 
-        // TODO
-        GetScenePointRspOuterClass.GetScenePointRsp response =
+        GetScenePointRspOuterClass.GetScenePointRsp.Builder builder =
             GetScenePointRspOuterClass.GetScenePointRsp.newBuilder()
-                .setSceneId(sceneId)
-                .build();
+                .setSceneId(sceneId);
 
-        this.setData(response.toByteArray());
+        this.setData(builder.build().toByteArray());
     }
 }

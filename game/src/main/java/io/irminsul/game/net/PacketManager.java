@@ -10,11 +10,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class PacketManager implements ServerManager {
 
     public static final boolean PACKET_LOGGING = false;
     public static final boolean MISSING_HANDLER_LOGGING = true;
+
+    private static final List<Integer> BLACKLISTED_PACKETS = List.of(
+        PacketIds.HJBAIOKEHPA
+    );
 
     private final Logger logger = LoggerFactory.getLogger("Packet Manager");
 
@@ -28,6 +33,9 @@ public class PacketManager implements ServerManager {
 
         this.registerHandler(new HandlerEnterSceneDoneReq());
         this.registerHandler(new HandlerEnterSceneReadyReq());
+        this.registerHandler(new HandlerEvtAvatarLockChairReq());
+        this.registerHandler(new HandlerEvtAvatarSitDownNotify());
+        this.registerHandler(new HandlerEvtAvatarStandUpNotify());
         this.registerHandler(new HandlerGetAllUnlockNameCardReq());
         this.registerHandler(new HandlerGetChatEmojiCollectionReq());
         this.registerHandler(new HandlerGetPlayerBlacklistReq());
@@ -37,6 +45,7 @@ public class PacketManager implements ServerManager {
         this.registerHandler(new HandlerGetPlayerFriendListReq());
         this.registerHandler(new HandlerGetShopReq());
         this.registerHandler(new HandlerMarkMapReq());
+        this.registerHandler(new HandlerNpcTalkReq());
         this.registerHandler(new HandlerPingReq());
         this.registerHandler(new HandlerPlayerLoginReq());
         this.registerHandler(new HandlerPostEnterSceneReq());
@@ -50,8 +59,11 @@ public class PacketManager implements ServerManager {
     }
 
     public void handle(InboundPacket packet, Session session) {
-        if (!this.handlers.containsKey(packet.getId())) {
+        if (BLACKLISTED_PACKETS.contains(packet.getId())) {
+            return;
+        }
 
+        if (!this.handlers.containsKey(packet.getId())) {
             if (MISSING_HANDLER_LOGGING) {
                 this.logger.warn("Packet ID {} ({}) was received but doesn't have a handler!",
                     packet.getId(), PacketIds.getNameById(packet.getId()));

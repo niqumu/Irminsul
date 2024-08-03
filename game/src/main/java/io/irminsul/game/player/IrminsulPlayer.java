@@ -18,27 +18,41 @@ import io.irminsul.game.net.packet.PacketPlayerDataNotify;
 import io.irminsul.game.net.packet.PacketPlayerEnterSceneNotify;
 import io.irminsul.game.world.IrminsulWorld;
 import lombok.Data;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * An implementation of {@link Player}, representing an Irminsul player
+ * An implementation of {@link Player}, representing an Irminsul player.
+ * <p>
+ * When a player is logging in for the first time, a new IrminsulPlayer instance should be created via the default
+ * {@link IrminsulPlayer#IrminsulPlayer(Session, int)} constructor. This creates a new player object with fresh/blank
+ * stats, settings, etc., and no progress.
+ * <p>
+ * When deserializing an existing player, the session should first be set via the {@link Player#setSession(Session)}
+ * method. A world must then be created and assigned via the {@link Player#createWorld()} method. These steps must be
+ * completed in this order <i>prior</i> to calling the {@link Player#login()} method.
  */
 @Data
 public class IrminsulPlayer implements Player {
+
+    @Serial
+    private final static long serialVersionUID = 1;
 
     // ================================================================ //
     //                               Core                               //
     // ================================================================ //
 
     /**
-     * The {@link Session} this player is connecting through
+     * The {@link Session} this player is connecting through. Excluded from serialization as this is not a persistent
+     * piece of data; the session is different every time the player connects.
      */
-    private final Session session;
+    private transient Session session;
 
     /**
      * This player's UID
@@ -89,29 +103,34 @@ public class IrminsulPlayer implements Player {
     // ================================================================ //
 
     /**
-     * This player's current {@link World}
+     * This player's current {@link World}. Excluded from serialization as a world is created for the player every time
+     * they connect
      */
-    private World world;
+    private transient World world;
 
     /**
-     * This player's current {@link Position} within their scene
+     * This player's current {@link Position} within their scene. Excluded from serialization as a world is created for
+     * the player every time they connect
      */
-    private Position position;
+    private transient Position position;
 
     /**
-     * The ID of this player's current scene
+     * The ID of this player's current scene. Excluded from serialization as a world is created for the player every
+     * time they connect
      */
-    private int sceneId = 0;
+    private transient int sceneId = 0;
 
     /**
-     * This player's current token used to transfer between scenes
+     * This player's current token used to transfer between scenes. Excluded from serialization as a world is created
+     * for the player every time they connect
      */
-    private int enterSceneToken = 0;
+    private transient int enterSceneToken = 0;
 
     /**
-     * This player's peer ID to their world
+     * This player's peer ID to their world. Excluded from serialization as a world is created for the player every
+     * time they connect
      */
-    private int peerId;
+    private transient int peerId;
 
     // ================================================================ //
     //                             Managers                             //
@@ -132,9 +151,10 @@ public class IrminsulPlayer implements Player {
     // ================================================================ //
 
     /**
-     * The last assigned free GUID
+     * The last assigned free GUID. Excluded from serialization as this is not a persistent piece of data; GUIDs are
+     * assigned on a per-session basis.
      */
-    private int lastGuid = 0;
+    private transient int lastGuid = 0;
 
     // ================================================================ //
 
@@ -151,9 +171,7 @@ public class IrminsulPlayer implements Player {
         this.profile = new IrminsulPlayerProfile(this.uid);
 
         // Create world
-        this.world = new IrminsulWorld(this.session.getServer(), this);
-        this.session.getServer().getWorlds().add(this.world);
-        this.peerId = this.world.getNextPeerId();
+        this.createWorld();
 
         // Add default avatar
         this.avatars.add(new IrminsulAvatar(GameConstants.FEMALE_TRAVELER_AVATAR_ID, this));
@@ -167,10 +185,27 @@ public class IrminsulPlayer implements Player {
     }
 
     /**
+     * Sets the session that this player is connecting through, first ensuring that no session is already set. If a
+     * session is already set (not null), an exception is raised.
+     * @param session The new session that this player is connecting through
+     */
+    public void setSession(@NotNull Session session) {
+        if (this.session != null) {
+            throw new IllegalStateException("Session is already set!");
+        }
+        this.session = session;
+    }
+
+    /**
      * Execute the login process for this player, sending them to the overworld scene
      */
     @Override
     public void login() {
+
+        // Ensure that the player has a world to log into
+        if (this.world == null) {
+            throw new IllegalStateException("No world to log into!");
+        }
 
         // Send player data
         new PacketPlayerDataNotify(this.session).send();
@@ -182,6 +217,32 @@ public class IrminsulPlayer implements Player {
         // Continue the login process
         this.sendToScene(GameConstants.OVERWORLD_SCENE);
         this.session.setState(SessionState.ACTIVE);
+    }
+
+    /**
+     * Create a new world for this player and register it, first ensuring that no world is already set. If a world is
+     * already set (not null), an exception is raised.
+     * <p>
+     * This is called automatically when a new player is created. When deserializing an existing player, this
+     * <b>must</b> be called prior to the {@link Player#login()} method. Prior to this method being called, the player's
+     * session must be set. If a session is not set, an exception is raised.
+     */
+    @Override
+    public void createWorld() {
+
+        // Ensure that the player has a session set
+        if (this.session == null) {
+            throw new IllegalStateException("Trying to create a world for a player without a session!");
+        }
+
+        // Ensure that a world isn't already set
+        if (this.world != null) {
+            throw new IllegalStateException("World is already set!");
+        }
+
+        this.world = new IrminsulWorld(this.session.getServer(), this);
+        this.session.getServer().getWorlds().add(this.world);
+        this.peerId = this.world.getNextPeerId();
     }
 
     /**
@@ -206,7 +267,7 @@ public class IrminsulPlayer implements Player {
      * @param position The position within the new scene to send the player to
      */
     @Override
-    public void sendToScene(int sceneId, Position position) {
+    public void sendToScene(int sceneId, @NotNull Position position) {
         this.session.getServer().getLogger().info("Sending player {} from scene {} -> {} at {}",
             this.uid, this.sceneId, sceneId, position);
 

@@ -7,11 +7,15 @@ import io.irminsul.common.game.player.PlayerTeamManager;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 public class IrminsulPlayerTeamManager implements PlayerTeamManager {
+
+    @Serial
+    private final static long serialVersionUID = 1;
 
     /**
      * The {@link Player} this manager belongs to
@@ -33,6 +37,10 @@ public class IrminsulPlayerTeamManager implements PlayerTeamManager {
      */
     private int activeAvatarIndex = 0;
 
+    /**
+     * Create a new blank/fresh team manager for the provided player
+     * @param player The player the team manager is being created for
+     */
     public IrminsulPlayerTeamManager(Player player) {
         this.player = player;
         this.teams.add(new IrminsulPlayerTeam(player));

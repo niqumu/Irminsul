@@ -8,13 +8,14 @@ import io.irminsul.common.game.world.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
 /**
  * A representation of an Irminsul player
  */
-public interface Player {
+public interface Player extends Serializable {
 
     // ================================================================ //
     //                               Core                               //
@@ -24,6 +25,12 @@ public interface Player {
      * @return The {@link Session} this player is connecting through
      */
     @NotNull Session getSession();
+
+    /**
+     * Sets the {@link Session} that this player is connecting through
+     * @param session The new session that this player is connecting through
+     */
+    void setSession(@NotNull Session session);
 
     /**
      * @return This player's UID
@@ -140,6 +147,11 @@ public interface Player {
     void login();
 
     /**
+     * Create a new world for this player and register it
+     */
+    void createWorld();
+
+    /**
      * @return This next free GUID to assign. Calling this method will mark the returned value as used.
      */
     long getNextGuid();
@@ -155,5 +167,5 @@ public interface Player {
      * @param sceneId The scene to send the player to
      * @param position The position within the new scene to send the player to
      */
-    void sendToScene(int sceneId, Position position);
+    void sendToScene(int sceneId, @NotNull Position position);
 }

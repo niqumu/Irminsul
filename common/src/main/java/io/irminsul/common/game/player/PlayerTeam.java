@@ -4,9 +4,10 @@ import io.irminsul.common.game.Entity;
 import io.irminsul.common.game.avatar.Avatar;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
 import java.util.List;
 
-public interface PlayerTeam extends Entity {
+public interface PlayerTeam extends Entity, Serializable {
 
     /**
      * @return The name of the team

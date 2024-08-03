@@ -4,9 +4,10 @@ import io.irminsul.common.game.PlayerManager;
 import io.irminsul.common.game.avatar.Avatar;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
 import java.util.List;
 
-public interface PlayerTeamManager extends PlayerManager {
+public interface PlayerTeamManager extends PlayerManager, Serializable {
 
     /**
      * @return A list of teams this manager's player has

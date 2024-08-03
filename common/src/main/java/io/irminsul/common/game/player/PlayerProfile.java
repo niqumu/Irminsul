@@ -2,10 +2,12 @@ package io.irminsul.common.game.player;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
+
 /**
  * Representation of a player's social profile
  */
-public interface PlayerProfile {
+public interface PlayerProfile extends Serializable {
 
     /**
      * @return This player's UID

@@ -3,11 +3,16 @@ package io.irminsul.game.player;
 import io.irminsul.common.game.player.PlayerProfile;
 import lombok.Data;
 
+import java.io.Serial;
+
 /**
  * Implementation of {@link PlayerProfile}, representing a player's social profile
  */
 @Data
 public class IrminsulPlayerProfile implements PlayerProfile {
+
+    @Serial
+    private static final long serialVersionUID = 1;
 
     /**
      * This player's UID

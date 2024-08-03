@@ -2,18 +2,19 @@ package io.irminsul.game.net.handler;
 
 import io.irminsul.common.game.Session;
 import io.irminsul.common.net.PacketIds;
+import io.irminsul.common.proto.UnlockTransPointReqOuterClass;
 import io.irminsul.game.net.InboundPacket;
 import io.irminsul.game.net.PacketHandler;
-import io.irminsul.game.net.packet.PacketEnterSceneDoneRsp;
+import io.irminsul.game.net.packet.PacketUnlockTransPointRsp;
 
-public class HandlerEnterSceneDoneReq implements PacketHandler {
+public class HandlerUnlockTransPointReq implements PacketHandler {
 
     /**
      * @return The ID of the packet this handler is targeting
      */
     @Override
     public int getTargetID() {
-        return PacketIds.EnterSceneDoneReq;
+        return PacketIds.UnlockTransPointReq;
     }
 
     /**
@@ -29,15 +30,13 @@ public class HandlerEnterSceneDoneReq implements PacketHandler {
             return;
         }
 
-        if (session.getPlayer().getScene() == null) {
-            session.getServer().getLogger().warn("Tried to handle packet {} in a bad state: scene cannot be null!", this);
-            return;
-        }
+        UnlockTransPointReqOuterClass.UnlockTransPointReq request =
+            UnlockTransPointReqOuterClass.UnlockTransPointReq.parseFrom(packet.getData());
 
-        // Inform the client about entities in its scene
-        session.getPlayer().getScene().addEntitiesFor(session.getPlayer());
+        // Save the saved unlocked waypoint
+        session.getPlayer().getProgress().unlockScenePoint(request.getSceneId(), request.getPointId());
 
-        // Continue
-        new PacketEnterSceneDoneRsp(session).send();
+        // Respond to the client
+        new PacketUnlockTransPointRsp(session).send();
     }
 }

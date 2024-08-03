@@ -17,7 +17,7 @@ public class PacketManager implements ServerManager {
     /**
      * Whether incoming and outgoing packets should be logged by the server
      */
-    public static final boolean PACKET_LOGGING = false;
+    public static final boolean PACKET_LOGGING = true;
 
     /**
      * Whether warnings about incoming packets without a handler should be raised by the server
@@ -74,6 +74,7 @@ public class PacketManager implements ServerManager {
         this.registerHandler(new HandlerSceneInitFinishReq());
         this.registerHandler(new HandlerSetNameCardReq());
         this.registerHandler(new HandlerUnionCmdNotify());
+        this.registerHandler(new HandlerUnlockTransPointReq());
     }
 
     private void registerHandler(PacketHandler handler) {

@@ -51,10 +51,6 @@ public class IrminsulPlayerProgress implements PlayerProgress {
 
         // Send open states
         new PacketOpenStateUpdateNotify(this.player.getSession(), this.openStates).send();
-
-        // Send unlocked scene points
-        int scene = this.player.getSceneId();
-        new PacketScenePointUnlockNotify(this.player.getSession(), scene, this.getUnlockedScenePoints(scene));
     }
 
     /**

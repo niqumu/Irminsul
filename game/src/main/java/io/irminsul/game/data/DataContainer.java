@@ -1,7 +1,7 @@
 package io.irminsul.game.data;
 
 import io.irminsul.common.game.data.scene.SceneData;
-import io.irminsul.game.data.paser.SceneDataParser;
+import io.irminsul.game.data.parser.SceneDataParser;
 import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;

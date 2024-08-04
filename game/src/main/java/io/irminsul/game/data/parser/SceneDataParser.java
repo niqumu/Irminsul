@@ -1,4 +1,4 @@
-package io.irminsul.game.data.paser;
+package io.irminsul.game.data.parser;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;

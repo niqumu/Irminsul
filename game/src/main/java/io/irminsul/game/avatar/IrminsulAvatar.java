@@ -9,11 +9,22 @@ import io.irminsul.game.item.IrminsulWeapon;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serial;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Implementation of {@link Avatar}, representing an instance of an avatar (character)
  */
 @Data
 public class IrminsulAvatar implements Avatar {
+
+    @Serial
+    private final static long serialVersionUID = 1;
+
+    // ================================================================ //
+    //                               Core                               //
+    // ================================================================ //
 
     /**
      * The ID of the avatar type
@@ -26,9 +37,23 @@ public class IrminsulAvatar implements Avatar {
     private final long guid;
 
     /**
+     * The entity id of this entity, or 0 if none exists
+     */
+    private final int entityId;
+
+    /**
+     * The {@link Player} who owns this instance
+     */
+    private final Player owner;
+
+    /**
      * The time this avatar was created/obtained at
      */
     private final int bornTime = (int) (System.currentTimeMillis() / 1000);
+
+    // ================================================================ //
+    //                            Cosmetics                             //
+    // ================================================================ //
 
     /**
      * The glider worn by this instance
@@ -40,21 +65,31 @@ public class IrminsulAvatar implements Avatar {
      */
     private int costume;
 
+    // ================================================================ //
+    //                              Items                               //
+    // ================================================================ //
+
     /**
      * The weapon held by this instance
      */
     private Weapon weapon;
 
-    /**
-     * The {@link Player} who owns this instance
-     */
-    private final Player owner;
+    // ================================================================ //
+    //                           Attributes                             //
+    // ================================================================ //
 
     /**
-     * The entity id of this entity
+     * A map of talent levels, keyed by ID
      */
-    private final int entityId;
+    private final Map<Integer, Integer> talentLevels = new HashMap<>();
 
+    // ================================================================ //
+
+    /**
+     * Creates a new avatar with fresh/blank data
+     * @param avatarId The ID of the avatar to create an instance of
+     * @param owner The player who this avatar should belong to
+     */
     public IrminsulAvatar(int avatarId, @NotNull Player owner) {
         this.avatarId = avatarId;
         this.guid = owner.getNextGuid();
@@ -69,7 +104,7 @@ public class IrminsulAvatar implements Avatar {
      * @return This avatar instance's {@link AvatarInfoOuterClass.AvatarInfo}
      */
     @Override
-    public @NotNull AvatarInfoOuterClass.AvatarInfo getAvatarInfo() {
+    public @NotNull AvatarInfoOuterClass.AvatarInfo buildAvatarInfo() {
         return AvatarInfoOuterClass.AvatarInfo.newBuilder()
             .setAvatarId(this.avatarId)
             .setGuid(this.guid)
@@ -85,11 +120,11 @@ public class IrminsulAvatar implements Avatar {
      * @return This entity's {@link SceneEntityInfoOuterClass.SceneEntityInfo}
      */
     @Override
-    public @NotNull SceneEntityInfoOuterClass.SceneEntityInfo getSceneEntityInfo() {
+    public @NotNull SceneEntityInfoOuterClass.SceneEntityInfo buildSceneEntityInfo() {
         return SceneEntityInfoOuterClass.SceneEntityInfo.newBuilder()
             .setEntityId(this.entityId)
             .setEntityType(ProtEntityTypeOuterClass.ProtEntityType.PROT_ENTITY_TYPE_AVATAR)
-            .setAvatar(this.getSceneAvatarInfo())
+            .setAvatar(this.buildSceneAvatarInfo())
             .setEntityAuthorityInfo(
                 EntityAuthorityInfoOuterClass.EntityAuthorityInfo.newBuilder()
                     .setAbilityInfo(AbilitySyncStateInfoOuterClass.AbilitySyncStateInfo.newBuilder())
@@ -115,7 +150,7 @@ public class IrminsulAvatar implements Avatar {
      * @return This avatar instance's {@link SceneAvatarInfoOuterClass.SceneAvatarInfo}
      */
     @Override
-    public SceneAvatarInfoOuterClass.@NotNull SceneAvatarInfo getSceneAvatarInfo() {
+    public SceneAvatarInfoOuterClass.@NotNull SceneAvatarInfo buildSceneAvatarInfo() {
         return SceneAvatarInfoOuterClass.SceneAvatarInfo.newBuilder()
             .setUid(this.owner.getUid())
             .setPeerId(this.owner.getPeerId())

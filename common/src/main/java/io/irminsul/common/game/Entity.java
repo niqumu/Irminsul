@@ -16,5 +16,5 @@ public interface Entity {
     /**
      * @return This entity's {@link SceneEntityInfo}
      */
-    @NotNull SceneEntityInfo getSceneEntityInfo();
+    @NotNull SceneEntityInfo buildSceneEntityInfo();
 }

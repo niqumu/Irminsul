@@ -24,7 +24,7 @@ public class PacketAvatarDataNotify extends OutboundPacket {
                 .addAllOwnedFlycloakList(session.getPlayer().getOwnedFlyCloaks());
 
         // Add avatars
-        session.getPlayer().getAvatars().forEach(av -> avatarDataNotifyBuilder.addAvatarList(av.getAvatarInfo()));
+        session.getPlayer().getAvatars().forEach(av -> avatarDataNotifyBuilder.addAvatarList(av.buildAvatarInfo()));
 
         // Iterate over teams, building an object containing all avatars
         for (int index = 0; index < session.getPlayer().getTeamManager().getTeams().size(); index++) {

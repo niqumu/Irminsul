@@ -35,8 +35,8 @@ public class PacketSceneTeamUpdateNotify extends OutboundPacket {
                 }
 
                 if (player.getWorld().isMultiplayer()) {
-                    avatarBuilder.setAvatarInfo(avatar.getAvatarInfo());
-                    avatarBuilder.setSceneAvatarInfo(avatar.getSceneAvatarInfo());
+                    avatarBuilder.setAvatarInfo(avatar.buildAvatarInfo());
+                    avatarBuilder.setSceneAvatarInfo(avatar.buildSceneAvatarInfo());
                 }
 
                 builder.addSceneTeamAvatarList(avatarBuilder.build());

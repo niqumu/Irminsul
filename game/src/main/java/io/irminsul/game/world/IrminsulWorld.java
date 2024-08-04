@@ -109,7 +109,7 @@ public class IrminsulWorld implements World {
      * @return This entity's {@link SceneEntityInfoOuterClass.SceneEntityInfo}
      */
     @Override
-    public SceneEntityInfoOuterClass.@NotNull SceneEntityInfo getSceneEntityInfo() {
+    public SceneEntityInfoOuterClass.@NotNull SceneEntityInfo buildSceneEntityInfo() {
         return SceneEntityInfoOuterClass.SceneEntityInfo.newBuilder().build();
     }
 }

@@ -8,10 +8,17 @@ import io.irminsul.common.proto.SceneAvatarInfoOuterClass.SceneAvatarInfo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.Serializable;
+import java.util.Map;
+
 /**
  * Represents an instance of an avatar (character)
  */
-public interface Avatar extends Entity {
+public interface Avatar extends Entity, Serializable {
+
+    // ================================================================ //
+    //                               Core                               //
+    // ================================================================ //
 
     /**
      * @return The ID of the avatar type
@@ -24,9 +31,18 @@ public interface Avatar extends Entity {
     long getGuid();
 
     /**
+     * @return The {@link Player} who owns this instance
+     */
+    @NotNull Player getOwner();
+
+    /**
      * @return The time this avatar was created/obtained at
      */
     int getBornTime();
+
+    // ================================================================ //
+    //                            Cosmetics                             //
+    // ================================================================ //
 
     /**
      * @return The glider worn by this instance
@@ -38,23 +54,35 @@ public interface Avatar extends Entity {
      */
     int getCostume();
 
+    // ================================================================ //
+    //                              Items                               //
+    // ================================================================ //
+
     /**
      * @return The weapon held by this instance
      */
     @Nullable Weapon getWeapon();
 
+    // ================================================================ //
+    //                           Attributes                             //
+    // ================================================================ //
+
     /**
-     * @return The {@link Player} who owns this instance
+     * @return A map of talent levels, keyed by ID
      */
-    @NotNull Player getOwner();
+    @NotNull Map<Integer, Integer> getTalentLevels();
+
+    // ================================================================ //
+    //                             Function                             //
+    // ================================================================ //
 
     /**
      * @return This avatar instance's {@link AvatarInfo}
      */
-    @NotNull AvatarInfo getAvatarInfo();
+    @NotNull AvatarInfo buildAvatarInfo();
 
     /**
      * @return This avatar instance's {@link SceneAvatarInfo}
      */
-    @NotNull SceneAvatarInfo getSceneAvatarInfo();
+    @NotNull SceneAvatarInfo buildSceneAvatarInfo();
 }

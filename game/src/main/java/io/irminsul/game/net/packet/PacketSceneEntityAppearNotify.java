@@ -13,7 +13,7 @@ public class PacketSceneEntityAppearNotify extends OutboundPacket {
 
         SceneEntityAppearNotifyOuterClass.SceneEntityAppearNotify sceneEntityAppearNotify =
             SceneEntityAppearNotifyOuterClass.SceneEntityAppearNotify.newBuilder()
-                .addEntityList(entity.getSceneEntityInfo())
+                .addEntityList(entity.buildSceneEntityInfo())
                 .setAppearType(VisionTypeOuterClass.VisionType.VISION_TYPE_BORN)
                 .build();
 

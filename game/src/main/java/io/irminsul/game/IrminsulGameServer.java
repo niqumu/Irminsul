@@ -44,6 +44,11 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
     private final List<World> worlds = new ArrayList<>();
 
     /**
+     * Whether this server is running in sandbox mode, as opposed to realistic mode
+     */
+    private final boolean sandbox;
+
+    /**
      * A map of {@link IrminsulSession}s connected to the server
      */
     private final HashMap<Ukcp, Session> sessions = new HashMap<>();
@@ -58,9 +63,10 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
      * Create a new game server on the provided port
      * @param port The port to expose the server to
      */
-    public IrminsulGameServer(int port) {
+    public IrminsulGameServer(int port, boolean sandbox) {
         this.logger.info("Starting game server!");
         this.port = port;
+        this.sandbox = sandbox;
 
         // Init KCP server
         ChannelConfig channelConfig = new ChannelConfig();
@@ -74,7 +80,7 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
         this.init(new GameServerListener(this), channelConfig, new InetSocketAddress(this.port));
 
         // Done
-        this.logger.info("Game server started on port {}", this.port);
+        this.logger.info("Game server started on port {} in {} mode!", this.port, this.sandbox ? "sandbox" : "realism");
     }
 
     /**

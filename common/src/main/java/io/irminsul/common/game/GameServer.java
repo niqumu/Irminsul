@@ -33,6 +33,11 @@ public interface GameServer {
     @NotNull List<World> getWorlds();
 
     /**
+     * @return Whether this server is running in sandbox mode, as opposed to realistic mode
+     */
+    boolean isSandbox();
+
+    /**
      * Attempt to fetch the social profile data of the player with the provided UID
      * @param uid The UID of the player to fetch social data for
      * @return The provided player's social profile, or null, if the player doesn't exist

@@ -178,6 +178,9 @@ public class IrminsulPlayer implements Player {
 
         // Add default properties
         this.properties.putAll(PlayerProperty.DEFAULT_PROPERTIES);
+        if (this.session.getServer().isSandbox()) { // todo this part should be per login but kept separate somehow
+            this.properties.putAll(PlayerProperty.SANDBOX_PROPERTIES);
+        }
 
         // Create managers
         this.teamManager = new IrminsulPlayerTeamManager(this);

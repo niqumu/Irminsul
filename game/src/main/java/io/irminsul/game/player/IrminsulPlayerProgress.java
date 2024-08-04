@@ -9,6 +9,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serial;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +37,11 @@ public class IrminsulPlayerProgress implements PlayerProgress {
     private final Map<Integer, List<Integer>> unlockedScenePoints = new HashMap<>();
 
     /**
+     * A map of unlocked scene areas, keying scene IDs to lists of unlocked areas
+     */
+    private final Map<Integer, List<Integer>> unlockedSceneAreas = new HashMap<>();
+
+    /**
      * Creates a new player progress container with fresh/blank data
      * @param player The {@link Player} the progress belongs to
      */
@@ -44,6 +50,9 @@ public class IrminsulPlayerProgress implements PlayerProgress {
 
         // Load default open states
         OpenStateData.DEFAULT_OPEN_STATES.forEach(state -> this.openStates.put(state, true));
+        if (this.player.getSession().getServer().isSandbox()) { // todo this part should be per login but kept separate
+            OpenStateData.SANDBOX_OPEN_STATES.forEach(state -> this.openStates.put(state, true));
+        }
     }
 
     /**
@@ -64,9 +73,22 @@ public class IrminsulPlayerProgress implements PlayerProgress {
      */
     @Override
     public @NotNull List<Integer> getUnlockedScenePoints(int scene) {
+
+        // Sandbox mode
+        if (this.player.getSession().getServer().isSandbox()) {
+            ArrayList<Integer> list = new ArrayList<>();
+            for (int i = 0; i < 1000; i++) {
+                list.add(i);
+            }
+            return list;
+        }
+
+        // Return unlocked points if we have a list
         if (this.unlockedScenePoints.containsKey(scene)) {
             return this.unlockedScenePoints.get(scene);
         }
+
+        // Fallback to an empty list if we have no data
         return List.of();
     }
 
@@ -82,5 +104,43 @@ public class IrminsulPlayerProgress implements PlayerProgress {
         }
         this.unlockedScenePoints.get(scene).add(point);
         new PacketScenePointUnlockNotify(this.player.getSession(), scene, List.of(point)).send();
+    }
+
+    /**
+     * Gets a list of unlocked scene areas within a given scene
+     *
+     * @param scene The ID of the scene to fetch a list of unlocked scene areas for
+     * @return A list of unlocked scene areas with the specified scene
+     */
+    @Override
+    public @NotNull List<Integer> getUnlockedSceneAreas(int scene) {
+
+        // Sandbox mode
+        if (this.player.getSession().getServer().isSandbox()) {
+            ArrayList<Integer> list = new ArrayList<>();
+            for (int i = 0; i < 100; i++) {
+                list.add(i);
+            }
+            return list;
+        }
+
+        // Return unlocked areas if we have a list
+        if (this.unlockedSceneAreas.containsKey(scene)) {
+            return this.unlockedSceneAreas.get(scene);
+        }
+
+        // Fallback to an empty list if we have no data
+        return List.of();
+    }
+
+    /**
+     * Unlock the specified scene area
+     *
+     * @param scene The ID of the scene containing the unlocked scene area
+     * @param area  The ID of the unlocked scene area
+     */
+    @Override
+    public void unlockSceneArea(int scene, int area) {
+        // TODO
     }
 }

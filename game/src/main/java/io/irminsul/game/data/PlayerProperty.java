@@ -16,6 +16,10 @@ public enum PlayerProperty {
      */
     IS_FLYABLE(10006, 0, 1),
     /**
+     * Whether the player is allowed to teleport
+     */
+    IS_TRANSFERABLE(10009, 0, 1),
+    /**
      * Maximum stamina of the player
      */
     MAX_STAMINA(10010, 0, 24000),
@@ -111,9 +115,12 @@ public enum PlayerProperty {
         put(MAX_STAMINA.getId(), 10000);
         put(CUR_PERSIST_STAMINA.getId(), 10000);
         put(PLAYER_RESIN.getId(), 160);
+    }};
 
-        // todo: disable when adding quests
+    public static final Map<Integer, Integer> SANDBOX_PROPERTIES = new HashMap<>() {{
         put(IS_FLYABLE.getId(), 1);
         put(PLAYER_CAN_DIVE.getId(), 1);
+        put(IS_MP_MODE_AVAILABLE.getId(), 1);
+        put(IS_TRANSFERABLE.getId(), 1);
     }};
 }

@@ -108,7 +108,8 @@ public class Irminsul {
      */
     private void startGameServer() {
         if (Boolean.parseBoolean(this.config.getValue(ConfigEntry.GAME_ENABLED))) {
-            this.gameServer = new IrminsulGameServer(Integer.parseInt(this.config.getValue(ConfigEntry.GAME_PORT)));
+            this.gameServer = new IrminsulGameServer(Integer.parseInt(this.config.getValue(ConfigEntry.GAME_PORT)),
+                Boolean.parseBoolean(this.config.getValue(ConfigEntry.GAME_SANDBOX)));
         }
     }
 }

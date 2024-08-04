@@ -14,7 +14,8 @@ public enum ConfigEntry {
     HTTP_PORT("http_port", "3000"),
     HTTP_USE_SSL("http_ssl", "false"),
     GAME_ENABLED("game_enabled", "true"),
-    GAME_PORT("game_port", "22102");
+    GAME_PORT("game_port", "22102"),
+    GAME_SANDBOX("game_mode", "true");
 
     /**
      * The key used to identify this entry

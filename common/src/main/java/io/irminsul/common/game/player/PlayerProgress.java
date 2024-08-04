@@ -33,4 +33,18 @@ public interface PlayerProgress extends PlayerManager, Serializable {
      * @param point The ID of the unlocked scene point
      */
     void unlockScenePoint(int scene, int point);
+
+    /**
+     * Gets a list of unlocked scene areas within a given scene
+     * @param scene The ID of the scene to fetch a list of unlocked scene areas for
+     * @return A list of unlocked scene areas with the specified scene
+     */
+    @NotNull List<Integer> getUnlockedSceneAreas(int scene);
+
+    /**
+     * Unlock the specified scene area
+     * @param scene The ID of the scene containing the unlocked scene area
+     * @param area The ID of the unlocked scene area
+     */
+    void unlockSceneArea(int scene, int area);
 }

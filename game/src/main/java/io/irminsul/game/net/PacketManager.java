@@ -17,12 +17,12 @@ public class PacketManager implements ServerManager {
     /**
      * Whether incoming and outgoing packets should be logged by the server
      */
-    public static final boolean PACKET_LOGGING = false;
+    public static final boolean PACKET_LOGGING = true;
 
     /**
      * Whether warnings about incoming packets without a handler should be raised by the server
      */
-    public static final boolean MISSING_HANDLER_LOGGING = false;
+    public static final boolean MISSING_HANDLER_LOGGING = true;
 
     /**
      * Packets that are excluded from logging (too much spam)

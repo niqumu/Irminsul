@@ -3,7 +3,6 @@ package io.irminsul.game.net.packet;
 import io.irminsul.common.game.Session;
 import io.irminsul.common.net.PacketIds;
 import io.irminsul.common.proto.OpenStateChangeNotifyOuterClass;
-import io.irminsul.common.proto.OpenStateUpdateNotifyOuterClass;
 import io.irminsul.game.net.OutboundPacket;
 
 import java.util.HashMap;

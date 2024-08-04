@@ -5,8 +5,10 @@ import io.irminsul.common.game.data.scene.SceneData;
 import io.irminsul.common.game.player.Player;
 import io.irminsul.common.game.world.Scene;
 import io.irminsul.common.game.world.World;
+import io.irminsul.common.proto.VisionTypeOuterClass;
 import io.irminsul.game.data.DataContainer;
 import io.irminsul.game.net.packet.PacketSceneEntityAppearNotify;
+import io.irminsul.game.net.packet.PacketSceneEntityDisappearNotify;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 
@@ -77,7 +79,9 @@ public class IrminsulScene implements Scene {
     @Override
     public void removePlayer(@NotNull Player player) {
         this.players.remove(player);
-        // todo broadcast remove avatar packet
+
+        // Remove the player's avatar fom the scene
+        this.removeEntity(player.getTeamManager().getActiveAvatar());
     }
 
     /**
@@ -87,7 +91,8 @@ public class IrminsulScene implements Scene {
     @Override
     public void addEntity(@NotNull Entity entity) {
         this.entities.add(entity);
-        new PacketSceneEntityAppearNotify(null, entity).broadcast(this.players);
+        new PacketSceneEntityAppearNotify(null, entity,
+            VisionTypeOuterClass.VisionType.VISION_TYPE_BORN).broadcast(this.players);
     }
 
     /**
@@ -97,7 +102,30 @@ public class IrminsulScene implements Scene {
     @Override
     public void removeEntity(@NotNull Entity entity) {
         this.entities.remove(entity);
-        // todo broadcast remove packet
+        new PacketSceneEntityDisappearNotify(null, entity,
+            VisionTypeOuterClass.VisionType.VISION_TYPE_REMOVE).broadcast(this.players);
+    }
+
+    /**
+     * Replace an entity with a new one
+     *
+     * @param oldEntity The entity to replace
+     * @param newEntity The entity to replace oldEntity with
+     */
+    @Override
+    public void replaceEntity(@NotNull Entity oldEntity, @NotNull Entity newEntity) {
+        this.entities.add(newEntity);
+//        newEntity.setEntityId(oldEntity.getEntityId());
+        this.entities.remove(oldEntity);
+//        oldEntity.setEntityId(0);
+
+        // Remove old
+        new PacketSceneEntityDisappearNotify(null, oldEntity,
+            VisionTypeOuterClass.VisionType.VISION_TYPE_REPLACE).broadcast(this.players);
+
+        // Add new
+        new PacketSceneEntityAppearNotify(null, newEntity,
+            VisionTypeOuterClass.VisionType.VISION_TYPE_REPLACE).broadcast(this.players);
     }
 
     /**
@@ -106,6 +134,7 @@ public class IrminsulScene implements Scene {
      */
     @Override
     public void addEntitiesFor(@NotNull Player player) {
-        this.entities.forEach(entity -> new PacketSceneEntityAppearNotify(player.getSession(), entity).send());
+        this.entities.forEach(entity -> new PacketSceneEntityAppearNotify(player.getSession(), entity,
+            VisionTypeOuterClass.VisionType.VISION_TYPE_BORN).send());
     }
 }

@@ -21,7 +21,7 @@ public class IrminsulWorld implements World {
     /**
      * The entity id of this entity
      */
-    private final int entityId;
+    private int entityId;
 
     /**
      * The {@link GameServer} that this world belongs to

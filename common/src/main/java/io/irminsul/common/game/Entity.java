@@ -14,6 +14,12 @@ public interface Entity {
     int getEntityId();
 
     /**
+     * Sets the entity ID of this entity
+     * @param entityId The new entity ID to use
+     */
+    void setEntityId(int entityId);
+
+    /**
      * @return This entity's {@link SceneEntityInfo}
      */
     @NotNull SceneEntityInfo buildSceneEntityInfo();

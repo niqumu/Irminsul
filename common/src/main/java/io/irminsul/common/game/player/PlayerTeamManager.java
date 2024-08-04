@@ -33,4 +33,10 @@ public interface PlayerTeamManager extends PlayerManager, Serializable {
      * @return The player's active avatar
      */
     @NotNull Avatar getActiveAvatar();
+
+    /**
+     * Switches the player's current active avatar to the avatar with the provided GUID
+     * @param guid The GUID of the avatar to switch to
+     */
+    void switchActiveAvatar(long guid);
 }

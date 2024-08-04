@@ -31,7 +31,9 @@ public class PacketManager implements ServerManager {
         PacketIds.HJBAIOKEHPA,
         PacketIds.UnionCmdNotify,
         PacketIds.PingReq,
-        PacketIds.PingRsp
+        PacketIds.PingRsp,
+        PacketIds.PathfindingEnterSceneReq,
+        PacketIds.ToTheMoonEnterSceneReq
     );
 
     /**
@@ -53,6 +55,7 @@ public class PacketManager implements ServerManager {
     public PacketManager(GameServer server) {
         this.server = server;
 
+        this.registerHandler(new HandlerChangeAvatarReq());
         this.registerHandler(new HandlerDungeonEntryInfoReq());
         this.registerHandler(new HandlerEnterSceneDoneReq());
         this.registerHandler(new HandlerEnterSceneReadyReq());

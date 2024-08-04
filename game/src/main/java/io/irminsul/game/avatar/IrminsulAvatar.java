@@ -41,7 +41,7 @@ public class IrminsulAvatar implements Avatar {
     /**
      * The entity id of this entity, or 0 if none exists
      */
-    private final int entityId;
+    private int entityId;
 
     /**
      * The {@link Player} who owns this instance

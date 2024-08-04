@@ -62,6 +62,13 @@ public interface Scene {
     void removeEntity(@NotNull Entity entity);
 
     /**
+     * Replace an entity with a new one
+     * @param oldEntity The entity to replace
+     * @param newEntity The entity to replace oldEntity with
+     */
+    void replaceEntity(@NotNull Entity oldEntity, @NotNull Entity newEntity);
+
+    /**
      * Sends the provided player the packets needed to spawn the entities within the scene
      * @param player The player to spawn entities for
      */

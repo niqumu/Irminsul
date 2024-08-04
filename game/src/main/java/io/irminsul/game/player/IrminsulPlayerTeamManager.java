@@ -4,6 +4,7 @@ import io.irminsul.common.game.player.Player;
 import io.irminsul.common.game.avatar.Avatar;
 import io.irminsul.common.game.player.PlayerTeam;
 import io.irminsul.common.game.player.PlayerTeamManager;
+import io.irminsul.game.net.packet.PacketChangeAvatarRsp;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
@@ -45,6 +46,8 @@ public class IrminsulPlayerTeamManager implements PlayerTeamManager {
         this.player = player;
         this.teams.add(new IrminsulPlayerTeam(player));
         this.getActiveTeam().getAvatars().add(player.getAvatars().getFirst());
+        // testing TODO REMOVE
+        this.getActiveTeam().getAvatars().add(player.getAvatars().get(1));
     }
 
     /**
@@ -61,5 +64,35 @@ public class IrminsulPlayerTeamManager implements PlayerTeamManager {
     @Override
     public @NotNull Avatar getActiveAvatar() {
         return this.getActiveTeam().getAvatars().get(this.activeAvatarIndex);
+    }
+
+    /**
+     * Switches the player's current active avatar to the avatar with the provided GUID
+     * @param guid The GUID of the avatar to switch to
+     */
+    @Override
+    public void switchActiveAvatar(long guid) {
+
+        // Find the new avatar (thanks mhy for giving GUID and not index...)
+        int newIndex = -1;
+        for (int avatar = 0; avatar < this.getActiveTeam().getAvatars().size(); avatar++) {
+            if (this.getActiveTeam().getAvatars().get(avatar).getGuid() == guid) {
+                newIndex = avatar;
+                break;
+            }
+        }
+
+        // Sanity check
+        if (newIndex == -1 || newIndex == this.activeAvatarIndex || this.player.getScene() == null) {
+            return;
+        }
+
+        // Make the change
+        Avatar oldAvatar = this.getActiveAvatar();
+        this.activeAvatarIndex = newIndex;
+        this.player.getScene().replaceEntity(oldAvatar, this.getActiveAvatar());
+
+        // Respond
+        new PacketChangeAvatarRsp(this.player.getSession(), guid).send();
     }
 }

@@ -78,6 +78,7 @@ public class IrminsulHttpServer implements HttpServer {
 
         // Set up logging handlers
         this.spark.post("/crash/dataUpload", (request, response) -> "");
+        this.spark.post("/sdk/dataUpload", (request, response) -> "");
         this.spark.post("/log", new LogHandler(this));
 
         // Set up root handler

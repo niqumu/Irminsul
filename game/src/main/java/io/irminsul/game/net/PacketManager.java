@@ -73,6 +73,7 @@ public class PacketManager implements ServerManager {
         this.registerHandler(new HandlerPlayerLoginReq());
         this.registerHandler(new HandlerPostEnterSceneReq());
         this.registerHandler(new HandlerSceneInitFinishReq());
+        this.registerHandler(new HandlerSceneTransToPointReq());
         this.registerHandler(new HandlerSetNameCardReq());
         this.registerHandler(new HandlerSetPlayerBirthdayReq());
         this.registerHandler(new HandlerSetPlayerNameReq());

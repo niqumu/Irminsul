@@ -137,7 +137,7 @@ public class IrminsulAvatar implements Avatar {
             .addAnimatorParaList(AnimatorParameterValueInfoPairOuterClass.AnimatorParameterValueInfoPair.newBuilder().build())
             .setMotionInfo(
                 MotionInfoOuterClass.MotionInfo.newBuilder()
-                    .setPos(this.owner.getPosition().asVector())
+                    .setPos(this.owner.getPosition().positionAsVector())
                     .setRot(VectorOuterClass.Vector.newBuilder().build())
                     .setSpeed(VectorOuterClass.Vector.newBuilder().build())
                     .setState(MotionStateOuterClass.MotionState.MOTION_STATE_NONE)

@@ -281,6 +281,20 @@ public class IrminsulPlayer implements Player {
         new PacketPlayerEnterSceneNotify(this.session, sceneId, this.position).send();
     }
 
+    /**
+     * Sends this player to a specified position within their current scene
+     * @param position The position within the current scene to send the player to
+     */
+    @Override
+    public void teleport(@NotNull Position position) {
+        this.session.getServer().getLogger().info("Teleporting player {} to {} within scene {}",
+            this.uid, position, this.sceneId);
+
+        this.generateEnterSceneToken();
+        this.position = position;
+        new PacketPlayerEnterSceneNotify(this.session, this.sceneId, this.position).send();
+    }
+
     private void generateEnterSceneToken() {
         this.enterSceneToken = 1000 + (int) (Math.random() * 10000);
     }

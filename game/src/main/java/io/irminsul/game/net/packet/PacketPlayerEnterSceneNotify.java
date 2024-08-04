@@ -4,6 +4,7 @@ import io.irminsul.common.game.Session;
 import io.irminsul.common.game.world.Position;
 import io.irminsul.common.net.PacketIds;
 import io.irminsul.common.proto.EnterTypeOuterClass;
+import io.irminsul.common.proto.NHFPBBLCHKHOuterClass;
 import io.irminsul.common.proto.PlayerEnterSceneNotifyOuterClass;
 import io.irminsul.game.net.OutboundPacket;
 
@@ -21,7 +22,7 @@ public class PacketPlayerEnterSceneNotify extends OutboundPacket {
                 .setSceneId(scene)
                 .setSceneBeginTime(System.currentTimeMillis())
                 .setEnterSceneToken(session.getPlayer().getEnterSceneToken())
-                .setPos(position.asVector())
+                .setPos(position.positionAsVector())
                 .setType(EnterTypeOuterClass.EnterType.ENTER_TYPE_SELF)
                 .setTargetUid(session.getPlayer().getUid())
                 .setWorldLevel(session.getPlayer().getWorld().getWorldLevel())

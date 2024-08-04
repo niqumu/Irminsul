@@ -168,4 +168,10 @@ public interface Player extends Serializable {
      * @param position The position within the new scene to send the player to
      */
     void sendToScene(int sceneId, @NotNull Position position);
+
+    /**
+     * Sends this player to a specified position within their current scene
+     * @param position The position within the current scene to send the player to
+     */
+    void teleport(@NotNull Position position);
 }

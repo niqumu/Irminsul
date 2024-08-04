@@ -1,5 +1,8 @@
 package io.irminsul.game.data;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import io.irminsul.common.game.data.SceneData;
 import io.irminsul.common.game.world.Position;
 import lombok.experimental.UtilityClass;
@@ -41,26 +44,41 @@ public class DataContainer {
     }
 
     private @NotNull SceneData loadSceneData(int sceneId) {
+        logger.info("Loading scene {}", sceneId);
         SceneData sceneData = new SceneData(Position.ORIGIN());
 
-        File sceneFile = new File("data/lua/scene/" + sceneId + "/scene" + sceneId + ".lua");
-
-        if (sceneFile.exists()) {
+        // Main scene lua
+        File sceneLua = new File("data/lua/scene/" + sceneId + "/scene" + sceneId + ".lua");
+        if (sceneLua.exists()) {
             try {
-                parseSceneData(sceneData, sceneFile);
-                logger.info("Loaded scene {}", sceneId);
+                parseSceneLua(sceneData, sceneLua);
+                logger.info("Loaded scene {} main lua", sceneId);
             } catch (Exception e) {
-                logger.warn("Failed to load lua file for scene {}: {}", sceneId, e.toString());
+                logger.warn("Failed to load scene lua file for scene {}: {}", sceneId, e.toString());
             }
         } else {
             logger.warn("Missing scene lua file for for scene {}!", sceneId);
         }
 
+        // Scene points
+        File scenePoints = new File("data/lua/scene/" + sceneId + "/scene" + sceneId + "_point.json");
+        if (scenePoints.exists()) {
+            try {
+                parseScenePoints(sceneData, scenePoints);
+                logger.info("Loaded scene {} scene points", sceneId);
+            } catch (Exception e) {
+                logger.warn("Failed to load scene points file for scene {}: {}", sceneId, e.toString());
+            }
+        } else {
+            logger.warn("Missing scene points file for for scene {}!", sceneId);
+        }
+
         loadedScenes.put(sceneId, sceneData);
+        logger.info("Finished loading scene {}!", sceneId);
         return sceneData;
     }
 
-    private void parseSceneData(SceneData sceneData, File sceneFile) throws Exception {
+    private void parseSceneLua(SceneData sceneData, File sceneFile) throws Exception {
         Pattern pattern = Pattern.compile("-?\\d+\\.\\d+");
 
         for (String line : Files.readAllLines(sceneFile.toPath())) {
@@ -76,6 +94,53 @@ public class DataContainer {
                 sceneData.getSpawn().setY(numbers.get(1));
                 sceneData.getSpawn().setZ(numbers.get(2));
                 return;
+            }
+        }
+    }
+
+    private void parseScenePoints(SceneData sceneData, File scenePoints) throws Exception {
+        JsonObject object = JsonParser.parseString(Files.readString(scenePoints.toPath())).getAsJsonObject();
+        JsonObject points = object.getAsJsonObject("points");
+
+        // Iterate over scene points
+        for (Map.Entry<String, JsonElement> entry : points.entrySet()) {
+            int pointId = Integer.parseInt(entry.getKey());
+            JsonObject entryObject = entry.getValue().getAsJsonObject();
+
+            if (!entryObject.has("$type")) {
+                continue;
+            }
+
+            // If the scene point is a trans point
+            if (entryObject.get("$type").getAsString().equals("SceneTransPoint")) {
+                int areaId = entryObject.get("areaId").getAsInt();
+                int gadgetId = entryObject.get("gadgetId").getAsInt();
+                Position position = Position.ORIGIN();
+                Position transPosition = Position.ORIGIN();
+
+                // Position and rotation
+                JsonObject posObj = entryObject.getAsJsonObject("pos");
+                position.setX(posObj.get("x").getAsFloat());
+                position.setY(posObj.get("y").getAsFloat());
+                position.setZ(posObj.get("z").getAsFloat());
+                JsonObject rotObj = entryObject.getAsJsonObject("rot");
+                position.setXRot(rotObj.get("x").getAsFloat());
+                position.setYRot(rotObj.get("y").getAsFloat());
+                position.setZRot(rotObj.get("z").getAsFloat());
+
+                // Teleport position and rotation
+                JsonObject transPosObj = entryObject.getAsJsonObject("tranPos");
+                transPosition.setX(transPosObj.get("x").getAsFloat());
+                transPosition.setY(transPosObj.get("y").getAsFloat());
+                transPosition.setZ(transPosObj.get("z").getAsFloat());
+                JsonObject transRotObj = entryObject.getAsJsonObject("tranRot");
+                transPosition.setXRot(transRotObj.get("x").getAsFloat());
+                transPosition.setYRot(transRotObj.get("y").getAsFloat());
+                transPosition.setZRot(transRotObj.get("z").getAsFloat());
+
+                // Add point to scene data
+                sceneData.getTransPoints().put(pointId,
+                    new SceneData.TransPoint(areaId, gadgetId, position, transPosition));
             }
         }
     }

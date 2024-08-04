@@ -47,6 +47,12 @@ public interface World extends Entity {
     boolean isPaused();
 
     /**
+     * Sets whether this world is currently paused/frozen
+     * @param paused If the world should be paused/frozen
+     */
+    void setPaused(boolean paused);
+
+    /**
      * @return The next free entity ID
      */
     int getNextEntityId(EntityIdType type);

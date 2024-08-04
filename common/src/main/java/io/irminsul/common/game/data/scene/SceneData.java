@@ -1,4 +1,4 @@
-package io.irminsul.common.game.data;
+package io.irminsul.common.game.data.scene;
 
 import io.irminsul.common.game.world.Position;
 import lombok.Data;
@@ -20,11 +20,9 @@ public class SceneData {
      */
     private final @NotNull Map<Integer, TransPoint> transPoints = new HashMap<>();
 
-    @Data
-    public static class TransPoint {
-        private final int areaId;
-        private final int gadgetId;
-        private final Position position;
-        private final Position transPosition;
-    }
+    /**
+     * A list of dungeon (domain) entry points in this scene, keyed by scene point ID. Entries in this map are expected
+     * to also be in {@link SceneData#transPoints}, as dungeon entry points are also teleport points.
+     */
+    private final @NotNull Map<Integer, DungeonEntryPoint> dungeonEntryPoints = new HashMap<>();
 }

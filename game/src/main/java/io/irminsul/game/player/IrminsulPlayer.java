@@ -317,4 +317,9 @@ public class IrminsulPlayer implements Player {
     public long getNextGuid() {
         return ((long) this.getUid() << 32) + ++this.lastGuid;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s (%s)", this.profile.getNickname(), this.uid);
+    }
 }

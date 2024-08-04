@@ -1,7 +1,7 @@
 package io.irminsul.game.world;
 
 import io.irminsul.common.game.Entity;
-import io.irminsul.common.game.data.SceneData;
+import io.irminsul.common.game.data.scene.SceneData;
 import io.irminsul.common.game.player.Player;
 import io.irminsul.common.game.world.Scene;
 import io.irminsul.common.game.world.World;

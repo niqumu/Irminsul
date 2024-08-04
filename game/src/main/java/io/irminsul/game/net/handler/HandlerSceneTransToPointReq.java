@@ -1,7 +1,7 @@
 package io.irminsul.game.net.handler;
 
 import io.irminsul.common.game.Session;
-import io.irminsul.common.game.data.SceneData;
+import io.irminsul.common.game.data.scene.SceneData;
 import io.irminsul.common.net.PacketIds;
 import io.irminsul.common.proto.SceneTransToPointReqOuterClass;
 import io.irminsul.game.net.InboundPacket;

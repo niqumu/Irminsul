@@ -17,7 +17,7 @@ public class PacketManager implements ServerManager {
     /**
      * Whether incoming and outgoing packets should be logged by the server
      */
-    public static final boolean PACKET_LOGGING = true;
+    public static final boolean PACKET_LOGGING = false;
 
     /**
      * Whether warnings about incoming packets without a handler should be raised by the server
@@ -53,6 +53,7 @@ public class PacketManager implements ServerManager {
     public PacketManager(GameServer server) {
         this.server = server;
 
+        this.registerHandler(new HandlerDungeonEntryInfoReq());
         this.registerHandler(new HandlerEnterSceneDoneReq());
         this.registerHandler(new HandlerEnterSceneReadyReq());
         this.registerHandler(new HandlerEvtAvatarLockChairReq());
@@ -71,6 +72,7 @@ public class PacketManager implements ServerManager {
         this.registerHandler(new HandlerNpcTalkReq());
         this.registerHandler(new HandlerPingReq());
         this.registerHandler(new HandlerPlayerLoginReq());
+        this.registerHandler(new HandlerPlayerSetPauseReq());
         this.registerHandler(new HandlerPostEnterSceneReq());
         this.registerHandler(new HandlerSceneInitFinishReq());
         this.registerHandler(new HandlerSceneTransToPointReq());

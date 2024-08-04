@@ -2,12 +2,9 @@ package io.irminsul.game.player;
 
 import io.irminsul.common.game.GameConstants;
 import io.irminsul.common.game.avatar.Avatar;
-import io.irminsul.common.game.player.Player;
+import io.irminsul.common.game.player.*;
 import io.irminsul.common.game.Session;
 import io.irminsul.common.game.SessionState;
-import io.irminsul.common.game.player.PlayerProfile;
-import io.irminsul.common.game.player.PlayerProgress;
-import io.irminsul.common.game.player.PlayerTeamManager;
 import io.irminsul.common.game.world.Position;
 import io.irminsul.common.game.world.Scene;
 import io.irminsul.common.game.world.World;
@@ -147,6 +144,11 @@ public class IrminsulPlayer implements Player {
      */
     private final PlayerProgress progress;
 
+    /**
+     * This player's {@link PlayerInventory} instance
+     */
+    private final PlayerInventory inventory;
+
     // ================================================================ //
     //                             Internal                             //
     // ================================================================ //
@@ -174,20 +176,16 @@ public class IrminsulPlayer implements Player {
         // Create world
         this.createWorld();
 
-        // Add default avatar
-        this.avatars.add(new IrminsulAvatar(GameConstants.FEMALE_TRAVELER_AVATAR_ID, this));
-        // TESTING todo REMOVE
-        this.avatars.add(new IrminsulAvatar(10000052, this));
+        // Create managers
+        this.teamManager = new IrminsulPlayerTeamManager(this);
+        this.progress = new IrminsulPlayerProgress(this);
+        this.inventory = new IrminsulPlayerInventory(this);
 
         // Add default properties
         this.properties.putAll(PlayerProperty.DEFAULT_PROPERTIES);
         if (this.session.getServer().isSandbox()) { // todo this part should be per login but kept separate somehow
             this.properties.putAll(PlayerProperty.SANDBOX_PROPERTIES);
         }
-
-        // Create managers
-        this.teamManager = new IrminsulPlayerTeamManager(this);
-        this.progress = new IrminsulPlayerProgress(this);
     }
 
     /**
@@ -211,6 +209,17 @@ public class IrminsulPlayer implements Player {
         // Ensure that the player has a world to log into
         if (this.world == null) {
             throw new IllegalStateException("No world to log into!");
+        }
+
+        // If the player has no avatars, give them the traveler
+        if (this.avatars.isEmpty()) {
+
+            // Add default avatar
+            this.avatars.add(new IrminsulAvatar(GameConstants.FEMALE_TRAVELER_AVATAR_ID, this));
+            this.teamManager.getActiveTeam().getAvatars().add(this.avatars.getFirst());
+            // TESTING todo REMOVE
+            this.avatars.add(new IrminsulAvatar(10000052, this));
+            this.teamManager.getActiveTeam().getAvatars().add(this.avatars.get(1));
         }
 
         // Send player data

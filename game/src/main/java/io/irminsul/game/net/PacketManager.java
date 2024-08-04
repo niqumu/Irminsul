@@ -3,7 +3,7 @@ package io.irminsul.game.net;
 import io.irminsul.common.game.GameServer;
 import io.irminsul.common.game.Session;
 import io.irminsul.common.net.PacketIds;
-import io.irminsul.common.game.ServerManager;
+import io.irminsul.common.game.ServerSystem;
 import io.irminsul.game.net.handler.*;
 import lombok.Getter;
 import org.slf4j.Logger;
@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.List;
 
-public class PacketManager implements ServerManager {
+public class PacketManager implements ServerSystem {
 
     /**
      * Whether incoming and outgoing packets should be logged by the server

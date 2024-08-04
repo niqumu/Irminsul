@@ -6,7 +6,6 @@ import io.irminsul.common.game.player.Player;
 import io.irminsul.common.game.property.EntityIdType;
 import io.irminsul.common.game.world.Scene;
 import io.irminsul.common.game.world.World;
-import io.irminsul.common.proto.SceneEntityInfoOuterClass;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,8 +13,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 
 @Data
 public class IrminsulWorld implements World {
@@ -105,14 +102,6 @@ public class IrminsulWorld implements World {
 
     private void registerScene(Scene scene) {
         this.scenes.put(scene.getId(), scene);
-    }
-
-    /**
-     * @return This entity's {@link SceneEntityInfoOuterClass.SceneEntityInfo}
-     */
-    @Override
-    public SceneEntityInfoOuterClass.@NotNull SceneEntityInfo buildSceneEntityInfo() {
-        return SceneEntityInfoOuterClass.SceneEntityInfo.newBuilder().build();
     }
 
     /**

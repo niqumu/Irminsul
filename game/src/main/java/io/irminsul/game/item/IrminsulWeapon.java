@@ -3,9 +3,7 @@ package io.irminsul.game.item;
 import io.irminsul.common.game.item.Weapon;
 import io.irminsul.common.game.player.Player;
 import io.irminsul.common.game.property.EntityIdType;
-import io.irminsul.common.proto.AbilitySyncStateInfoOuterClass;
-import io.irminsul.common.proto.SceneEntityInfoOuterClass;
-import io.irminsul.common.proto.SceneWeaponInfoOuterClass;
+import io.irminsul.common.proto.*;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,9 +14,9 @@ import org.jetbrains.annotations.NotNull;
 public class IrminsulWeapon implements Weapon {
 
     /**
-     * The ID of the weapon type
+     * The ID of the weapon
      */
-    private final int weaponId;
+    private final int itemId;
 
     /**
      * The GUID of this instance
@@ -30,18 +28,30 @@ public class IrminsulWeapon implements Weapon {
      */
     private final int entityId;
 
-    public IrminsulWeapon(int weaponId, @NotNull Player owner) {
-        this.weaponId = weaponId;
-        this.guid = owner.getNextGuid();
-        this.entityId = owner.getWorld().getNextEntityId(EntityIdType.WEAPON);
-    }
+    /**
+     * Whether this item is locked
+     */
+    private boolean locked;
 
     /**
-     * @return This entity's {@link SceneEntityInfoOuterClass.SceneEntityInfo}
+     * The level of this weapon
      */
-    @Override
-    public SceneEntityInfoOuterClass.@NotNull SceneEntityInfo buildSceneEntityInfo() {
-        return SceneEntityInfoOuterClass.SceneEntityInfo.newBuilder().build();
+    private int level;
+
+    /**
+     * The EXP on this weapon
+     */
+    private int exp;
+
+    /**
+     * The promotion level of this weapon
+     */
+    private int promoteLevel;
+
+    public IrminsulWeapon(int weaponId, @NotNull Player owner) {
+        this.itemId = weaponId;
+        this.guid = owner.getNextGuid();
+        this.entityId = owner.getWorld().getNextEntityId(EntityIdType.WEAPON);
     }
 
     /**
@@ -51,11 +61,28 @@ public class IrminsulWeapon implements Weapon {
     public @NotNull SceneWeaponInfoOuterClass.SceneWeaponInfo getSceneWeaponInfo() {
         return SceneWeaponInfoOuterClass.SceneWeaponInfo.newBuilder()
             .setEntityId(this.entityId)
-            .setItemId(this.weaponId)
+            .setItemId(this.itemId)
             .setGuid(this.guid)
             .setLevel(0) // todo
-            .setGadgetId(this.weaponId) // todo hardcode testing
+            .setGadgetId(this.itemId) // todo hardcode testing
             .setAbilityInfo(AbilitySyncStateInfoOuterClass.AbilitySyncStateInfo.newBuilder().build())
             .build();
+    }
+
+    /**
+     * @return This item, as a protobuf Item
+     */
+    @Override
+    public @NotNull ItemOuterClass.Item asItem() {
+        WeaponOuterClass.Weapon weapon = WeaponOuterClass.Weapon.newBuilder()
+            .setLevel(this.level)
+            .setExp(this.exp)
+            .setPromoteLevel(this.promoteLevel)
+            .build();
+
+        // TODO AFFIXES/REFINEMENT
+
+        EquipOuterClass.Equip equip = EquipOuterClass.Equip.newBuilder().setWeapon(weapon).setIsLocked(this.locked).build();
+        return ItemOuterClass.Item.newBuilder().setEquip(equip).setGuid(this.guid).setItemId(this.itemId).build();
     }
 }

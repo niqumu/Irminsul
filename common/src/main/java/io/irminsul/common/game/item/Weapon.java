@@ -1,26 +1,38 @@
 package io.irminsul.common.game.item;
 
-import io.irminsul.common.game.Entity;
 import io.irminsul.common.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents an instance of a weapon
  */
-public interface Weapon extends Entity {
+public interface Weapon extends Item {
 
     /**
-     * @return The ID of the weapon type
+     * @return The level of this weapon
      */
-    int getWeaponId();
+    int getLevel();
 
     /**
-     * @return The GUID of this instance
+     * @return The EXP on this weapon
      */
-    long getGuid();
+    int getExp();
+
+    /**
+     * @return The promotion level of this weapon
+     */
+    int getPromoteLevel();
 
     /**
      * @return This weapon instance's {@link SceneWeaponInfo}
      */
     @NotNull SceneWeaponInfo getSceneWeaponInfo();
+
+    /**
+     * @return The quantity of this item
+     * @implNote Weapons cannot be stacked.
+     */
+    default int getCount() {
+        return 1;
+    }
 }

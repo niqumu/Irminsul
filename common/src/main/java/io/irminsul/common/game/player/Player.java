@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A representation of an Irminsul player
+ * A representation of a player
  */
 public interface Player extends Tickable, Serializable {
 
@@ -137,6 +137,11 @@ public interface Player extends Tickable, Serializable {
      * @return This player's game progress container
      */
     @NotNull PlayerProgress getProgress();
+
+    /**
+     * @return This player's {@link PlayerInventory} instance
+     */
+    @NotNull PlayerInventory getInventory();
 
     // ================================================================ //
     //                             Function                             //

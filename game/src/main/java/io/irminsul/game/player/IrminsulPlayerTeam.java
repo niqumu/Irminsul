@@ -42,12 +42,4 @@ public class IrminsulPlayerTeam implements PlayerTeam {
         this.owner = owner;
         this.entityId = this.owner.getWorld().getNextEntityId(EntityIdType.TEAM);
     }
-
-    /**
-     * @return This entity's {@link SceneEntityInfoOuterClass.SceneEntityInfo}
-     */
-    @Override
-    public SceneEntityInfoOuterClass.@NotNull SceneEntityInfo buildSceneEntityInfo() {
-        return SceneEntityInfoOuterClass.SceneEntityInfo.newBuilder().build();
-    }
 }

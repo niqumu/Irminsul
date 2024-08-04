@@ -14,14 +14,16 @@ public interface Entity {
     int getEntityId();
 
     /**
-     * @return This entity's {@link SceneEntityInfo}
-     */
-    @NotNull SceneEntityInfo buildSceneEntityInfo();
-
-    /**
      * @return Whether this object has an entity associated with it
      */
     default boolean hasEntity() {
         return this.getEntityId() != 0;
+    }
+
+    /**
+     * @return This entity's {@link SceneEntityInfo}
+     */
+    default @NotNull SceneEntityInfo buildSceneEntityInfo() {
+        return SceneEntityInfo.newBuilder().build();
     }
 }

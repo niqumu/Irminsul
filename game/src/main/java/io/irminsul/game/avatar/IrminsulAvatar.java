@@ -130,7 +130,10 @@ public class IrminsulAvatar implements Avatar {
         this.owner = owner;
         this.entityId = owner.getWorld().getNextEntityId(EntityIdType.AVATAR);
         this.avatarData = DataContainer.getOrLoadAvatarData(this.avatarId);
+
+        // Create a starter weapon, equip it, and give it to the owner
         this.weapon = new IrminsulWeapon(this.avatarData.getInitialWeapon(), owner);
+        this.owner.getInventory().addItem(this.weapon);
 
         this.updateStats();
         this.setHealthPercent(1); // Start at full HP
@@ -248,7 +251,7 @@ public class IrminsulAvatar implements Avatar {
             .setCostumeId(this.costume)
             .setWearingFlycloakId(this.flyCloak)
             .setWeapon(this.weapon.getSceneWeaponInfo())
-            .addEquipIdList(this.weapon.getWeaponId())
+            .addEquipIdList(this.weapon.getItemId())
             .build();
     }
 

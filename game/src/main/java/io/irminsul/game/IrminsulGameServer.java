@@ -24,6 +24,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 @Getter
 public class IrminsulGameServer extends KcpServer implements GameServer {
@@ -60,6 +64,16 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
     private final ShopManager shopManager = new ShopManager(this);
 
     /**
+     * Executor service used to run server ticks
+     */
+    private final ScheduledExecutorService tickService = Executors.newSingleThreadScheduledExecutor();
+
+    /**
+     * Thread pool used to asynchronously tick different worlds
+     */
+    private final ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newCachedThreadPool();
+
+    /**
      * Create a new game server on the provided port
      * @param port The port to expose the server to
      */
@@ -78,6 +92,10 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
         channelConfig.setUseConvChannel(true);
         channelConfig.setAckNoDelay(false);
         this.init(new GameServerListener(this), channelConfig, new InetSocketAddress(this.port));
+
+        // Start ticking worlds asynchronously, once per second
+        this.tickService.scheduleAtFixedRate(() ->
+            worlds.forEach(world -> executor.submit(world::tick)), 1, 1, TimeUnit.SECONDS);
 
         // Done
         this.logger.info("Game server started on port {} in {} mode!", this.port, this.sandbox ? "sandbox" : "realism");

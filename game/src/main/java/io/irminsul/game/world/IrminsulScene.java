@@ -114,16 +114,14 @@ public class IrminsulScene implements Scene {
      */
     @Override
     public void replaceEntity(@NotNull Entity oldEntity, @NotNull Entity newEntity) {
-        this.entities.add(newEntity);
-//        newEntity.setEntityId(oldEntity.getEntityId());
-        this.entities.remove(oldEntity);
-//        oldEntity.setEntityId(0);
 
         // Remove old
+        this.entities.remove(oldEntity);
         new PacketSceneEntityDisappearNotify(null, oldEntity,
             VisionTypeOuterClass.VisionType.VISION_TYPE_REPLACE).broadcast(this.players);
 
         // Add new
+        this.entities.add(newEntity);
         new PacketSceneEntityAppearNotify(null, newEntity,
             VisionTypeOuterClass.VisionType.VISION_TYPE_REPLACE).broadcast(this.players);
     }
@@ -136,5 +134,20 @@ public class IrminsulScene implements Scene {
     public void addEntitiesFor(@NotNull Player player) {
         this.entities.forEach(entity -> new PacketSceneEntityAppearNotify(player.getSession(), entity,
             VisionTypeOuterClass.VisionType.VISION_TYPE_BORN).send());
+    }
+
+    /**
+     * Called at a regular interval by the server; update this object in some way
+     */
+    @Override
+    public void tick() {
+
+        // Don't tick this scene if it's empty
+        if (this.players.isEmpty()) {
+            return;
+        }
+
+        // Tick players
+        this.players.forEach(Player::tick);
     }
 }

@@ -320,6 +320,16 @@ public class IrminsulPlayer implements Player {
         return ((long) this.getUid() << 32) + ++this.lastGuid;
     }
 
+    /**
+     * Called at a regular interval by the server; update this object in some way
+     */
+    @Override
+    public void tick() {
+
+        // Update avatar stats
+        this.teamManager.getActiveTeam().getAvatars().forEach(Avatar::updateStats);
+    }
+
     @Override
     public String toString() {
         return String.format("%s (%s)", this.profile.getNickname(), this.uid);

@@ -28,7 +28,7 @@ public class IrminsulWeapon implements Weapon {
     /**
      * The entity id of this entity
      */
-    private int entityId;
+    private final int entityId;
 
     public IrminsulWeapon(int weaponId, @NotNull Player owner) {
         this.weaponId = weaponId;

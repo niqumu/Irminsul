@@ -36,7 +36,7 @@ public class IrminsulPlayerTeam implements PlayerTeam {
     /**
      * The entity id of this entity
      */
-    private int entityId;
+    private final int entityId;
 
     public IrminsulPlayerTeam(Player owner) {
         this.owner = owner;

@@ -7,7 +7,9 @@ import io.irminsul.common.game.player.Player;
 import io.irminsul.common.game.property.EntityIdType;
 import io.irminsul.common.proto.*;
 import io.irminsul.game.data.DataContainer;
+import io.irminsul.game.data.FightProperty;
 import io.irminsul.game.item.IrminsulWeapon;
+import io.irminsul.game.net.packet.PacketAvatarFightPropNotify;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 
@@ -41,7 +43,7 @@ public class IrminsulAvatar implements Avatar {
     /**
      * The entity id of this entity, or 0 if none exists
      */
-    private int entityId;
+    private final int entityId;
 
     /**
      * The {@link Player} who owns this instance
@@ -90,6 +92,12 @@ public class IrminsulAvatar implements Avatar {
      */
     private final Map<Integer, Integer> talentLevels = new HashMap<>();
 
+    /**
+     * A map of fight properties, keyed by id
+     * @see io.irminsul.game.data.FightProperty
+     */
+    private final Map<Integer, Float> fightProperties = new HashMap<>();
+
     // ================================================================ //
 
     /**
@@ -104,6 +112,36 @@ public class IrminsulAvatar implements Avatar {
         this.entityId = owner.getWorld().getNextEntityId(EntityIdType.AVATAR);
         this.avatarData = DataContainer.getOrLoadAvatarData(this.avatarId);
         this.weapon = new IrminsulWeapon(this.avatarData.getInitialWeapon(), owner);
+
+        this.updateStats();
+    }
+
+    /**
+     * Recalculate and resend this avatar's stats
+     */
+    @Override
+    public void updateStats() {
+
+        // Base state
+        this.putFightProperty(FightProperty.FIGHT_PROP_MAX_HP, this.avatarData.getBaseHp());
+        this.putFightProperty(FightProperty.FIGHT_PROP_CUR_ATTACK, this.avatarData.getBaseAtk());
+        this.putFightProperty(FightProperty.FIGHT_PROP_CUR_DEFENSE, this.avatarData.getBaseDef());
+        this.putFightProperty(FightProperty.FIGHT_PROP_CRITICAL, this.avatarData.getBaseCritRate());
+        this.putFightProperty(FightProperty.FIGHT_PROP_CRITICAL_HURT, this.avatarData.getBaseCritDmg());
+
+        // Heal to full (todo: remove; testing)
+        this.putFightProperty(FightProperty.FIGHT_PROP_CUR_HP, this.getFightProperty(FightProperty.FIGHT_PROP_MAX_HP));
+
+        // Send the new stats to the player
+        new PacketAvatarFightPropNotify(this.owner.getSession(), this).send();
+    }
+
+    private void putFightProperty(FightProperty property, float value) {
+        this.fightProperties.put(property.getId(), value);
+    }
+
+    private float getFightProperty(FightProperty property) {
+        return this.fightProperties.get(property.getId());
     }
 
     /**

@@ -2,6 +2,7 @@ package io.irminsul.common.game.world;
 
 import io.irminsul.common.game.Entity;
 import io.irminsul.common.game.GameServer;
+import io.irminsul.common.game.Tickable;
 import io.irminsul.common.game.player.Player;
 import io.irminsul.common.game.property.EntityIdType;
 import org.jetbrains.annotations.NotNull;
@@ -9,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Map;
 
-public interface World extends Entity {
+public interface World extends Entity, Tickable {
 
     /**
      * @return The {@link GameServer} that this world belongs to

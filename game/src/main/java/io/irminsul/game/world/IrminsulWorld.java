@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 @Data
 public class IrminsulWorld implements World {
@@ -21,7 +23,7 @@ public class IrminsulWorld implements World {
     /**
      * The entity id of this entity
      */
-    private int entityId;
+    private final int entityId;
 
     /**
      * The {@link GameServer} that this world belongs to
@@ -111,5 +113,13 @@ public class IrminsulWorld implements World {
     @Override
     public SceneEntityInfoOuterClass.@NotNull SceneEntityInfo buildSceneEntityInfo() {
         return SceneEntityInfoOuterClass.SceneEntityInfo.newBuilder().build();
+    }
+
+    /**
+     * Called at a regular interval by the server; update this object in some way
+     */
+    @Override
+    public void tick() {
+        this.scenes.values().forEach(Scene::tick);
     }
 }

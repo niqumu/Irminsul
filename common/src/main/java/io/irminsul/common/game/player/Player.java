@@ -1,6 +1,7 @@
 package io.irminsul.common.game.player;
 
 import io.irminsul.common.game.Session;
+import io.irminsul.common.game.Tickable;
 import io.irminsul.common.game.avatar.Avatar;
 import io.irminsul.common.game.world.Position;
 import io.irminsul.common.game.world.Scene;
@@ -15,7 +16,7 @@ import java.util.Map;
 /**
  * A representation of an Irminsul player
  */
-public interface Player extends Serializable {
+public interface Player extends Tickable, Serializable {
 
     // ================================================================ //
     //                               Core                               //

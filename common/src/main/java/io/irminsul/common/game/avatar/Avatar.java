@@ -78,9 +78,19 @@ public interface Avatar extends Entity, Serializable {
      */
     @NotNull Map<Integer, Integer> getTalentLevels();
 
+    /**
+     * @return A map of fight properties, keyed by id
+     */
+    @NotNull Map<Integer, Float> getFightProperties();
+
     // ================================================================ //
     //                             Function                             //
     // ================================================================ //
+
+    /**
+     * Recalculate and resend this avatar's stats
+     */
+    void updateStats();
 
     /**
      * @return This avatar instance's {@link AvatarInfo}

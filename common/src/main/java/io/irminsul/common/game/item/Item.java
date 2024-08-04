@@ -1,6 +1,7 @@
 package io.irminsul.common.game.item;
 
 import io.irminsul.common.game.Entity;
+import io.irminsul.common.proto.ItemHintOuterClass;
 import io.irminsul.common.proto.ItemOuterClass;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,4 +34,15 @@ public interface Item extends Entity {
      * @return This item, as a protobuf Item
      */
     @NotNull ItemOuterClass.Item asItem();
+
+    /**
+     * @return A protobuf ItemHint of this item
+     */
+    default @NotNull ItemHintOuterClass.ItemHint asItemHint() {
+        return ItemHintOuterClass.ItemHint.newBuilder()
+            .setCount(this.getCount())
+            .setItemId(this.getItemId())
+            .setGuid(this.getGuid())
+            .build();
+    }
 }

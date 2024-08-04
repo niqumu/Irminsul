@@ -1,7 +1,10 @@
 package io.irminsul.game.player;
 
+import io.irminsul.common.game.GameConstants;
+import io.irminsul.common.game.data.scene.TransPoint;
 import io.irminsul.common.game.player.Player;
 import io.irminsul.common.game.player.PlayerProgress;
+import io.irminsul.game.data.ActionReason;
 import io.irminsul.game.data.OpenStateData;
 import io.irminsul.game.net.packet.PacketOpenStateUpdateNotify;
 import io.irminsul.game.net.packet.PacketScenePointUnlockNotify;
@@ -103,6 +106,14 @@ public class IrminsulPlayerProgress implements PlayerProgress {
         if (!this.unlockedScenePoints.containsKey(scene)) {
             this.unlockedScenePoints.put(scene, new ArrayList<>());
         }
+
+        // Reward the player
+        TransPoint transPoint = player.getWorld().getOrCreateScene(scene).getSceneData().getTransPoints().get(point);
+        boolean extraEXP = transPoint.getType().equals(TransPoint.TransPointType.STATUE); // statues give more ar exp
+        this.player.getInventory().addItem(GameConstants.ITEM_AR_EXP, extraEXP ? 50 : 10, ActionReason.UnlockPointReward);
+        this.player.getInventory().addItem(GameConstants.ITEM_PRIMOGEM, 5, ActionReason.UnlockPointReward);
+
+        // Unlock the point
         this.unlockedScenePoints.get(scene).add(point);
         new PacketScenePointUnlockNotify(this.player.getSession(), scene, List.of(point)).send();
     }

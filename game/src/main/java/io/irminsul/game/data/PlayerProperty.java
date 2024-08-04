@@ -46,7 +46,7 @@ public enum PlayerProperty {
      */
     PLAYER_LEVEL(10013, 1, 60),
     /**
-     * Adventure EXP
+     * Adventure EXP within the current rank
      */
     PLAYER_EXP(10014, 0, Integer.MAX_VALUE),
     /**

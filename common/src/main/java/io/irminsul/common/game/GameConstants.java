@@ -39,4 +39,13 @@ public class GameConstants {
     };
 
     public final int DEFAULT_ABILITY_HASH = MiscUtil.abilityHash("Default");
+
+    public final int ITEM_CHAR_EXP = 101;
+    public final int ITEM_AR_EXP = 102;
+    public final int ITEM_COMPANION_EXP = 105;
+    public final int ITEM_RESIN = 106;
+    public final int ITEM_PRIMOGEM = 201;
+    public final int ITEM_MORA = 202;
+    public final int ITEM_GEN_CRYSTAL = 203;
+    public final int ITEM_HOME_COIN = 204;
 }

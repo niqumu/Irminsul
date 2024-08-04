@@ -9,6 +9,7 @@ import io.irminsul.common.game.property.EntityIdType;
 import io.irminsul.common.proto.*;
 import io.irminsul.common.proto.AbilityControlBlockOuterClass.AbilityControlBlock;
 import io.irminsul.common.util.MiscUtil;
+import io.irminsul.game.data.ActionReason;
 import io.irminsul.game.data.DataContainer;
 import io.irminsul.game.data.FightProperty;
 import io.irminsul.game.data.PlayerProperty;
@@ -133,7 +134,7 @@ public class IrminsulAvatar implements Avatar {
 
         // Create a starter weapon, equip it, and give it to the owner
         this.weapon = new IrminsulWeapon(this.avatarData.getInitialWeapon(), owner);
-        this.owner.getInventory().addItem(this.weapon);
+        this.owner.getInventory().addItem(this.weapon, ActionReason.AddAvatar);
 
         this.updateStats();
         this.setHealthPercent(1); // Start at full HP

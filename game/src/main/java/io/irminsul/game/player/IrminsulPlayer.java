@@ -331,6 +331,97 @@ public class IrminsulPlayer implements Player {
     }
 
     /**
+     * Award this player a certain amount of AR exp
+     * @param exp The amount of EXP to award
+     */
+    @Override
+    public void awardExp(int exp) {
+        this.properties.put(PlayerProperty.PLAYER_EXP.getId(),
+            this.properties.getOrDefault(PlayerProperty.PLAYER_EXP.getId(), 0) + exp);
+        new PacketPlayerDataNotify(this.session).send();
+    }
+
+    /**
+     * @return The amount of primogems (H coins) held by this player
+     */
+    @Override
+    public int getPrimogems() {
+        return this.properties.getOrDefault(PlayerProperty.PLAYER_HCOIN.getId(), 0);
+    }
+
+    /**
+     * Sets the amount of primogems (H coins) held by this player
+     *
+     * @param primogems The new amount of primogems
+     */
+    @Override
+    public void setPrimogems(int primogems) {
+        this.properties.put(PlayerProperty.PLAYER_HCOIN.getId(), primogems);
+        new PacketPlayerDataNotify(this.session).send();
+    }
+
+    /**
+     * @return The amount of genesis crystals (M coins) held by this player
+     */
+    @Override
+    public int getCrystals() {
+        return this.properties.getOrDefault(PlayerProperty.PLAYER_MCOIN.getId(), 0);
+    }
+
+    /**
+     * Sets the amount of genesis crystals (M coins) held by this player
+     *
+     * @param genesisCrystals The new amount of genesis crystals
+     */
+    @Override
+    public void setCrystals(int genesisCrystals) {
+        this.properties.put(PlayerProperty.PLAYER_MCOIN.getId(), genesisCrystals);
+        new PacketPlayerDataNotify(this.session).send();
+    }
+
+    /**
+     * @return The amount of mora (S coins) held by this player
+     */
+    @Override
+    public int getMora() {
+        return this.properties.getOrDefault(PlayerProperty.PLAYER_SCOIN.getId(), 0);
+    }
+
+    /**
+     * Sets the amount of mora (S coins) held by this player
+     *
+     * @param mora The new amount of genesis mora
+     */
+    @Override
+    public void setMora(int mora) {
+        this.properties.put(PlayerProperty.PLAYER_SCOIN.getId(), mora);
+        new PacketPlayerDataNotify(this.session).send();
+    }
+
+    /**
+     * @return The amount of home coins held by this player
+     */
+    @Override
+    public int getHomeCoins() {
+        return this.properties.getOrDefault(PlayerProperty.PLAYER_HOME_COIN.getId(), 0);
+    }
+
+    /**
+     * Sets the amount of home coins held by this player
+     *
+     * @param homeCoins The new amount of home coins
+     */
+    @Override
+    public void setHomeCoins(int homeCoins) {
+        this.properties.put(PlayerProperty.PLAYER_HOME_COIN.getId(), homeCoins);
+        new PacketPlayerDataNotify(this.session).send();
+    }
+
+    // ================================================================ //
+    //                             Tickable                             //
+    // ================================================================ //
+
+    /**
      * Called at a regular interval by the server; update this object in some way
      */
     @Override
@@ -338,6 +429,18 @@ public class IrminsulPlayer implements Player {
 
         // Update avatar stats
         this.teamManager.getActiveTeam().getAvatars().forEach(Avatar::updateStats);
+    }
+
+    // ================================================================ //
+    //                               Base                               //
+    // ================================================================ //
+
+    @Override
+    public boolean equals(Object object) {
+        if (!(object instanceof Player player)) {
+            return false;
+        }
+        return player.getUid() == this.getUid();
     }
 
     @Override

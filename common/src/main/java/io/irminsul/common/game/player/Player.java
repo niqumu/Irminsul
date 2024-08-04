@@ -180,4 +180,54 @@ public interface Player extends Tickable, Serializable {
      * @param position The position within the current scene to send the player to
      */
     void teleport(@NotNull Position position);
+
+    /**
+     * Award this player a certain amount of AR exp
+     * @param exp The amount of EXP to award
+     */
+    void awardExp(int exp);
+
+    /**
+     * @return The amount of primogems (H coins) held by this player
+     */
+    int getPrimogems();
+
+    /**
+     * Sets the amount of primogems (H coins) held by this player
+     * @param primogems The new amount of primogems
+     */
+    void setPrimogems(int primogems);
+
+    /**
+     * @return The amount of genesis crystals (M coins) held by this player
+     */
+    int getCrystals();
+
+    /**
+     * Sets the amount of genesis crystals (M coins) held by this player
+     * @param genesisCrystals The new amount of genesis crystals
+     */
+    void setCrystals(int genesisCrystals);
+
+    /**
+     * @return The amount of mora (S coins) held by this player
+     */
+    int getMora();
+
+    /**
+     * Sets the amount of mora (S coins) held by this player
+     * @param mora The new amount of genesis mora
+     */
+    void setMora(int mora);
+
+    /**
+     * @return The amount of home coins held by this player
+     */
+    int getHomeCoins();
+
+    /**
+     * Sets the amount of home coins held by this player
+     * @param homeCoins The new amount of home coins
+     */
+    void setHomeCoins(int homeCoins);
 }

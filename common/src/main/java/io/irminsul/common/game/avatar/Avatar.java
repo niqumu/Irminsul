@@ -4,10 +4,10 @@ import io.irminsul.common.game.Entity;
 import io.irminsul.common.game.data.avatar.AvatarData;
 import io.irminsul.common.game.item.Weapon;
 import io.irminsul.common.game.player.Player;
+import io.irminsul.common.proto.AbilityControlBlockOuterClass.AbilityControlBlock;
 import io.irminsul.common.proto.AvatarInfoOuterClass.AvatarInfo;
 import io.irminsul.common.proto.SceneAvatarInfoOuterClass.SceneAvatarInfo;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -74,14 +74,19 @@ public interface Avatar extends Entity, Serializable {
     // ================================================================ //
 
     /**
-     * @return The level of the avatar
+     * @return The level of this avatar
      */
     int getLevel();
 
     /**
-     * @return The total EXP of the avatar
+     * @return The total EXP of this avatar
      */
     int getExp();
+
+    /**
+     * @return The ascension level of this avatar
+     */
+    int getBreakLevel();
 
     /**
      * @return A map of talent levels, keyed by ID
@@ -117,4 +122,9 @@ public interface Avatar extends Entity, Serializable {
      * @return This avatar instance's {@link SceneAvatarInfo}
      */
     @NotNull SceneAvatarInfo buildSceneAvatarInfo();
+
+    /**
+     * @return An {@link AbilityControlBlock} built from this avatar's abilities from all sources
+     */
+    @NotNull AbilityControlBlock buildAbilityControlBlock();
 }

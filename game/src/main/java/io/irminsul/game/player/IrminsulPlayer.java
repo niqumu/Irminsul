@@ -70,6 +70,7 @@ public class IrminsulPlayer implements Player {
 
     /**
      * A map of properties that this player has
+     * @see PlayerProperty
      */
     private final Map<Integer, Integer> properties = new HashMap<>();
 

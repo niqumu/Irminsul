@@ -2,6 +2,8 @@ package io.irminsul.game.net.packet;
 
 import io.irminsul.common.game.Session;
 import io.irminsul.common.net.PacketIds;
+import io.irminsul.common.proto.AbilitySyncStateInfoOuterClass;
+import io.irminsul.common.proto.SceneEntityInfoOuterClass;
 import io.irminsul.common.proto.SceneTeamAvatarOuterClass;
 import io.irminsul.common.proto.SceneTeamUpdateNotifyOuterClass;
 import io.irminsul.game.net.OutboundPacket;
@@ -19,28 +21,30 @@ public class PacketSceneTeamUpdateNotify extends OutboundPacket {
             SceneTeamUpdateNotifyOuterClass.SceneTeamUpdateNotify.newBuilder();
         builder.setIsInMp(session.getPlayer().getWorld().isMultiplayer());
 
+        // Iterate over players in the world
         session.getPlayer().getWorld().getPlayers().forEach(player -> {
+
+            // Iterate over avatars on their active team
             player.getTeamManager().getActiveTeam().getAvatars().forEach(avatar -> {
-                SceneTeamAvatarOuterClass.SceneTeamAvatar.Builder avatarBuilder =
+                SceneTeamAvatarOuterClass.SceneTeamAvatar sceneTeamAvatar =
                     SceneTeamAvatarOuterClass.SceneTeamAvatar.newBuilder()
                         .setPlayerUid(player.getUid())
                         .setSceneId(player.getSceneId())
-//                        .setSceneEntityInfo() // TODO
+                        .setSceneEntityInfo(avatar.buildSceneEntityInfo())
                         .setAvatarGuid(avatar.getGuid())
-                        .setEntityId(avatar.getEntityId());
+                        .setAvatarAbilityInfo(AbilitySyncStateInfoOuterClass.AbilitySyncStateInfo.newBuilder().build())
+                        .setEntityId(avatar.getEntityId())
+                        .setWeaponEntityId(avatar.getWeapon().getEntityId())
+                        .setWeaponGuid(avatar.getWeapon().getGuid())
+                        .setWeaponAbilityInfo(AbilitySyncStateInfoOuterClass.AbilitySyncStateInfo.newBuilder().build())
+                        .setAvatarInfo(avatar.buildAvatarInfo())
+                        .setSceneAvatarInfo(avatar.buildSceneAvatarInfo())
+                        .setAbilityControlBlock(avatar.buildAbilityControlBlock())
+                        .build();
 
-                if (avatar.getWeapon() != null) {
-                    avatarBuilder.setWeaponEntityId(avatar.getWeapon().getEntityId());
-                    avatarBuilder.setWeaponGuid(avatar.getWeapon().getGuid());
-                }
-
-                if (player.getWorld().isMultiplayer()) {
-                    avatarBuilder.setAvatarInfo(avatar.buildAvatarInfo());
-                    avatarBuilder.setSceneAvatarInfo(avatar.buildSceneAvatarInfo());
-                }
-
-                builder.addSceneTeamAvatarList(avatarBuilder.build());
+                builder.addSceneTeamAvatarList(sceneTeamAvatar);
             });
+
         });
 
         this.setData(builder.build().toByteArray());

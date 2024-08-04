@@ -3,16 +3,17 @@ package io.irminsul.game.data;
 import io.irminsul.common.game.data.avatar.AvatarData;
 import io.irminsul.common.game.data.avatar.AvatarSkillDepotData;
 import io.irminsul.common.game.data.scene.SceneData;
+import io.irminsul.game.data.parser.AvatarAbilityParser;
 import io.irminsul.game.data.parser.AvatarDataParser;
 import io.irminsul.game.data.parser.AvatarSkillDepotDataParser;
 import io.irminsul.game.data.parser.SceneDataParser;
 import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -37,6 +38,11 @@ public class DataContainer {
      * A map of loaded skill depots and their {@link AvatarSkillDepotData}, keyed by skill depot ID
      */
     private final Map<Integer, AvatarSkillDepotData> loadedSkillDepots = new HashMap<>();
+
+    /**
+     * A map of loaded avatar abilities, keyed by avatar name
+     */
+    private final Map<String, List<String>> loadedAbilities = new HashMap<>();
 
     /**
      * Gets a scene's {@link SceneData} by scene ID, attempting to load the scene data if not already loaded
@@ -103,5 +109,28 @@ public class DataContainer {
 
         logger.info("Finished loading skill depot {}!", avatarId);
         return skillDepotData;
+    }
+
+    /**
+     * Gets an avatar's abilities (list of ability names) by avatar name, attempting to load the ability names if not
+     * already loaded
+     * @param avatarName The name of the avatar to load the abilities of
+     * @return The avatar's abilities, as a list of names
+     */
+    public @NotNull List<String> getOrLoadAbilities(String avatarName) {
+        if (loadedAbilities.containsKey(avatarName)) {
+            return loadedAbilities.get(avatarName);
+        }
+        return loadAbilities(avatarName);
+    }
+
+    private @NotNull List<String> loadAbilities(String avatarName) {
+        logger.info("Loading {}'s abilities", avatarName);
+
+        List<String> abilities = AvatarAbilityParser.parseAvatarAbilities(avatarName);
+        loadedAbilities.put(avatarName, abilities);
+
+        logger.info("Finished loading {}'s abilities!", avatarName);
+        return abilities;
     }
 }

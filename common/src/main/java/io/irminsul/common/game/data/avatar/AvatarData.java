@@ -9,6 +9,8 @@ import java.util.List;
 @AllArgsConstructor
 public class AvatarData {
 
+    private final String name;
+
     private final int initialWeapon;
 
     private final AvatarSkillDepotData skillDepotData;
@@ -25,7 +27,9 @@ public class AvatarData {
 
     private final float baseCritDmg;
 
+    private final List<String> abilities;
+
     public AvatarData() {
-        this(0, new AvatarSkillDepotData(), List.of(), 0, 0, 0, 0, 0);
+        this("Unknown", 0, new AvatarSkillDepotData(), List.of(), 0, 0, 0, 0, 0, List.of());
     }
 }

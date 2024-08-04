@@ -51,7 +51,10 @@ public class AvatarDataParser {
            return new AvatarData(); // fallback
         }
 
+        String name = avatarData.get("iconName").getAsString().substring("UI_AvatarIcon_".length());
+
         return new AvatarData(
+            name,
             avatarData.get("initialWeapon").getAsInt(),
             DataContainer.getOrLoadSkillDepotData(avatarData.get("skillDepotId").getAsInt()),
             List.of(gson.fromJson(avatarData.get("candSkillDepotIds"), Integer[].class)),
@@ -59,7 +62,8 @@ public class AvatarDataParser {
             avatarData.get("attackBase").getAsFloat(),
             avatarData.get("defenseBase").getAsFloat(),
             avatarData.get("critical").getAsFloat(),
-            avatarData.get("criticalHurt").getAsFloat()
+            avatarData.get("criticalHurt").getAsFloat(),
+            DataContainer.getOrLoadAbilities(name)
         );
     }
 }

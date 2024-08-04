@@ -1,11 +1,14 @@
 package io.irminsul.game.avatar;
 
+import io.irminsul.common.game.GameConstants;
 import io.irminsul.common.game.avatar.Avatar;
 import io.irminsul.common.game.data.avatar.AvatarData;
 import io.irminsul.common.game.item.Weapon;
 import io.irminsul.common.game.player.Player;
 import io.irminsul.common.game.property.EntityIdType;
 import io.irminsul.common.proto.*;
+import io.irminsul.common.proto.AbilityControlBlockOuterClass.AbilityControlBlock;
+import io.irminsul.common.util.MiscUtil;
 import io.irminsul.game.data.DataContainer;
 import io.irminsul.game.data.FightProperty;
 import io.irminsul.game.data.PlayerProperty;
@@ -73,7 +76,7 @@ public class IrminsulAvatar implements Avatar {
     /**
      * The costume worn by this instance
      */
-    private int costume;
+    private int costume = 0;
 
     // ================================================================ //
     //                              Items                               //
@@ -89,14 +92,19 @@ public class IrminsulAvatar implements Avatar {
     // ================================================================ //
 
     /**
-     * The level of the avatar
+     * The level of this avatar
      */
     private int level = 1;
 
     /**
-     * The total EXP of the avatar
+     * The total EXP of this avatar
      */
     private int exp = 0;
+
+    /**
+     * The ascension level of this avatar
+     */
+    private int breakLevel = 0;
 
     /**
      * A map of talent levels, keyed by ID
@@ -191,6 +199,7 @@ public class IrminsulAvatar implements Avatar {
             .addEquipGuidList(this.weapon.getGuid())
             .putPropMap(PlayerProperty.LEVEL.getId(), PlayerProperty.LEVEL.toPropValue(this.level))
             .putPropMap(PlayerProperty.EXP.getId(), PlayerProperty.EXP.toPropValue(this.exp))
+            .putPropMap(PlayerProperty.BREAK_LEVEL.getId(), PlayerProperty.BREAK_LEVEL.toPropValue(this.breakLevel))
             .build();
     }
 
@@ -228,7 +237,7 @@ public class IrminsulAvatar implements Avatar {
      * @return This avatar instance's {@link SceneAvatarInfoOuterClass.SceneAvatarInfo}
      */
     @Override
-    public SceneAvatarInfoOuterClass.@NotNull SceneAvatarInfo buildSceneAvatarInfo() {
+    public @NotNull SceneAvatarInfoOuterClass.SceneAvatarInfo buildSceneAvatarInfo() {
         return SceneAvatarInfoOuterClass.SceneAvatarInfo.newBuilder()
             .setUid(this.owner.getUid())
             .setPeerId(this.owner.getPeerId())
@@ -241,5 +250,36 @@ public class IrminsulAvatar implements Avatar {
             .setWeapon(this.weapon.getSceneWeaponInfo())
             .addEquipIdList(this.weapon.getWeaponId())
             .build();
+    }
+
+    /**
+     * @return An {@link AbilityControlBlock} built from this avatar's abilities from all sources
+     */
+    @Override
+    public @NotNull AbilityControlBlock buildAbilityControlBlock() {
+        AbilityControlBlock.Builder builder = AbilityControlBlock.newBuilder();
+        int embryo = 0;
+
+        // Avatar abilities TODO disabled until i figure out why the client rejects these hashes
+//        for (String ability : this.avatarData.getAbilities()) {
+//            builder.addAbilityEmbryoList(
+//                AbilityEmbryoOuterClass.AbilityEmbryo.newBuilder()
+//                    .setAbilityId(++embryo)
+//                    .setAbilityNameHash(MiscUtil.abilityHash(ability))
+//                    .setAbilityOverrideNameHash(GameConstants.DEFAULT_ABILITY_HASH)
+//                    .build());
+//        }
+
+        // Default abilities
+        for (String ability : GameConstants.DEFAULT_ABILITIES) {
+            builder.addAbilityEmbryoList(
+                AbilityEmbryoOuterClass.AbilityEmbryo.newBuilder()
+                    .setAbilityId(++embryo)
+                    .setAbilityNameHash(MiscUtil.abilityHash(ability))
+                    .setAbilityOverrideNameHash(GameConstants.DEFAULT_ABILITY_HASH)
+                    .build());
+        }
+
+        return builder.build();
     }
 }

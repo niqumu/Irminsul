@@ -18,6 +18,10 @@ public enum PlayerProperty {
      */
     EXP(1001, 0, Integer.MAX_VALUE),
     /**
+     * Avatar ascension level
+     */
+    BREAK_LEVEL(1002, 0, Integer.MAX_VALUE),
+    /**
      * Avatar level
      */
     LEVEL(4001, 0, 90),

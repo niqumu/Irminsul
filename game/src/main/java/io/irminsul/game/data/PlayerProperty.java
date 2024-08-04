@@ -1,7 +1,9 @@
 package io.irminsul.game.data;
 
+import io.irminsul.common.proto.PropValueOuterClass;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -11,6 +13,14 @@ import java.util.Map;
 @RequiredArgsConstructor
 public enum PlayerProperty {
     NONE(0, Integer.MIN_VALUE, Integer.MAX_VALUE),
+    /**
+     * Avatar EXP
+     */
+    EXP(1001, 0, Integer.MAX_VALUE),
+    /**
+     * Avatar level
+     */
+    LEVEL(4001, 0, 90),
     /**
      * Whether the player can fly (glide). Flying is disabled for new players until the Amber quest
      */
@@ -94,6 +104,10 @@ public enum PlayerProperty {
 
     PlayerProperty(int id, int min, int max) {
         this(id, min, max, false);
+    }
+
+    public @NotNull PropValueOuterClass.PropValue toPropValue(int value) {
+        return PropValueOuterClass.PropValue.newBuilder().setType(this.id).setVal(value).setIval(value).build();
     }
 
     /**

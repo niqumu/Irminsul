@@ -74,6 +74,16 @@ public interface Avatar extends Entity, Serializable {
     // ================================================================ //
 
     /**
+     * @return The level of the avatar
+     */
+    int getLevel();
+
+    /**
+     * @return The total EXP of the avatar
+     */
+    int getExp();
+
+    /**
      * @return A map of talent levels, keyed by ID
      */
     @NotNull Map<Integer, Integer> getTalentLevels();
@@ -91,6 +101,12 @@ public interface Avatar extends Entity, Serializable {
      * Recalculate and resend this avatar's stats
      */
     void updateStats();
+
+    /**
+     * Sets this avatar's health, represented as a percent of their max health
+     * @param percent The new health value, as a percent of max health, for this avatar
+     */
+    void setHealthPercent(float percent);
 
     /**
      * @return This avatar instance's {@link AvatarInfo}

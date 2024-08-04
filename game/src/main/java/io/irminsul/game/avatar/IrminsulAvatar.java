@@ -8,6 +8,7 @@ import io.irminsul.common.game.property.EntityIdType;
 import io.irminsul.common.proto.*;
 import io.irminsul.game.data.DataContainer;
 import io.irminsul.game.data.FightProperty;
+import io.irminsul.game.data.PlayerProperty;
 import io.irminsul.game.item.IrminsulWeapon;
 import io.irminsul.game.net.packet.PacketAvatarFightPropNotify;
 import lombok.Data;
@@ -88,6 +89,16 @@ public class IrminsulAvatar implements Avatar {
     // ================================================================ //
 
     /**
+     * The level of the avatar
+     */
+    private int level = 1;
+
+    /**
+     * The total EXP of the avatar
+     */
+    private int exp = 0;
+
+    /**
      * A map of talent levels, keyed by ID
      */
     private final Map<Integer, Integer> talentLevels = new HashMap<>();
@@ -114,6 +125,7 @@ public class IrminsulAvatar implements Avatar {
         this.weapon = new IrminsulWeapon(this.avatarData.getInitialWeapon(), owner);
 
         this.updateStats();
+        this.setHealthPercent(1); // Start at full HP
     }
 
     /**
@@ -122,18 +134,37 @@ public class IrminsulAvatar implements Avatar {
     @Override
     public void updateStats() {
 
-        // Base state
+        // Health percent before updating stats
+        final float oldHealthPercent = this.getFightProperty(FightProperty.FIGHT_PROP_CUR_HP) /
+            this.getFightProperty(FightProperty.FIGHT_PROP_MAX_HP);
+
+        // Base stats
+        this.putFightProperty(FightProperty.FIGHT_PROP_BASE_HP, this.avatarData.getBaseHp());
+        this.putFightProperty(FightProperty.FIGHT_PROP_BASE_ATTACK, this.avatarData.getBaseAtk());
+        this.putFightProperty(FightProperty.FIGHT_PROP_BASE_DEFENSE, this.avatarData.getBaseDef());
+
+        // Start fresh from base stats
         this.putFightProperty(FightProperty.FIGHT_PROP_MAX_HP, this.avatarData.getBaseHp());
         this.putFightProperty(FightProperty.FIGHT_PROP_CUR_ATTACK, this.avatarData.getBaseAtk());
         this.putFightProperty(FightProperty.FIGHT_PROP_CUR_DEFENSE, this.avatarData.getBaseDef());
         this.putFightProperty(FightProperty.FIGHT_PROP_CRITICAL, this.avatarData.getBaseCritRate());
         this.putFightProperty(FightProperty.FIGHT_PROP_CRITICAL_HURT, this.avatarData.getBaseCritDmg());
 
-        // Heal to full (todo: remove; testing)
-        this.putFightProperty(FightProperty.FIGHT_PROP_CUR_HP, this.getFightProperty(FightProperty.FIGHT_PROP_MAX_HP));
+        // Set the health to the same percent as before the stat update
+        this.putFightProperty(FightProperty.FIGHT_PROP_CUR_HP,
+            oldHealthPercent * this.getFightProperty(FightProperty.FIGHT_PROP_MAX_HP));
 
         // Send the new stats to the player
         new PacketAvatarFightPropNotify(this.owner.getSession(), this).send();
+    }
+
+    /**
+     * Sets this avatar's health, represented as a percent of their max health
+     * @param percent The new health value, as a percent of max health, for this avatar
+     */
+    @Override
+    public void setHealthPercent(float percent) {
+        this.putFightProperty(FightProperty.FIGHT_PROP_CUR_HP, this.getFightProperty(FightProperty.FIGHT_PROP_MAX_HP));
     }
 
     private void putFightProperty(FightProperty property, float value) {
@@ -141,7 +172,7 @@ public class IrminsulAvatar implements Avatar {
     }
 
     private float getFightProperty(FightProperty property) {
-        return this.fightProperties.get(property.getId());
+        return this.fightProperties.getOrDefault(property.getId(), 0f);
     }
 
     /**
@@ -158,6 +189,8 @@ public class IrminsulAvatar implements Avatar {
             .setWearingFlycloakId(this.flyCloak)
             .setCostumeId(this.costume)
             .addEquipGuidList(this.weapon.getGuid())
+            .putPropMap(PlayerProperty.LEVEL.getId(), PlayerProperty.LEVEL.toPropValue(this.level))
+            .putPropMap(PlayerProperty.EXP.getId(), PlayerProperty.EXP.toPropValue(this.exp))
             .build();
     }
 

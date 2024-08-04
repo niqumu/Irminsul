@@ -175,6 +175,8 @@ public class IrminsulPlayer implements Player {
 
         // Add default avatar
         this.avatars.add(new IrminsulAvatar(GameConstants.FEMALE_TRAVELER_AVATAR_ID, this));
+        // TESTING todo REMOVE
+        this.avatars.add(new IrminsulAvatar(10000052, this));
 
         // Add default properties
         this.properties.putAll(PlayerProperty.DEFAULT_PROPERTIES);

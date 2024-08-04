@@ -21,7 +21,7 @@ public class IrminsulPlayerTeam implements PlayerTeam {
     /**
      * The name of the team
      */
-    private String name;
+    private String name = "New Team";
 
     /**
      * The player that this team belongs to

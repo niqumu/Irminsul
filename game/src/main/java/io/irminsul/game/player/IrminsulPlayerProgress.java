@@ -9,7 +9,6 @@ import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serial;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -53,6 +52,8 @@ public class IrminsulPlayerProgress implements PlayerProgress {
         if (this.player.getSession().getServer().isSandbox()) { // todo this part should be per login but kept separate
             OpenStateData.SANDBOX_OPEN_STATES.forEach(state -> this.openStates.put(state, true));
         }
+
+        this.openStates.put(OpenStateData.OPEN_STATE_LIMIT_REGION_FRESHMEAT, false);
     }
 
     /**

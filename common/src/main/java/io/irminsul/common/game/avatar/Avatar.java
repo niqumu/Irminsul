@@ -1,6 +1,7 @@
 package io.irminsul.common.game.avatar;
 
 import io.irminsul.common.game.Entity;
+import io.irminsul.common.game.data.avatar.AvatarData;
 import io.irminsul.common.game.item.Weapon;
 import io.irminsul.common.game.player.Player;
 import io.irminsul.common.proto.AvatarInfoOuterClass.AvatarInfo;
@@ -40,6 +41,11 @@ public interface Avatar extends Entity, Serializable {
      */
     int getBornTime();
 
+    /**
+     * @return The {@link AvatarData} of this avatar
+     */
+    @NotNull AvatarData getAvatarData();
+
     // ================================================================ //
     //                            Cosmetics                             //
     // ================================================================ //
@@ -61,7 +67,7 @@ public interface Avatar extends Entity, Serializable {
     /**
      * @return The weapon held by this instance
      */
-    @Nullable Weapon getWeapon();
+    @NotNull Weapon getWeapon();
 
     // ================================================================ //
     //                           Attributes                             //

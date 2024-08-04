@@ -31,7 +31,8 @@ public class PacketAvatarDataNotify extends OutboundPacket {
             PlayerTeam team = session.getPlayer().getTeamManager().getTeams().get(index);
 
             AvatarTeamOuterClass.AvatarTeam.Builder avatarTeamBuilder =
-                AvatarTeamOuterClass.AvatarTeam.newBuilder();
+                AvatarTeamOuterClass.AvatarTeam.newBuilder()
+                    .setTeamName(team.getName());
 
             team.getAvatars().forEach(avatar -> avatarTeamBuilder.addAvatarGuidList(avatar.getGuid()));
             avatarDataNotifyBuilder.putAvatarTeamMap(index, avatarTeamBuilder.build());

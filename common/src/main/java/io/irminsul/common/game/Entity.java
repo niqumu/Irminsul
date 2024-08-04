@@ -17,4 +17,11 @@ public interface Entity {
      * @return This entity's {@link SceneEntityInfo}
      */
     @NotNull SceneEntityInfo buildSceneEntityInfo();
+
+    /**
+     * @return Whether this object has an entity associated with it
+     */
+    default boolean hasEntity() {
+        return this.getEntityId() != 0;
+    }
 }

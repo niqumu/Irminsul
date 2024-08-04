@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+// todo ensure the resources exist ahead of time so the server crashes at startup rather than randomly
 @UtilityClass
 public class SceneDataParser {
 
@@ -38,10 +39,12 @@ public class SceneDataParser {
                 parseSceneLua(sceneData, sceneLua);
                 logger.info("Parsed and loaded data from {}", sceneLua.getName());
             } catch (Exception e) {
-                logger.warn("Failed to load scene lua file for scene {}: {}", sceneId, e.toString());
+                logger.error("Fatal: Failed to load scene lua file for scene {}: {}", sceneId, e.toString());
+                System.exit(1);
             }
         } else {
-            logger.warn("Missing scene lua file for for scene {}!", sceneId);
+            logger.error("Fatal: Missing scene lua file for for scene {}!", sceneId);
+            System.exit(1);
         }
 
         // Scene points
@@ -51,10 +54,12 @@ public class SceneDataParser {
                 parseScenePoints(sceneData, scenePoints);
                 logger.info("Parsed and loaded scene points from {}", scenePoints.getName());
             } catch (Exception e) {
-                logger.warn("Failed to load scene points file for scene {}: {}", sceneId, e.toString());
+                logger.error("Fatal: Failed to load scene points file for scene {}: {}", sceneId, e.toString());
+                System.exit(1);
             }
         } else {
-            logger.warn("Missing scene points file for for scene {}!", sceneId);
+            logger.error("Fatal: Missing scene points file for for scene {}!", sceneId);
+            System.exit(1);
         }
 
         return sceneData;

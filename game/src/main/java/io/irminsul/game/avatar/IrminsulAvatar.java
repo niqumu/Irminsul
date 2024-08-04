@@ -1,10 +1,12 @@
 package io.irminsul.game.avatar;
 
 import io.irminsul.common.game.avatar.Avatar;
+import io.irminsul.common.game.data.avatar.AvatarData;
 import io.irminsul.common.game.item.Weapon;
 import io.irminsul.common.game.player.Player;
 import io.irminsul.common.game.property.EntityIdType;
 import io.irminsul.common.proto.*;
+import io.irminsul.game.data.DataContainer;
 import io.irminsul.game.item.IrminsulWeapon;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
@@ -51,6 +53,11 @@ public class IrminsulAvatar implements Avatar {
      */
     private final int bornTime = (int) (System.currentTimeMillis() / 1000);
 
+    /**
+     * The {@link AvatarData} of this avatar
+     */
+    private final AvatarData avatarData;
+
     // ================================================================ //
     //                            Cosmetics                             //
     // ================================================================ //
@@ -95,9 +102,8 @@ public class IrminsulAvatar implements Avatar {
         this.guid = owner.getNextGuid();
         this.owner = owner;
         this.entityId = owner.getWorld().getNextEntityId(EntityIdType.AVATAR);
-
-        // TODO: testing, temporary
-        this.weapon = new IrminsulWeapon(11407, owner);
+        this.avatarData = DataContainer.getOrLoadAvatarData(this.avatarId);
+        this.weapon = new IrminsulWeapon(this.avatarData.getInitialWeapon(), owner);
     }
 
     /**
@@ -108,6 +114,7 @@ public class IrminsulAvatar implements Avatar {
         return AvatarInfoOuterClass.AvatarInfo.newBuilder()
             .setAvatarId(this.avatarId)
             .setGuid(this.guid)
+            .setSkillDepotId(this.avatarData.getSkillDepotData().getSkillDepotId())
             .setBornTime(this.bornTime)
             .setLifeState(1)
             .setWearingFlycloakId(this.flyCloak)
@@ -154,6 +161,7 @@ public class IrminsulAvatar implements Avatar {
         return SceneAvatarInfoOuterClass.SceneAvatarInfo.newBuilder()
             .setUid(this.owner.getUid())
             .setPeerId(this.owner.getPeerId())
+            .setSkillDepotId(this.avatarData.getSkillDepotData().getSkillDepotId())
             .setAvatarId(this.avatarId)
             .setGuid(this.guid)
             .setBornTime(this.bornTime)

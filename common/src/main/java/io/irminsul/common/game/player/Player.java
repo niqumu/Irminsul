@@ -1,6 +1,6 @@
 package io.irminsul.common.game.player;
 
-import io.irminsul.common.game.Session;
+import io.irminsul.common.game.net.Session;
 import io.irminsul.common.game.Tickable;
 import io.irminsul.common.game.avatar.Avatar;
 import io.irminsul.common.game.world.Position;

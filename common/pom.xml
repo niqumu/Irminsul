@@ -36,6 +36,12 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/../lib/kcp-1.5.1.jar</systemPath>
         </dependency>
+        <dependency>
+            <groupId>org.luaj</groupId>
+            <artifactId>luaj-jse</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+
     </dependencies>
 
 </project>

@@ -1,6 +1,6 @@
 package io.irminsul.game.net;
 
-import io.irminsul.common.game.Session;
+import io.irminsul.common.game.net.Session;
 import io.irminsul.common.net.PacketIds;
 import io.netty.buffer.ByteBuf;
 import lombok.Data;

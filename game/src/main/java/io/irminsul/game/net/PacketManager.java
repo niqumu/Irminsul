@@ -1,7 +1,7 @@
 package io.irminsul.game.net;
 
 import io.irminsul.common.game.GameServer;
-import io.irminsul.common.game.Session;
+import io.irminsul.common.game.net.Session;
 import io.irminsul.common.net.PacketIds;
 import io.irminsul.common.game.ServerSystem;
 import io.irminsul.game.net.handler.*;
@@ -22,7 +22,7 @@ public class PacketManager implements ServerSystem {
     /**
      * Whether warnings about incoming packets without a handler should be raised by the server
      */
-    public static final boolean MISSING_HANDLER_LOGGING = false;
+    public static final boolean MISSING_HANDLER_LOGGING = true;
 
     /**
      * Packets that are excluded from logging (too much spam)

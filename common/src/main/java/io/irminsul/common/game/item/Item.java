@@ -1,6 +1,6 @@
 package io.irminsul.common.game.item;
 
-import io.irminsul.common.game.Entity;
+import io.irminsul.common.game.world.Entity;
 import io.irminsul.common.proto.ItemHintOuterClass;
 import io.irminsul.common.proto.ItemOuterClass;
 import org.jetbrains.annotations.NotNull;

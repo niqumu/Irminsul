@@ -2,6 +2,7 @@ package io.irminsul.game;
 
 import io.irminsul.common.game.GameServer;
 import io.irminsul.common.game.net.KcpTunnel;
+import io.irminsul.game.net.IrminsulSession;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import kcp.highway.KcpListener;

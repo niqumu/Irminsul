@@ -1,11 +1,13 @@
-package io.irminsul.common.game;
+package io.irminsul.common.game.net;
 
-import io.irminsul.common.game.net.KcpChannel;
-import io.irminsul.common.game.net.KcpTunnel;
+import io.irminsul.common.game.GameServer;
 import io.irminsul.common.game.player.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Represents a client connection that may or may not belong to a player
+ */
 public interface Session extends KcpChannel {
 
     /**

@@ -1,4 +1,4 @@
-package io.irminsul.common.game;
+package io.irminsul.http;
 
 import lombok.Data;
 

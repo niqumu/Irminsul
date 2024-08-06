@@ -1,6 +1,6 @@
 package io.irminsul.game.player;
 
-import io.irminsul.common.game.GameConstants;
+import io.irminsul.game.GameConstants;
 import io.irminsul.common.game.item.Item;
 import io.irminsul.common.game.player.Player;
 import io.irminsul.common.game.player.PlayerInventory;

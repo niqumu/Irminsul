@@ -1,6 +1,6 @@
 package io.irminsul.game.world;
 
-import io.irminsul.common.game.GameConstants;
+import io.irminsul.game.GameConstants;
 import io.irminsul.common.game.GameServer;
 import io.irminsul.common.game.player.Player;
 import io.irminsul.common.game.property.EntityIdType;

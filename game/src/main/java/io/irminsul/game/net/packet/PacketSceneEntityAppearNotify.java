@@ -1,7 +1,7 @@
 package io.irminsul.game.net.packet;
 
-import io.irminsul.common.game.Entity;
-import io.irminsul.common.game.Session;
+import io.irminsul.common.game.world.Entity;
+import io.irminsul.common.game.net.Session;
 import io.irminsul.common.net.PacketIds;
 import io.irminsul.common.proto.SceneEntityAppearNotifyOuterClass;
 import io.irminsul.common.proto.VisionTypeOuterClass;

@@ -1,9 +1,8 @@
 package io.irminsul.game.net.packet;
 
-import io.irminsul.common.game.Session;
+import io.irminsul.common.game.net.Session;
 import io.irminsul.common.net.PacketIds;
 import io.irminsul.common.proto.AbilitySyncStateInfoOuterClass;
-import io.irminsul.common.proto.SceneEntityInfoOuterClass;
 import io.irminsul.common.proto.SceneTeamAvatarOuterClass;
 import io.irminsul.common.proto.SceneTeamUpdateNotifyOuterClass;
 import io.irminsul.game.net.OutboundPacket;

@@ -1,9 +1,10 @@
 package io.irminsul.game.world;
 
-import io.irminsul.common.game.Entity;
+import io.irminsul.common.game.world.Entity;
 import io.irminsul.common.game.data.scene.SceneData;
 import io.irminsul.common.game.player.Player;
 import io.irminsul.common.game.world.Scene;
+import io.irminsul.common.game.world.SceneScriptManager;
 import io.irminsul.common.game.world.World;
 import io.irminsul.common.proto.VisionTypeOuterClass;
 import io.irminsul.game.data.DataContainer;
@@ -37,6 +38,11 @@ public class IrminsulScene implements Scene {
     private final SceneData sceneData;
 
     /**
+     * The {@link SceneScriptManager} instance of this scene
+     */
+    private final SceneScriptManager scriptManager;
+
+    /**
      * A list of {@link Player}s within this scene
      */
     private final List<Player> players = new ArrayList<>();
@@ -49,7 +55,12 @@ public class IrminsulScene implements Scene {
     public IrminsulScene(@NotNull World world, int id) {
         this.world = world;
         this.id = id;
+
+        // Load scene data
         this.sceneData = DataContainer.getOrLoadSceneData(this.id);
+
+        // Set up scripts
+        this.scriptManager = new IrminsulSceneScriptManager(this);
     }
 
     /**

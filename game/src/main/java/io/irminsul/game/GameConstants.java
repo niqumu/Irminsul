@@ -1,4 +1,4 @@
-package io.irminsul.common.game;
+package io.irminsul.game;
 
 import io.irminsul.common.util.MiscUtil;
 import lombok.experimental.UtilityClass;

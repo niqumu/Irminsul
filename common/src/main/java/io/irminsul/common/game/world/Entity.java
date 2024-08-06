@@ -1,4 +1,4 @@
-package io.irminsul.common.game;
+package io.irminsul.common.game.world;
 
 import io.irminsul.common.proto.SceneEntityInfoOuterClass.SceneEntityInfo;
 import org.jetbrains.annotations.NotNull;

@@ -1,4 +1,4 @@
-package io.irminsul.common.game;
+package io.irminsul.common.game.net;
 
 public enum SessionState {
     CLOSED,

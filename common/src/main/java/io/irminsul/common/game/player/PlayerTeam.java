@@ -1,6 +1,6 @@
 package io.irminsul.common.game.player;
 
-import io.irminsul.common.game.Entity;
+import io.irminsul.common.game.world.Entity;
 import io.irminsul.common.game.avatar.Avatar;
 import org.jetbrains.annotations.NotNull;
 

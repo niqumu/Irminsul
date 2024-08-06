@@ -1,12 +1,12 @@
 package io.irminsul.game;
 
 import io.irminsul.common.game.GameServer;
-import io.irminsul.common.game.Session;
+import io.irminsul.common.game.net.Session;
 import io.irminsul.common.game.player.PlayerProfile;
 import io.irminsul.common.game.world.World;
-import io.irminsul.common.net.PacketIds;
 import io.irminsul.common.util.CryptoUtil;
 import io.irminsul.game.net.InboundPacket;
+import io.irminsul.game.net.IrminsulSession;
 import io.irminsul.game.net.MalformedPacketException;
 import io.irminsul.game.net.PacketManager;
 import io.irminsul.game.shop.ShopManager;

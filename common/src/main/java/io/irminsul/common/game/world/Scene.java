@@ -1,6 +1,5 @@
 package io.irminsul.common.game.world;
 
-import io.irminsul.common.game.Entity;
 import io.irminsul.common.game.Tickable;
 import io.irminsul.common.game.data.scene.SceneData;
 import io.irminsul.common.game.player.Player;
@@ -27,6 +26,11 @@ public interface Scene extends Tickable {
      * @return The {@link SceneData} of this scene
      */
     @NotNull SceneData getSceneData();
+
+    /**
+     * @return The {@link SceneScriptManager} instance of this scene
+     */
+    @NotNull SceneScriptManager getScriptManager();
 
     /**
      * @return A list of {@link Player}s within this scene

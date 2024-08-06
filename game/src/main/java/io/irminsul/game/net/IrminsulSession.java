@@ -1,17 +1,18 @@
-package io.irminsul.game;
+package io.irminsul.game.net;
 
 import io.irminsul.common.game.GameServer;
 import io.irminsul.common.game.player.Player;
-import io.irminsul.common.game.Session;
-import io.irminsul.common.game.SessionState;
+import io.irminsul.common.game.net.Session;
+import io.irminsul.common.game.net.SessionState;
 import io.irminsul.common.game.net.KcpTunnel;
 import io.irminsul.common.util.CryptoUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-import java.util.Objects;
-
+/**
+ * Implementation of {@link Session}, representing a client connection that may or may not belong to a player
+ */
 @Getter
 @RequiredArgsConstructor
 public class IrminsulSession implements Session {

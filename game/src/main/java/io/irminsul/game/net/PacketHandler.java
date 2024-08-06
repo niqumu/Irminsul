@@ -1,6 +1,6 @@
 package io.irminsul.game.net;
 
-import io.irminsul.common.game.Session;
+import io.irminsul.common.game.net.Session;
 
 public interface PacketHandler {
 

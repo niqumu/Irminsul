@@ -1,5 +1,6 @@
 package io.irminsul.common.game;
 
+import io.irminsul.common.game.net.Session;
 import io.irminsul.common.game.player.PlayerProfile;
 import io.irminsul.common.game.world.World;
 import kcp.highway.Ukcp;

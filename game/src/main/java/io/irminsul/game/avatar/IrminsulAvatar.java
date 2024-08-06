@@ -1,6 +1,6 @@
 package io.irminsul.game.avatar;
 
-import io.irminsul.common.game.GameConstants;
+import io.irminsul.game.GameConstants;
 import io.irminsul.common.game.avatar.Avatar;
 import io.irminsul.common.game.data.avatar.AvatarData;
 import io.irminsul.common.game.item.Weapon;

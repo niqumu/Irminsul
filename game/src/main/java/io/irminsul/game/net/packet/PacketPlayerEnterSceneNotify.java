@@ -1,10 +1,9 @@
 package io.irminsul.game.net.packet;
 
-import io.irminsul.common.game.Session;
+import io.irminsul.common.game.net.Session;
 import io.irminsul.common.game.world.Position;
 import io.irminsul.common.net.PacketIds;
 import io.irminsul.common.proto.EnterTypeOuterClass;
-import io.irminsul.common.proto.NHFPBBLCHKHOuterClass;
 import io.irminsul.common.proto.PlayerEnterSceneNotifyOuterClass;
 import io.irminsul.game.net.OutboundPacket;
 

@@ -1,6 +1,5 @@
 package io.irminsul.common.game.world;
 
-import io.irminsul.common.game.Entity;
 import io.irminsul.common.game.GameServer;
 import io.irminsul.common.game.Tickable;
 import io.irminsul.common.game.player.Player;

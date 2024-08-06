@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,12 +52,17 @@ public class AvatarSkillDepotDataParser {
             return new AvatarSkillDepotData(); // fallback
         }
 
+        // Clean ability names
+        List<String> abilities = new ArrayList<>(List.of(gson.fromJson(skillDepotData.get("extraAbilities"), String[].class)));
+        List<String> cleanedAbilities = new ArrayList<>();
+        abilities.forEach(ability -> cleanedAbilities.add(ability.replace("\"", "")));
+
         return new AvatarSkillDepotData(
             skillDepotId,
             skillDepotData.has("energySkill") ? skillDepotData.get("energySkill").getAsInt() : 0,
             List.of(gson.fromJson(skillDepotData.get("skills"), Integer[].class)),
             List.of(gson.fromJson(skillDepotData.get("subSkills"), Integer[].class)),
-            List.of(gson.fromJson(skillDepotData.get("extraAbilities"), String[].class)),
+            cleanedAbilities,
             List.of(gson.fromJson(skillDepotData.get("talents"), Integer[].class))
         );
     }

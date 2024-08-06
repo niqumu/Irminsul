@@ -97,7 +97,7 @@ public class IrminsulAvatar implements Avatar {
     /**
      * The level of this avatar
      */
-    private int level = 1;
+    private int level = 90;
 
     /**
      * The total EXP of this avatar
@@ -107,12 +107,12 @@ public class IrminsulAvatar implements Avatar {
     /**
      * The ascension level of this avatar
      */
-    private int breakLevel = 0;
+    private int breakLevel = 6;
 
     /**
-     * A map of talent levels, keyed by ID
+     * A map of skill levels, keyed by ID
      */
-    private final Map<Integer, Integer> talentLevels = new HashMap<>();
+    private final Map<Integer, Integer> skillLevels = new HashMap<>();
 
     /**
      * A map of fight properties, keyed by ID
@@ -133,6 +133,10 @@ public class IrminsulAvatar implements Avatar {
         this.owner = owner;
         this.entityId = owner.getWorld().getNextEntityId(EntityIdType.AVATAR);
         this.avatarData = DataContainer.getOrLoadAvatarData(this.avatarId);
+
+        // Start skills at level 1
+        this.skillLevels.put(this.avatarData.getSkillDepotData().getEnergySkill(), 1);
+        this.avatarData.getSkillDepotData().getSkills().forEach(skill -> this.skillLevels.put(skill, 1));
 
         // Create a starter weapon, equip it, and give it to the owner
 //        this.weapon = new IrminsulWeapon(this.avatarData.getInitialWeapon(), owner);
@@ -288,14 +292,27 @@ public class IrminsulAvatar implements Avatar {
     @Override
     public @NotNull AvatarInfoOuterClass.AvatarInfo buildAvatarInfo() {
         return AvatarInfoOuterClass.AvatarInfo.newBuilder()
+
+            // Core
             .setAvatarId(this.avatarId)
             .setGuid(this.guid)
-            .setSkillDepotId(this.avatarData.getSkillDepotData().getSkillDepotId())
             .setBornTime(this.bornTime)
             .setLifeState(1)
+
+            // Cosmetic
             .setWearingFlycloakId(this.flyCloak)
             .setCostumeId(this.costume)
+
+            // Equipped items
             .addEquipGuidList(this.weapon.getGuid())
+
+            // Skills and talents
+            .setSkillDepotId(this.avatarData.getSkillDepotData().getSkillDepotId())
+            .putAllSkillLevelMap(this.skillLevels)
+            .addAllTalentIdList(this.avatarData.getSkillDepotData().getTalents())
+
+            // Properties
+            .putAllFightPropMap(this.fightProperties)
             .putPropMap(PlayerProperty.LEVEL.getId(), PlayerProperty.LEVEL.toPropValue(this.level))
             .putPropMap(PlayerProperty.EXP.getId(), PlayerProperty.EXP.toPropValue(this.exp))
             .putPropMap(PlayerProperty.BREAK_LEVEL.getId(), PlayerProperty.BREAK_LEVEL.toPropValue(this.breakLevel))
@@ -338,16 +355,26 @@ public class IrminsulAvatar implements Avatar {
     @Override
     public @NotNull SceneAvatarInfoOuterClass.SceneAvatarInfo buildSceneAvatarInfo() {
         return SceneAvatarInfoOuterClass.SceneAvatarInfo.newBuilder()
+
+            // Core
             .setUid(this.owner.getUid())
             .setPeerId(this.owner.getPeerId())
-            .setSkillDepotId(this.avatarData.getSkillDepotData().getSkillDepotId())
             .setAvatarId(this.avatarId)
             .setGuid(this.guid)
             .setBornTime(this.bornTime)
+
+            // Cosmetics
             .setCostumeId(this.costume)
             .setWearingFlycloakId(this.flyCloak)
+
+            // Equipped items
             .setWeapon(this.weapon.getSceneWeaponInfo())
             .addEquipIdList(this.weapon.getItemId())
+
+            // Skills and talents
+            .setSkillDepotId(this.avatarData.getSkillDepotData().getSkillDepotId())
+            .putAllSkillLevelMap(this.skillLevels)
+            .addAllTalentIdList(this.avatarData.getSkillDepotData().getTalents())
             .build();
     }
 
@@ -359,15 +386,15 @@ public class IrminsulAvatar implements Avatar {
         AbilityControlBlock.Builder builder = AbilityControlBlock.newBuilder();
         int embryo = 0;
 
-        // Avatar abilities TODO disabled until i figure out why the client rejects these hashes
-//        for (String ability : this.avatarData.getAbilities()) {
-//            builder.addAbilityEmbryoList(
-//                AbilityEmbryoOuterClass.AbilityEmbryo.newBuilder()
-//                    .setAbilityId(++embryo)
-//                    .setAbilityNameHash(MiscUtil.abilityHash(ability))
-//                    .setAbilityOverrideNameHash(GameConstants.DEFAULT_ABILITY_HASH)
-//                    .build());
-//        }
+        // Avatar abilities
+        for (String ability : this.avatarData.getAbilities()) {
+            builder.addAbilityEmbryoList(
+                AbilityEmbryoOuterClass.AbilityEmbryo.newBuilder()
+                    .setAbilityId(++embryo)
+                    .setAbilityNameHash(MiscUtil.abilityHash(ability))
+                    .setAbilityOverrideNameHash(GameConstants.DEFAULT_ABILITY_HASH)
+                    .build());
+        }
 
         // Default abilities
         for (String ability : GameConstants.DEFAULT_ABILITIES) {

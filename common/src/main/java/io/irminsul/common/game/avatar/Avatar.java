@@ -89,9 +89,9 @@ public interface Avatar extends Entity, Serializable {
     int getBreakLevel();
 
     /**
-     * @return A map of talent levels, keyed by ID
+     * @return A map of skill levels, keyed by ID
      */
-    @NotNull Map<Integer, Integer> getTalentLevels();
+    @NotNull Map<Integer, Integer> getSkillLevels();
 
     /**
      * @return A map of fight properties, keyed by id

@@ -1,5 +1,7 @@
 package io.irminsul.game.avatar;
 
+import static io.irminsul.game.data.FightProperty.*;
+
 import io.irminsul.game.GameConstants;
 import io.irminsul.common.game.avatar.Avatar;
 import io.irminsul.common.game.data.avatar.AvatarData;
@@ -136,11 +138,6 @@ public class IrminsulAvatar implements Avatar {
         this.weapon = new IrminsulWeapon(this.avatarData.getInitialWeapon(), owner);
         this.owner.getInventory().addItem(this.weapon, ActionReason.AddAvatar);
 
-        // Set up base stats
-        this.putFightProperty(FightProperty.FIGHT_PROP_BASE_HP, this.avatarData.getBaseHp());
-        this.putFightProperty(FightProperty.FIGHT_PROP_BASE_ATTACK, this.avatarData.getBaseAtk());
-        this.putFightProperty(FightProperty.FIGHT_PROP_BASE_DEFENSE, this.avatarData.getBaseDef());
-
         // Calculate stats
         this.updateStats();
         this.setHealthPercent(1); // Start at full HP
@@ -148,27 +145,107 @@ public class IrminsulAvatar implements Avatar {
 
     /**
      * Recalculate and resend this avatar's stats
+     * <p>
+     * This is an extremely complicated and confusing process, but I tried my best to document it as well as possible
+     * and break it all down. Most stats are simple and just additive, but health, attack, and defense are far more
+     * complicated. These three stats each have four sub stats: base, % bonus, flat, and final. The final value is
+     * derived from the first three values using the following formula:
+     * <pre>final = (base * (1 + % bonus)) + flat
+     * </pre>
+     * The final value is what actually gets used in damage calculation, and is what's displayed to the end user (except
+     * in the stat breakdown page, of course).
+     * <p>
+     * This makes more sense if you read <a href="https://genshin-impact.fandom.com/wiki/Attribute">the wiki</a>.
      */
     @Override
     public void updateStats() {
 
-        // Health percent before updating stats
-        final float oldHealthPercent = this.getFightProperty(FightProperty.FIGHT_PROP_CUR_HP) /
-            this.getFightProperty(FightProperty.FIGHT_PROP_MAX_HP);
+        // ================================================================
+        // Step 1:
+        // ----------------------------------------------------------------
+        // As per the wiki, we want to preserve the same health percent after updating stats. If the player has 10k
+        // health with 15k max health prior to this stat update, and the stat update leaves them with 20k max health,
+        // they should have their current health set to 13.333k.
+        // ================================================================
 
-        // Start fresh from base stats
-        this.putFightProperty(FightProperty.FIGHT_PROP_MAX_HP, this.avatarData.getBaseHp());
-        this.putFightProperty(FightProperty.FIGHT_PROP_CUR_ATTACK, this.avatarData.getBaseAtk());
-        this.putFightProperty(FightProperty.FIGHT_PROP_CUR_DEFENSE, this.avatarData.getBaseDef());
-        this.putFightProperty(FightProperty.FIGHT_PROP_CRITICAL, this.avatarData.getBaseCritRate());
-        this.putFightProperty(FightProperty.FIGHT_PROP_CRITICAL_HURT, this.avatarData.getBaseCritDmg());
+        // Snapshotted health percent before updating stats
+        final float oldHealthPercent = this.getFightProperty(FIGHT_PROP_CUR_HP) /
+            this.getFightProperty(FIGHT_PROP_MAX_HP);
+
+        // ================================================================
+        // Step 2:
+        // ----------------------------------------------------------------
+        // We want to start with a completely blank slate. Wipe all fight properties and reset them to zero. Then, we
+        // want to reset base stats to their base value (character base stats), and build on them from there.
+        // ================================================================
+
+        // Wipe all stats
+        this.fightProperties.clear(); // todo: we want to save energy!
+
+        // Set up base stats
+        this.putFightProperty(FIGHT_PROP_BASE_HP, this.avatarData.getBaseHp());
+        this.putFightProperty(FIGHT_PROP_BASE_ATTACK, this.avatarData.getBaseAtk());
+        this.putFightProperty(FIGHT_PROP_BASE_DEFENSE, this.avatarData.getBaseDef());
+        this.putFightProperty(FIGHT_PROP_CRITICAL, this.avatarData.getBaseCritRate());
+        this.putFightProperty(FIGHT_PROP_CRITICAL_HURT, this.avatarData.getBaseCritDmg());
+
+        // ================================================================
+        // Step 3:
+        // ----------------------------------------------------------------
+        // Calculate the base, multiplier, and flat values of every stat.
+        // Factor in all stat sources, i.e. weapon, artifacts, food, team resonance, etc.
+        // ================================================================
+
+        this.calculateStatSources();
+
+        // ================================================================
+        // Step 4:
+        // ----------------------------------------------------------------
+        // Calculate the final value of health, attack, and defense. We already calculated the base, % bonus, and
+        // flat values of these stats in step 3.
+        // Formula: final = (base * (1 + % bonus)) + flat
+        // Other stats are easy and only have flat values, so we don't need to touch them; they're already done.
+        // ================================================================
+
+        // Health
+        this.putFightProperty(FIGHT_PROP_MAX_HP, getFightProperty(FIGHT_PROP_BASE_HP)); // Copy base
+        this.boostFightProperty(FIGHT_PROP_MAX_HP, 1 + getFightProperty(FIGHT_PROP_HP_PERCENT)); // % bonus
+        this.addFightProperty(FIGHT_PROP_MAX_HP, getFightProperty(FIGHT_PROP_HP)); // Add flat
+
+        // Attack
+        this.putFightProperty(FIGHT_PROP_CUR_ATTACK, getFightProperty(FIGHT_PROP_BASE_ATTACK)); // Copy base
+        this.boostFightProperty(FIGHT_PROP_CUR_ATTACK, 1 + getFightProperty(FIGHT_PROP_ATTACK_PERCENT)); // % bonus
+        this.addFightProperty(FIGHT_PROP_CUR_ATTACK, getFightProperty(FIGHT_PROP_ATTACK)); // Add flat
+
+        // Defense
+        this.putFightProperty(FIGHT_PROP_CUR_DEFENSE, getFightProperty(FIGHT_PROP_BASE_DEFENSE)); // Copy base
+        this.boostFightProperty(FIGHT_PROP_CUR_DEFENSE, 1 + getFightProperty(FIGHT_PROP_DEFENSE_PERCENT)); // % bonus
+        this.addFightProperty(FIGHT_PROP_CUR_DEFENSE, getFightProperty(FIGHT_PROP_DEFENSE)); // Add flat
+
+        // ================================================================
+        // Step 5:
+        // ----------------------------------------------------------------
+        // Restore the health percent we snapshotted at the start and inform the client of the stat changes.
+        // ================================================================
 
         // Set the health to the same percent as before the stat update
-        this.putFightProperty(FightProperty.FIGHT_PROP_CUR_HP,
-            oldHealthPercent * this.getFightProperty(FightProperty.FIGHT_PROP_MAX_HP));
+        this.putFightProperty(FIGHT_PROP_CUR_HP, oldHealthPercent * this.getFightProperty(FIGHT_PROP_MAX_HP));
 
         // Send the new stats to the player
         new PacketAvatarFightPropNotify(this.owner.getSession(), this).send();
+    }
+
+    void calculateStatSources() {
+
+        // Weapon base stats
+        this.weapon.getWeaponData().getProperties().forEach(property -> {
+            // Weapons don't scale by level, they scale by level / max level!
+            // TODO: this is still off by 0.09%... I have no clue why
+            float progressToMax = (float) this.weapon.getLevel() / this.weapon.getWeaponData().getMaxLevel();
+            int level = Math.round(progressToMax * 100);
+            float multiplier = DataContainer.getOrLoadWeaponCurve(property.getGrowthType()).get(level);
+            this.addFightProperty(property.getPropertyType(), property.getInitValue() * multiplier);
+        });
     }
 
     /**
@@ -177,7 +254,7 @@ public class IrminsulAvatar implements Avatar {
      */
     @Override
     public void setHealthPercent(float percent) {
-        this.putFightProperty(FightProperty.FIGHT_PROP_CUR_HP, this.getFightProperty(FightProperty.FIGHT_PROP_MAX_HP));
+        this.putFightProperty(FIGHT_PROP_CUR_HP, this.getFightProperty(FIGHT_PROP_MAX_HP));
     }
 
     private void putFightProperty(int property, float value) {
@@ -190,6 +267,10 @@ public class IrminsulAvatar implements Avatar {
 
     private void addFightProperty(int property, float change) {
         this.putFightProperty(property, this.getFightProperty(property) + change);
+    }
+
+    private void boostFightProperty(int property, float multiplier) {
+        this.putFightProperty(property, this.getFightProperty(property) * multiplier);
     }
 
     /**

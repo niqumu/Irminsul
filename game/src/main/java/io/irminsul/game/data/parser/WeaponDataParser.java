@@ -4,6 +4,7 @@ import com.google.gson.*;
 import io.irminsul.common.game.data.item.WeaponData;
 import io.irminsul.common.game.data.item.WeaponProperty;
 import io.irminsul.common.game.data.item.WeaponType;
+import io.irminsul.game.data.FightProperty;
 import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -35,7 +36,7 @@ public class WeaponDataParser {
                 }
             }
 
-            logger.info("Successfully loaded weapon data excel!");
+            logger.debug("Successfully loaded weapon data excel!");
         } catch (Exception e) {
             logger.warn("Fatal: Failed to load weapon data excel: {}", e.toString());
             System.exit(1);
@@ -57,9 +58,15 @@ public class WeaponDataParser {
         for (JsonElement element : weaponData.getAsJsonArray("weaponProp")) {
             JsonObject propJson = element.getAsJsonObject();
 
+            if (!propJson.has("initValue")) {
+                // everything is multiplicative; if there's no base value, skip this property
+                // (why include them in the first place then??? we may never know...)
+                continue;
+            }
+
             properties.add(new WeaponProperty(
-                propJson.has("propType") ? propJson.get("propType").getAsString() : "",
-                propJson.has("initValue") ? propJson.get("initValue").getAsFloat() : 0,
+                FightProperty.of(propJson.get("propType").getAsString()),
+                propJson.get("initValue").getAsFloat(),
                 propJson.get("type").getAsString()
             ));
         }
@@ -70,6 +77,7 @@ public class WeaponDataParser {
 
         return new WeaponData(
             WeaponType.of(weaponData.get("weaponType").getAsString()),
+            weaponData.get("rankLevel").getAsInt() > 2 ? 90 : 70,
             weaponData.get("gadgetId").getAsInt(),
             skills,
             properties

@@ -34,7 +34,7 @@ public class AvatarAbilityParser {
                 data.put(name, JsonParser.parseString(Files.readString(file.toPath())).getAsJsonArray());
             }
 
-            logger.info("Successfully loaded {} avatar ability excels!", data.size());
+            logger.debug("Successfully loaded {} avatar ability excels!", data.size());
         } catch (Exception e) {
             logger.error("Fatal: Failed to load {}'s avatar ability excel: {}", name, e.toString());
             System.exit(1);

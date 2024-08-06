@@ -2,6 +2,8 @@ package io.irminsul.game.data;
 
 import lombok.experimental.UtilityClass;
 
+import java.lang.reflect.Field;
+
 @UtilityClass
 public class FightProperty {
     public int FIGHT_PROP_NONE = 0;
@@ -100,4 +102,17 @@ public class FightProperty {
     public int FIGHT_PROP_NONEXTRA_SKILL_CD_MINUS_RATIO = 3022;
     public int FIGHT_PROP_NONEXTRA_SHIELD_COST_MINUS_RATIO = 3023;
     public int FIGHT_PROP_NONEXTRA_PHYSICAL_ADD_HURT = 3024;
+
+    public static int of(String name) {
+        try {
+            for (Field field : FightProperty.class.getDeclaredFields()) {
+                if (field.getType().equals(Integer.TYPE) && field.getName().equals(name)) {
+                    return field.getInt(null);
+                }
+            }
+        } catch (Exception ignored) {
+            return 0;
+        }
+        return 0;
+    }
 }

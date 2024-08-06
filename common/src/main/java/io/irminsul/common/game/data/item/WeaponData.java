@@ -18,6 +18,11 @@ public class WeaponData {
     private final WeaponType type;
 
     /**
+     * The maximum level of this weapon, derived from the weapon rarity (70 for 1 and 2 stars, 90 for 3+)
+     */
+    private final int maxLevel;
+
+    /**
      * The gadget ID of the weapon. Seems to always be the weapon ID + 50000000
      */
     private final int gadgetId;
@@ -36,6 +41,6 @@ public class WeaponData {
      * Construct a new fallback WeaponData with default/placeholder values
      */
     public WeaponData() {
-        this(WeaponType.SWORD, 0, List.of(), List.of());
+        this(WeaponType.SWORD, 0, 0, List.of(), List.of());
     }
 }

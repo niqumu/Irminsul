@@ -29,10 +29,18 @@ public class DataContainer {
 
     private final Logger logger = LoggerFactory.getLogger("Data Container");
 
+    // ================================================================ //
+    //                              Scenes                              //
+    // ================================================================ //
+
     /**
      * A map of loaded scenes and their {@link SceneData}, keyed by scene IDs
      */
     private final Map<Integer, SceneData> loadedScenes = new HashMap<>();
+
+    // ================================================================ //
+    //                              Avatars                             //
+    // ================================================================ //
 
     /**
      * A map of loaded avatars and their {@link AvatarData}, keyed by avatar IDs
@@ -49,10 +57,21 @@ public class DataContainer {
      */
     private final Map<String, List<String>> loadedAbilities = new HashMap<>();
 
+    // ================================================================ //
+    //                             Weapons                              //
+    // ================================================================ //
+
     /**
      * A map of loaded weapons and their {@link WeaponData}, keyed by weapon IDs
      */
     private final Map<Integer, WeaponData> loadedWeapons = new HashMap<>();
+
+    /**
+     * A map of loaded weapon stat curves and their level -> value mapping, keyed by curve type name
+     */
+    private final Map<String, Map<Integer, Float>> loadedWeaponCurves = new HashMap<>();
+
+    // ================================================================ //
 
     /**
      * Gets a scene's {@link SceneData} by scene ID, attempting to load the scene data if not already loaded
@@ -164,5 +183,31 @@ public class DataContainer {
 
         logger.debug("Finished loading weapon {}!", weaponId);
         return weaponData;
+    }
+
+    /**
+     * Gets a weapon stat curve's {@code level -> multiplier} mapping, attempting to load the curve data if not
+     * already loaded
+     * <p>
+     * NOTE: The "level" in this case isn't actually the level of the weapon, but the level of the weapon divided by
+     * the maximum level of the weapon, times 100. Isn't this fun?
+     * @param curveType The internal name of the stat curve to fetch the data for
+     * @return The stat curve's {@code level -> multiplier} mapping
+     */
+    public @NotNull Map<Integer, Float> getOrLoadWeaponCurve(String curveType) {
+        if (loadedWeaponCurves.containsKey(curveType)) {
+            return loadedWeaponCurves.get(curveType);
+        }
+        return loadWeaponCurve(curveType);
+    }
+
+    private @NotNull Map<Integer, Float> loadWeaponCurve(String curveType) {
+        logger.debug("Loading weapon stat curve {}", curveType);
+
+        Map<Integer, Float> curve = WeaponCurveDataParser.parseWeaponCurve(curveType);
+        loadedWeaponCurves.put(curveType, curve);
+
+        logger.debug("Finished loading weapon stat curve {}!", curveType);
+        return curve;
     }
 }

@@ -38,22 +38,22 @@ public class IrminsulWeapon implements Weapon {
     /**
      * Whether this item is locked
      */
-    private boolean locked;
+    private boolean locked = false;
 
     /**
      * The level of this weapon
      */
-    private int level;
+    private int level = 1;
 
     /**
      * The EXP on this weapon
      */
-    private int exp;
+    private int exp = 0;
 
     /**
      * The promotion level of this weapon
      */
-    private int promoteLevel;
+    private int promoteLevel = 0;
 
     public IrminsulWeapon(int weaponId, @NotNull Player owner) {
         this.itemId = weaponId;
@@ -73,7 +73,7 @@ public class IrminsulWeapon implements Weapon {
             .setEntityId(this.entityId)
             .setItemId(this.itemId)
             .setGuid(this.guid)
-            .setLevel(0) // todo
+            .setLevel(this.level)
             .setGadgetId(this.weaponData.getGadgetId())
             .setAbilityInfo(AbilitySyncStateInfoOuterClass.AbilitySyncStateInfo.newBuilder().build())
             .build();

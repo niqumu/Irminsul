@@ -34,7 +34,7 @@ public class AvatarSkillDepotDataParser {
                 }
             }
 
-            logger.info("Successfully loaded avatar skill depot config excel!");
+            logger.debug("Successfully loaded avatar skill depot config excel!");
         } catch (Exception e) {
             logger.warn("Fatal: Failed to load avatar skill depot config excel: {}", e.toString());
             System.exit(1);

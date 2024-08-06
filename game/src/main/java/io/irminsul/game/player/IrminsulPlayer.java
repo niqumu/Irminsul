@@ -19,10 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.Serial;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * An implementation of {@link Player}, representing an Irminsul player.
@@ -217,9 +214,6 @@ public class IrminsulPlayer implements Player {
             // Add default avatar
             this.avatars.add(new IrminsulAvatar(GameConstants.FEMALE_TRAVELER_AVATAR_ID, this));
             this.teamManager.getActiveTeam().getAvatars().add(this.avatars.getFirst());
-            // TESTING todo REMOVE
-            this.avatars.add(new IrminsulAvatar(10000052, this));
-            this.teamManager.getActiveTeam().getAvatars().add(this.avatars.get(1));
         }
 
         // Send player data
@@ -441,6 +435,11 @@ public class IrminsulPlayer implements Player {
             return false;
         }
         return player.getUid() == this.getUid();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.uid);
     }
 
     @Override

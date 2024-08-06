@@ -34,7 +34,7 @@ public class AvatarDataParser {
                 }
             }
 
-            logger.info("Successfully loaded avatar config excel!");
+            logger.debug("Successfully loaded avatar config excel!");
         } catch (Exception e) {
             logger.warn("Fatal: Failed to load avatar config excel: {}", e.toString());
             System.exit(1);

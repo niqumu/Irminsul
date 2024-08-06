@@ -1,5 +1,6 @@
 package io.irminsul.game.player;
 
+import io.irminsul.common.game.data.scene.TransPointType;
 import io.irminsul.game.GameConstants;
 import io.irminsul.common.game.data.scene.TransPoint;
 import io.irminsul.common.game.player.Player;
@@ -109,7 +110,7 @@ public class IrminsulPlayerProgress implements PlayerProgress {
 
         // Reward the player
         TransPoint transPoint = player.getWorld().getOrCreateScene(scene).getSceneData().getTransPoints().get(point);
-        boolean extraEXP = transPoint.getType().equals(TransPoint.TransPointType.STATUE); // statues give more ar exp
+        boolean extraEXP = transPoint.getType().equals(TransPointType.STATUE); // statues give more ar exp
         this.player.getInventory().addItem(GameConstants.ITEM_AR_EXP, extraEXP ? 50 : 10, ActionReason.UnlockPointReward);
         this.player.getInventory().addItem(GameConstants.ITEM_PRIMOGEM, 5, ActionReason.UnlockPointReward);
 

@@ -7,6 +7,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Representation of an entry in the scene data excel
+ */
 @Data
 public class SceneData {
 

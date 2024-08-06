@@ -1,9 +1,11 @@
 package io.irminsul.game.item;
 
+import io.irminsul.common.game.data.item.WeaponData;
 import io.irminsul.common.game.item.Weapon;
 import io.irminsul.common.game.player.Player;
 import io.irminsul.common.game.property.EntityIdType;
 import io.irminsul.common.proto.*;
+import io.irminsul.game.data.DataContainer;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,6 +14,11 @@ import org.jetbrains.annotations.NotNull;
  */
 @Data
 public class IrminsulWeapon implements Weapon {
+
+    /**
+     * The {@link WeaponData} of this weapon
+     */
+    private final WeaponData weaponData;
 
     /**
      * The ID of the weapon
@@ -52,6 +59,9 @@ public class IrminsulWeapon implements Weapon {
         this.itemId = weaponId;
         this.guid = owner.getNextGuid();
         this.entityId = owner.getWorld().getNextEntityId(EntityIdType.WEAPON);
+
+        // Load weapon data
+        this.weaponData = DataContainer.getOrLoadWeaponData(weaponId);
     }
 
     /**
@@ -64,7 +74,7 @@ public class IrminsulWeapon implements Weapon {
             .setItemId(this.itemId)
             .setGuid(this.guid)
             .setLevel(0) // todo
-            .setGadgetId(this.itemId) // todo hardcode testing
+            .setGadgetId(this.weaponData.getGadgetId())
             .setAbilityInfo(AbilitySyncStateInfoOuterClass.AbilitySyncStateInfo.newBuilder().build())
             .build();
     }

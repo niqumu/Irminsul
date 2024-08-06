@@ -1,9 +1,8 @@
 package io.irminsul.game.data;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.experimental.UtilityClass;
 
+// todo make these all caps with underscores - these are ripped straight from json and violate convention
 @UtilityClass
 public class ActionReason {
     public int None = 0;

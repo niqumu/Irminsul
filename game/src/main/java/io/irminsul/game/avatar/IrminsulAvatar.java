@@ -113,7 +113,7 @@ public class IrminsulAvatar implements Avatar {
     private final Map<Integer, Integer> talentLevels = new HashMap<>();
 
     /**
-     * A map of fight properties, keyed by id
+     * A map of fight properties, keyed by ID
      * @see io.irminsul.game.data.FightProperty
      */
     private final Map<Integer, Float> fightProperties = new HashMap<>();
@@ -136,6 +136,12 @@ public class IrminsulAvatar implements Avatar {
         this.weapon = new IrminsulWeapon(this.avatarData.getInitialWeapon(), owner);
         this.owner.getInventory().addItem(this.weapon, ActionReason.AddAvatar);
 
+        // Set up base stats
+        this.putFightProperty(FightProperty.FIGHT_PROP_BASE_HP, this.avatarData.getBaseHp());
+        this.putFightProperty(FightProperty.FIGHT_PROP_BASE_ATTACK, this.avatarData.getBaseAtk());
+        this.putFightProperty(FightProperty.FIGHT_PROP_BASE_DEFENSE, this.avatarData.getBaseDef());
+
+        // Calculate stats
         this.updateStats();
         this.setHealthPercent(1); // Start at full HP
     }
@@ -149,11 +155,6 @@ public class IrminsulAvatar implements Avatar {
         // Health percent before updating stats
         final float oldHealthPercent = this.getFightProperty(FightProperty.FIGHT_PROP_CUR_HP) /
             this.getFightProperty(FightProperty.FIGHT_PROP_MAX_HP);
-
-        // Base stats
-        this.putFightProperty(FightProperty.FIGHT_PROP_BASE_HP, this.avatarData.getBaseHp());
-        this.putFightProperty(FightProperty.FIGHT_PROP_BASE_ATTACK, this.avatarData.getBaseAtk());
-        this.putFightProperty(FightProperty.FIGHT_PROP_BASE_DEFENSE, this.avatarData.getBaseDef());
 
         // Start fresh from base stats
         this.putFightProperty(FightProperty.FIGHT_PROP_MAX_HP, this.avatarData.getBaseHp());
@@ -179,12 +180,16 @@ public class IrminsulAvatar implements Avatar {
         this.putFightProperty(FightProperty.FIGHT_PROP_CUR_HP, this.getFightProperty(FightProperty.FIGHT_PROP_MAX_HP));
     }
 
-    private void putFightProperty(FightProperty property, float value) {
-        this.fightProperties.put(property.getId(), value);
+    private void putFightProperty(int property, float value) {
+        this.fightProperties.put(property, value);
     }
 
-    private float getFightProperty(FightProperty property) {
-        return this.fightProperties.getOrDefault(property.getId(), 0f);
+    private float getFightProperty(int property) {
+        return this.fightProperties.getOrDefault(property, 0f);
+    }
+
+    private void addFightProperty(int property, float change) {
+        this.putFightProperty(property, this.getFightProperty(property) + change);
     }
 
     /**

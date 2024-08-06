@@ -134,7 +134,7 @@ public class SceneDataParser {
         transPosition.setZRot(transRotObj.get("z").getAsFloat());
 
         // Type
-        TransPoint.TransPointType type = TransPoint.TransPointType.byName(point.get("pointType").getAsString());
+        TransPoint.TransPointType type = TransPoint.TransPointType.of(point.get("pointType").getAsString());
 
         // Add point to scene data
         sceneData.getTransPoints().put(pointId, new TransPoint(areaId, gadgetId, position, transPosition, type));
@@ -169,7 +169,7 @@ public class SceneDataParser {
         transPosition.setZRot(transRotObj.get("z").getAsFloat());
 
         // Type
-        TransPoint.TransPointType type = TransPoint.TransPointType.byName(point.get("pointType").getAsString());
+        TransPoint.TransPointType type = TransPoint.TransPointType.of(point.get("pointType").getAsString());
 
         // Dungeon IDs
         List<Integer> dungeonIds = List.of(gson.fromJson(point.get("dungeonIds"), Integer[].class));

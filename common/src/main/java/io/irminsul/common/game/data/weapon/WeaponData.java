@@ -1,9 +1,11 @@
-package io.irminsul.common.game.data.item;
+package io.irminsul.common.game.data.weapon;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Representation of an entry in the weapon data excel

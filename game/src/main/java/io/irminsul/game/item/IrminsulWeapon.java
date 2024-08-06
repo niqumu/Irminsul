@@ -1,6 +1,6 @@
 package io.irminsul.game.item;
 
-import io.irminsul.common.game.data.item.WeaponData;
+import io.irminsul.common.game.data.weapon.WeaponData;
 import io.irminsul.common.game.item.Weapon;
 import io.irminsul.common.game.player.Player;
 import io.irminsul.common.game.property.EntityIdType;
@@ -59,6 +59,10 @@ public class IrminsulWeapon implements Weapon {
         this.itemId = weaponId;
         this.guid = owner.getNextGuid();
         this.entityId = owner.getWorld().getNextEntityId(EntityIdType.WEAPON);
+
+        // TODO testing remove
+        this.level = 90;
+        this.promoteLevel = 6;
 
         // Load weapon data
         this.weaponData = DataContainer.getOrLoadWeaponData(weaponId);

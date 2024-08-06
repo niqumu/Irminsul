@@ -1,6 +1,6 @@
 package io.irminsul.common.game.item;
 
-import io.irminsul.common.game.data.item.WeaponData;
+import io.irminsul.common.game.data.weapon.WeaponData;
 import io.irminsul.common.proto.SceneWeaponInfoOuterClass.SceneWeaponInfo;
 import org.jetbrains.annotations.NotNull;
 

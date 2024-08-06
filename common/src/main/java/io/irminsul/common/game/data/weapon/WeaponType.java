@@ -1,4 +1,4 @@
-package io.irminsul.common.game.data.item;
+package io.irminsul.common.game.data.weapon;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

@@ -2,6 +2,7 @@ package io.irminsul.game.avatar;
 
 import static io.irminsul.game.data.FightProperty.*;
 
+import io.irminsul.common.game.data.weapon.WeaponPromotionData;
 import io.irminsul.game.GameConstants;
 import io.irminsul.common.game.avatar.Avatar;
 import io.irminsul.common.game.data.avatar.AvatarData;
@@ -13,7 +14,6 @@ import io.irminsul.common.proto.AbilityControlBlockOuterClass.AbilityControlBloc
 import io.irminsul.common.util.MiscUtil;
 import io.irminsul.game.data.ActionReason;
 import io.irminsul.game.data.DataContainer;
-import io.irminsul.game.data.FightProperty;
 import io.irminsul.game.data.PlayerProperty;
 import io.irminsul.game.item.IrminsulWeapon;
 import io.irminsul.game.net.packet.PacketAvatarFightPropNotify;
@@ -135,7 +135,8 @@ public class IrminsulAvatar implements Avatar {
         this.avatarData = DataContainer.getOrLoadAvatarData(this.avatarId);
 
         // Create a starter weapon, equip it, and give it to the owner
-        this.weapon = new IrminsulWeapon(this.avatarData.getInitialWeapon(), owner);
+//        this.weapon = new IrminsulWeapon(this.avatarData.getInitialWeapon(), owner);
+        this.weapon = new IrminsulWeapon(11502, owner);
         this.owner.getInventory().addItem(this.weapon, ActionReason.AddAvatar);
 
         // Calculate stats
@@ -239,13 +240,21 @@ public class IrminsulAvatar implements Avatar {
 
         // Weapon base stats
         this.weapon.getWeaponData().getProperties().forEach(property -> {
-            // Weapons don't scale by level, they scale by level / max level!
+            // Weapons don't scale by level, they scale by (level / max level)!
             // TODO: this is still off by 0.09%... I have no clue why
             float progressToMax = (float) this.weapon.getLevel() / this.weapon.getWeaponData().getMaxLevel();
             int level = Math.round(progressToMax * 100);
             float multiplier = DataContainer.getOrLoadWeaponCurve(property.getGrowthType()).get(level);
-            this.addFightProperty(property.getPropertyType(), property.getInitValue() * multiplier);
+            this.addFightProperty(property.getPropertyType(), property.getValue() * multiplier);
         });
+
+        // Weapon promotion stats
+        // todo: why is this, again, slightly off?
+        WeaponPromotionData data =
+            DataContainer.getOrLoadWeaponPromotions(this.weapon.getItemId()).get(this.weapon.getPromoteLevel());
+        if (data != null) {
+            data.getNewProperties().forEach(prop -> this.addFightProperty(prop.getPropertyType(), prop.getValue()));
+        }
     }
 
     /**

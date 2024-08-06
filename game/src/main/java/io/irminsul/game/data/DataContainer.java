@@ -2,8 +2,9 @@ package io.irminsul.game.data;
 
 import io.irminsul.common.game.data.avatar.AvatarData;
 import io.irminsul.common.game.data.avatar.AvatarSkillDepotData;
-import io.irminsul.common.game.data.item.WeaponData;
+import io.irminsul.common.game.data.weapon.WeaponData;
 import io.irminsul.common.game.data.scene.SceneData;
+import io.irminsul.common.game.data.weapon.WeaponPromotionData;
 import io.irminsul.game.data.parser.*;
 import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.NotNull;
@@ -70,6 +71,12 @@ public class DataContainer {
      * A map of loaded weapon stat curves and their level -> value mapping, keyed by curve type name
      */
     private final Map<String, Map<Integer, Float>> loadedWeaponCurves = new HashMap<>();
+
+    /**
+     * A map of loaded weapon promotions and their promotion level -> {@link WeaponPromotionData} mapping,
+     * keyed by weapon ID
+     */
+    private final Map<Integer, Map<Integer, WeaponPromotionData>> loadedWeaponPromotions = new HashMap<>();
 
     // ================================================================ //
 
@@ -209,5 +216,28 @@ public class DataContainer {
 
         logger.debug("Finished loading weapon stat curve {}!", curveType);
         return curve;
+    }
+
+    /**
+     * Gets a weapon's {@code promotion level -> WeaponPromotionData} mapping, attempting to load the promotion
+     * data if not already loaded
+     * @param weaponId The ID the weapon to fetch the data for
+     * @return The weapon's {@code promotion level -> WeaponPromotionData} mapping
+     */
+    public @NotNull Map<Integer, WeaponPromotionData> getOrLoadWeaponPromotions(int weaponId) {
+        if (loadedWeaponPromotions.containsKey(weaponId)) {
+            return loadedWeaponPromotions.get(weaponId);
+        }
+        return loadWeaponPromotions(weaponId);
+    }
+
+    private @NotNull Map<Integer, WeaponPromotionData> loadWeaponPromotions(int weaponId) {
+        logger.debug("Loading weapon promotions for {}", weaponId);
+
+        Map<Integer, WeaponPromotionData> promotionData = WeaponPromotionDataParser.parsePromotionData(weaponId);
+        loadedWeaponPromotions.put(weaponId, promotionData);
+
+        logger.debug("Finished loaded weapon promotions for {}", weaponId);
+        return promotionData;
     }
 }

@@ -14,7 +14,7 @@ import java.util.Map;
 @UtilityClass
 public class WeaponCurveDataParser {
 
-    private final Logger logger = LoggerFactory.getLogger("Weapon Data Parser");
+    private final Logger logger = LoggerFactory.getLogger("Weapon Curve Parser");
 
     private final Gson gson = new Gson();
 

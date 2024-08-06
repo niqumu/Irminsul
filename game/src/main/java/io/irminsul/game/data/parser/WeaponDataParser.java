@@ -1,9 +1,9 @@
 package io.irminsul.game.data.parser;
 
 import com.google.gson.*;
-import io.irminsul.common.game.data.item.WeaponData;
-import io.irminsul.common.game.data.item.WeaponProperty;
-import io.irminsul.common.game.data.item.WeaponType;
+import io.irminsul.common.game.data.weapon.WeaponData;
+import io.irminsul.common.game.data.weapon.WeaponProperty;
+import io.irminsul.common.game.data.weapon.WeaponType;
 import io.irminsul.game.data.FightProperty;
 import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.NotNull;

@@ -3,7 +3,6 @@ package io.irminsul.game.player;
 import io.irminsul.common.game.GameServerContainer;
 import io.irminsul.common.game.world.Teleport;
 import io.irminsul.common.proto.EnterTypeOuterClass;
-import io.irminsul.common.proto.VisionTypeOuterClass;
 import io.irminsul.game.GameConstants;
 import io.irminsul.common.game.avatar.Avatar;
 import io.irminsul.common.game.player.*;
@@ -19,7 +18,6 @@ import io.irminsul.game.event.impl.PlayerLoginEvent;
 import io.irminsul.game.net.packet.PacketAvatarDataNotify;
 import io.irminsul.game.net.packet.PacketPlayerDataNotify;
 import io.irminsul.game.net.packet.PacketPlayerEnterSceneNotify;
-import io.irminsul.game.net.packet.PacketSceneEntityAppearNotify;
 import io.irminsul.game.world.IrminsulWorld;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
@@ -348,9 +346,8 @@ public class IrminsulPlayer implements Player {
 
         this.generateEnterSceneToken();
         this.position = position;
-        if (this.getScene() != null) {
 
-            // TODO: removing this has a really cool effect and I might add it as an option (instant TP)
+        if (this.getScene() != null) {
             new PacketPlayerEnterSceneNotify(this.session, new Teleport(this.sceneId, this.position,
                 EnterTypeOuterClass.EnterType.ENTER_TYPE_GOTO, EnterReason.Gm)).send();
 

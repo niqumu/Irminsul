@@ -8,8 +8,10 @@ import io.irminsul.common.game.world.SceneScriptManager;
 import io.irminsul.common.game.world.World;
 import io.irminsul.common.proto.VisionTypeOuterClass;
 import io.irminsul.game.data.DataContainer;
+import io.irminsul.game.net.packet.PacketPlayerGameTimeNotify;
 import io.irminsul.game.net.packet.PacketSceneEntityAppearNotify;
 import io.irminsul.game.net.packet.PacketSceneEntityDisappearNotify;
+import io.irminsul.game.net.packet.PacketSceneTimeNotify;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 
@@ -52,6 +54,21 @@ public class IrminsulScene implements Scene {
      */
     private final List<Entity> entities = new ArrayList<>();
 
+    /**
+     * The last timestamp at which the time was broadcast to all players
+     */
+    private long lastTimeBroadcast = 0;
+
+    /**
+     * The timestamp at which this scene was created
+     */
+    private long creationTime = System.currentTimeMillis();
+
+    /**
+     * Adjustable scene time offset, in milliseconds
+     */
+    private long timeModifier = 0;
+
     public IrminsulScene(@NotNull World world, int id) {
         this.world = world;
         this.id = id;
@@ -81,6 +98,9 @@ public class IrminsulScene implements Scene {
 
         // Add the player's avatar to the scene
         this.addEntity(player.getTeamManager().getActiveAvatar());
+
+        // Inform the player of the current time in this scene
+        this.sendTime(player);
     }
 
     /**
@@ -119,7 +139,6 @@ public class IrminsulScene implements Scene {
 
     /**
      * Replace an entity with a new one
-     *
      * @param oldEntity The entity to replace
      * @param newEntity The entity to replace oldEntity with
      */
@@ -148,6 +167,42 @@ public class IrminsulScene implements Scene {
     }
 
     /**
+     * @return The current time, in seconds, that has elapsed within this scene
+     */
+    @Override
+    public int getSceneTime() {
+        return (int) ((System.currentTimeMillis() - this.creationTime + this.timeModifier) / 1000);
+    }
+
+    /**
+     * Modifies the current scene time by a set amount of milliseconds
+     * @param millis The amount, in milliseconds, to modify the scene time by
+     */
+    @Override
+    public void modifySceneTime(long millis) {
+        this.timeModifier += millis;
+    }
+
+    /**
+     * Informs all players in this scene of the current time
+     */
+    @Override
+    public void broadcastTime() {
+        this.players.forEach(this::sendTime);
+        this.lastTimeBroadcast = System.currentTimeMillis();
+    }
+
+    /**
+     * Inform a player of the current time
+     * @param player The player to inform
+     */
+    @Override
+    public void sendTime(@NotNull Player player) {
+        new PacketSceneTimeNotify(player.getSession(), this).send();
+        new PacketPlayerGameTimeNotify(player.getSession(), this.getSceneTime()).send();
+    }
+
+    /**
      * Called at a regular interval by the server; update this object in some way
      */
     @Override
@@ -160,5 +215,10 @@ public class IrminsulScene implements Scene {
 
         // Tick players
         this.players.forEach(Player::tick);
+
+        // Broadcast time if the parent world is not paused
+        if (System.currentTimeMillis() - this.lastTimeBroadcast >= 10000 && !this.world.isPaused()) {
+            this.broadcastTime();
+        }
     }
 }

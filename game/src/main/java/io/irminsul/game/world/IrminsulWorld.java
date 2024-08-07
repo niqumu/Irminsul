@@ -57,6 +57,12 @@ public class IrminsulWorld implements World {
      */
     private boolean paused = false;
 
+    /**
+     * The time, in milliseconds, at which this world was last paused, used to calculate the amount to modify the
+     * in-game time by to stay in sync
+     */
+    private long pauseTime;
+
     private int lastEntityId = 0;
     private int lastPeerId = 0;
 
@@ -105,10 +111,36 @@ public class IrminsulWorld implements World {
     }
 
     /**
+     * Sets whether this world is currently paused/frozen
+     * @param paused If the world should be paused/frozen
+     */
+    @Override
+    public void setPaused(boolean paused) {
+        if (this.isMultiplayer()) {
+            return; // Multiplayer worlds can't be paused
+        }
+
+        // If we're pausing, keep track of what time we paused at
+        if (paused) {
+            this.pauseTime = System.currentTimeMillis();
+        }
+
+        // If we're resuming, modify the game time by how long we were paused for
+        else {
+            this.scenes.values().forEach(scene -> scene.modifySceneTime(-(System.currentTimeMillis() - pauseTime)));
+        }
+
+        this.paused = paused;
+        this.scenes.values().forEach(Scene::broadcastTime);
+    }
+
+    /**
      * Called at a regular interval by the server; update this object in some way
      */
     @Override
     public void tick() {
+
+        // Tick scenes
         this.scenes.values().forEach(Scene::tick);
     }
 }

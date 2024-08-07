@@ -22,7 +22,7 @@ public class PacketManager implements ServerSystem {
     /**
      * Whether warnings about incoming packets without a handler should be raised by the server
      */
-    public static final boolean MISSING_HANDLER_LOGGING = true;
+    public static final boolean MISSING_HANDLER_LOGGING = false;
 
     /**
      * Packets that are excluded from logging (too much spam)

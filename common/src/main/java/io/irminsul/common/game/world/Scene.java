@@ -78,4 +78,26 @@ public interface Scene extends Tickable {
      * @param player The player to spawn entities for
      */
     void addEntitiesFor(@NotNull Player player);
+
+    /**
+     * @return The current time, in seconds, that has elapsed within this scene
+     */
+    int getSceneTime();
+
+    /**
+     * Modifies the current scene time by a set amount of milliseconds
+     * @param millis The amount, in milliseconds, to modify the scene time by
+     */
+    void modifySceneTime(long millis);
+
+    /**
+     * Informs all players in this scene of the current time
+     */
+    void broadcastTime();
+
+    /**
+     * Inform a player of the current time
+     * @param player The player to inform
+     */
+    void sendTime(@NotNull Player player);
 }

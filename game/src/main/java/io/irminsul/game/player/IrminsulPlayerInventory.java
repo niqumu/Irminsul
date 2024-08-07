@@ -56,7 +56,8 @@ public class IrminsulPlayerInventory implements PlayerInventory {
      */
     @Override
     public void addItem(Item item, int reason) {
-        // todo store the item. no idea how to approach this with items having multiple counts
+        // todo: how to approach this with items having multiple counts?
+        this.items.add(item);
 
         // Tell the client about the item
         new PacketStoreItemChangeNotify(player.getSession(), List.of(item)).send();

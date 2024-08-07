@@ -97,7 +97,7 @@ public class IrminsulAvatar implements Avatar {
     /**
      * The level of this avatar
      */
-    private int level = 90;
+    private int level = 1;
 
     /**
      * The total EXP of this avatar
@@ -107,7 +107,7 @@ public class IrminsulAvatar implements Avatar {
     /**
      * The ascension level of this avatar
      */
-    private int breakLevel = 6;
+    private int breakLevel = 0;
 
     /**
      * A map of skill levels, keyed by ID
@@ -139,8 +139,7 @@ public class IrminsulAvatar implements Avatar {
         this.avatarData.getSkillDepotData().getSkills().forEach(skill -> this.skillLevels.put(skill, 1));
 
         // Create a starter weapon, equip it, and give it to the owner
-//        this.weapon = new IrminsulWeapon(this.avatarData.getInitialWeapon(), owner);
-        this.weapon = new IrminsulWeapon(11502, owner);
+        this.weapon = new IrminsulWeapon(this.avatarData.getInitialWeapon(), owner);
         this.owner.getInventory().addItem(this.weapon, ActionReason.AddAvatar);
 
         // Calculate stats
@@ -309,7 +308,6 @@ public class IrminsulAvatar implements Avatar {
             // Skills and talents
             .setSkillDepotId(this.avatarData.getSkillDepotData().getSkillDepotId())
             .putAllSkillLevelMap(this.skillLevels)
-            .addAllTalentIdList(this.avatarData.getSkillDepotData().getTalents())
 
             // Properties
             .putAllFightPropMap(this.fightProperties)
@@ -374,7 +372,6 @@ public class IrminsulAvatar implements Avatar {
             // Skills and talents
             .setSkillDepotId(this.avatarData.getSkillDepotData().getSkillDepotId())
             .putAllSkillLevelMap(this.skillLevels)
-            .addAllTalentIdList(this.avatarData.getSkillDepotData().getTalents())
             .build();
     }
 
@@ -388,6 +385,7 @@ public class IrminsulAvatar implements Avatar {
 
         // Avatar abilities
         for (String ability : this.avatarData.getAbilities()) {
+            System.out.println(ability);
             builder.addAbilityEmbryoList(
                 AbilityEmbryoOuterClass.AbilityEmbryo.newBuilder()
                     .setAbilityId(++embryo)

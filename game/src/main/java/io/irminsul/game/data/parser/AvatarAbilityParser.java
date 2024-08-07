@@ -58,7 +58,7 @@ public class AvatarAbilityParser {
 
         for (JsonElement element : data.get(avatarName)) {
             JsonObject defaultObj = element.getAsJsonObject().getAsJsonObject("Default");
-            String abilityName = defaultObj.get("abilityName").toString();
+            String abilityName = defaultObj.get("abilityName").getAsString();
 
             // Stupid thing I have to do to avoid duplicate abilities on the traveler
             if ((originalAvatarName.equals("PlayerGirl") && abilityName.contains("PlayerBoy")) ||

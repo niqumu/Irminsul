@@ -2,10 +2,14 @@ package io.irminsul.common.game.player;
 
 import io.irminsul.common.game.PlayerSystem;
 import io.irminsul.common.game.item.Item;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
+import java.util.List;
 
 public interface PlayerInventory extends PlayerSystem, Serializable {
+
+    @NotNull List<Item> getItems();
 
     /**
      * Adds a set amount of an item into this inventory

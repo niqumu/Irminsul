@@ -60,10 +60,6 @@ public class IrminsulWeapon implements Weapon {
         this.guid = owner.getNextGuid();
         this.entityId = owner.getWorld().getNextEntityId(EntityIdType.WEAPON);
 
-        // TODO testing remove
-        this.level = 90;
-        this.promoteLevel = 6;
-
         // Load weapon data
         this.weaponData = DataContainer.getOrLoadWeaponData(weaponId);
     }

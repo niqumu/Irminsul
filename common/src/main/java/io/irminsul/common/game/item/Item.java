@@ -31,6 +31,12 @@ public interface Item extends Entity {
     boolean isLocked();
 
     /**
+     * Sets whether this item is locked
+     * @param locked Whether this item should be locked
+     */
+    void setLocked(boolean locked);
+
+    /**
      * @return This item, as a protobuf Item
      */
     @NotNull ItemOuterClass.Item asItem();

@@ -214,10 +214,6 @@ public class IrminsulPlayer implements Player {
             // Add default avatar
             this.avatars.add(new IrminsulAvatar(GameConstants.FEMALE_TRAVELER_AVATAR_ID, this));
             this.teamManager.getActiveTeam().getAvatars().add(this.avatars.getFirst());
-
-            // todo testing
-            this.avatars.add(new IrminsulAvatar(10000042, this));
-            this.teamManager.getActiveTeam().getAvatars().add(this.avatars.get(1));
         }
 
         // Send player data

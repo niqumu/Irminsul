@@ -10,7 +10,7 @@ import io.irminsul.common.game.world.Position;
 import io.irminsul.common.game.world.Scene;
 import io.irminsul.common.game.world.World;
 import io.irminsul.game.avatar.IrminsulAvatar;
-import io.irminsul.game.data.OpenStateData;
+import io.irminsul.game.data.EnterReason;
 import io.irminsul.game.data.PlayerProperty;
 import io.irminsul.game.event.impl.PlayerLoginEvent;
 import io.irminsul.game.net.packet.PacketAvatarDataNotify;
@@ -234,7 +234,7 @@ public class IrminsulPlayer implements Player {
         GameServerContainer.getServer().getEventBus().postEvent(new PlayerLoginEvent(this));
 
         // Continue the login process
-        this.sendToScene(GameConstants.OVERWORLD_SCENE);
+        this.sendToScene(GameConstants.OVERWORLD_SCENE, EnterReason.Login);
         this.session.setState(SessionState.ACTIVE);
     }
 
@@ -265,36 +265,56 @@ public class IrminsulPlayer implements Player {
     }
 
     /**
-     * Sends this player to a specified scene
+     * Sends this player to a specified scene at the default spawn position
      * @param sceneId The scene to send the player to
      */
     @Override
     public void sendToScene(int sceneId) {
-        this.session.getServer().getLogger().info("Sending player {} from scene {} -> {}",
-            this.uid, this.sceneId, sceneId);
+        Position spawn = this.world.getOrCreateScene(sceneId).getSceneData().getSpawn();
+        this.sendToScene(sceneId, spawn, EnterReason.Gm);
+    }
 
-        this.generateEnterSceneToken();
-        this.position = this.world.getOrCreateScene(sceneId).getSceneData().getSpawn();
-        this.sceneId = sceneId;
-        this.world.getScenes().get(sceneId).addPlayer(this);
-        new PacketPlayerEnterSceneNotify(this.session, sceneId, this.position).send();
+    /**
+     * Sends this player to a specified scene at the default spawn position
+     * @param sceneId The scene to send the player to
+     * @param reason  The reason for the teleport
+     */
+    @Override
+    public void sendToScene(int sceneId, int reason) {
+        Position spawn = this.world.getOrCreateScene(sceneId).getSceneData().getSpawn();
+        this.sendToScene(sceneId, spawn, reason);
     }
 
     /**
      * Sends this player to a specified scene at a specified position
-     * @param sceneId The scene to send the player to
+     * @param sceneId  The scene to send the player to
      * @param position The position within the new scene to send the player to
      */
     @Override
     public void sendToScene(int sceneId, @NotNull Position position) {
-        this.session.getServer().getLogger().info("Sending player {} from scene {} -> {} at {}",
-            this.uid, this.sceneId, sceneId, position);
+        this.sendToScene(sceneId, position, EnterReason.Gm);
+    }
 
+    /**
+     * Sends this player to a specified scene at a specified position
+     * @param sceneId  The scene to send the player to
+     * @param position The position within the new scene to send the player to
+     * @param reason   The reason for the teleport
+     */
+    @Override
+    public void sendToScene(int sceneId, @NotNull Position position, int reason) {
+        this.session.getServer().getLogger().info("Sending {} from scene {} -> {} at {} with reason {}",
+            this, this.sceneId, sceneId, position, EnterReason.getReasonById(reason));
+
+        // Load scene
+        this.world.getOrCreateScene(sceneId);
+
+        // Teleport
         this.generateEnterSceneToken();
         this.position = position;
         this.sceneId = sceneId;
         this.world.getScenes().get(sceneId).addPlayer(this);
-        new PacketPlayerEnterSceneNotify(this.session, sceneId, this.position).send();
+        new PacketPlayerEnterSceneNotify(this.session, sceneId, this.position, reason).send();
     }
 
     /**
@@ -303,12 +323,11 @@ public class IrminsulPlayer implements Player {
      */
     @Override
     public void teleport(@NotNull Position position) {
-        this.session.getServer().getLogger().info("Teleporting player {} to {} within scene {}",
-            this.uid, position, this.sceneId);
+        this.session.getServer().getLogger().info("Teleporting {} to {} within scene {}", this, position, this.sceneId);
 
         this.generateEnterSceneToken();
         this.position = position;
-        new PacketPlayerEnterSceneNotify(this.session, this.sceneId, this.position).send();
+        new PacketPlayerEnterSceneNotify(this.session, this.sceneId, this.position, EnterReason.Gm).send();
     }
 
     private void generateEnterSceneToken() {

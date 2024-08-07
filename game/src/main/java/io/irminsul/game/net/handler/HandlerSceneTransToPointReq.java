@@ -4,6 +4,7 @@ import io.irminsul.common.game.net.Session;
 import io.irminsul.common.game.data.scene.SceneData;
 import io.irminsul.common.net.PacketIds;
 import io.irminsul.common.proto.SceneTransToPointReqOuterClass;
+import io.irminsul.game.data.EnterReason;
 import io.irminsul.game.net.InboundPacket;
 import io.irminsul.game.net.PacketHandler;
 import io.irminsul.game.net.packet.PacketSceneTransToPointRsp;
@@ -42,7 +43,8 @@ public class HandlerSceneTransToPointReq implements PacketHandler {
 
         // Teleport the player TODO rotations are broken, figure that out
         SceneData sceneData = session.getPlayer().getWorld().getOrCreateScene(sceneId).getSceneData();
-        session.getPlayer().sendToScene(sceneId, sceneData.getTransPoints().get(pointId).getTransPosition());
+        session.getPlayer().sendToScene(sceneId, sceneData.getTransPoints().get(pointId).getTransPosition(),
+            EnterReason.TransPoint);
 
         // Respond
         new PacketSceneTransToPointRsp(session, request.getSceneId(), request.getPointId());

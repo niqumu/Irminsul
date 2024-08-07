@@ -251,6 +251,6 @@ public class OpenStateData {
         OPEN_ADVENTURE_MANUAL_EDUCATION,
 
         // Area
-        OPEN_STATE_LIMIT_REGION_GLOBAL
+        OPEN_STATE_LIMIT_REGION_FRESHMEAT
     );
 }

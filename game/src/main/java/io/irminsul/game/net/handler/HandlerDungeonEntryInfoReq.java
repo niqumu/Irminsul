@@ -47,6 +47,7 @@ public class HandlerDungeonEntryInfoReq implements PacketHandler {
         if (dungeonEntryPoint == null) {
             session.getServer().getLogger().warn("{} tried to access an unknown dungeon entrance: scene {} point {}",
                 session.getPlayer(), request.getSceneId(), request.getPointId());
+            session.getServer().getLogger().warn("It's possible that Irminsul's data is outdated!");
             return;
         }
 

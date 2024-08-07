@@ -13,8 +13,8 @@ public class DungeonEntryPoint extends TransPoint {
     private final List<Integer> dungeonIds;
 
     public DungeonEntryPoint(int areaId, int gadgetId, Position position, Position transPosition,
-                             TransPointType type, List<Integer> dungeonIds) {
-        super(areaId, gadgetId, position, transPosition, type);
+                             List<Integer> dungeonIds) {
+        super(areaId, gadgetId, position, transPosition, TransPointType.DUNGEON_ENTRY);
         this.dungeonIds = dungeonIds;
     }
 }

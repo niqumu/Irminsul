@@ -2,6 +2,7 @@ package io.irminsul.game.data;
 
 import io.irminsul.common.game.data.avatar.AvatarData;
 import io.irminsul.common.game.data.avatar.AvatarSkillDepotData;
+import io.irminsul.common.game.data.dungeon.DungeonData;
 import io.irminsul.common.game.data.weapon.WeaponData;
 import io.irminsul.common.game.data.scene.SceneData;
 import io.irminsul.common.game.data.weapon.WeaponPromotionData;
@@ -77,6 +78,15 @@ public class DataContainer {
      * keyed by weapon ID
      */
     private final Map<Integer, Map<Integer, WeaponPromotionData>> loadedWeaponPromotions = new HashMap<>();
+
+    // ================================================================ //
+    //                            Dungeons                              //
+    // ================================================================ //
+
+    /**
+     * A map of loaded dungeons (domains) and their {@link DungeonData}, keyed by dungeon IDs
+     */
+    private final Map<Integer, DungeonData> loadedDungeons = new HashMap<>();
 
     // ================================================================ //
 
@@ -237,7 +247,29 @@ public class DataContainer {
         Map<Integer, WeaponPromotionData> promotionData = WeaponPromotionDataParser.parsePromotionData(weaponId);
         loadedWeaponPromotions.put(weaponId, promotionData);
 
-        logger.debug("Finished loaded weapon promotions for {}", weaponId);
+        logger.debug("Finished loaded weapon promotions for {}!", weaponId);
         return promotionData;
+    }
+
+    /**
+     * Gets a dungeon/domain's {@link DungeonData} by dungeon ID, attempting to load the data if not already loaded
+     * @param dungeonId The ID of the dungeon to fetch the data for
+     * @return The dungeon's {@link DungeonData}
+     */
+    public @NotNull DungeonData getOrLoadDungeonData(int dungeonId) {
+        if (loadedDungeons.containsKey(dungeonId)) {
+            return loadedDungeons.get(dungeonId);
+        }
+        return loadDungeonData(dungeonId);
+    }
+
+    private @NotNull DungeonData loadDungeonData(int dungeonId) {
+        logger.debug("Loading dungeon {}", dungeonId);
+
+        DungeonData dungeonData = DungeonDataParser.parseDungeonData(dungeonId);
+        loadedDungeons.put(dungeonId, dungeonData);
+
+        logger.debug("Finished loading dungeon {}!", dungeonId);
+        return dungeonData;
     }
 }

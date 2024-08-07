@@ -163,10 +163,17 @@ public interface Player extends Tickable, Serializable {
     long getNextGuid();
 
     /**
-     * Sends this player to a specified scene
+     * Sends this player to a specified scene at the default spawn position
      * @param sceneId The scene to send the player to
      */
     void sendToScene(int sceneId);
+
+    /**
+     * Sends this player to a specified scene at the default spawn position
+     * @param sceneId The scene to send the player to
+     * @param reason The reason for the teleport
+     */
+    void sendToScene(int sceneId, int reason);
 
     /**
      * Sends this player to a specified scene at a specified position
@@ -174,6 +181,14 @@ public interface Player extends Tickable, Serializable {
      * @param position The position within the new scene to send the player to
      */
     void sendToScene(int sceneId, @NotNull Position position);
+
+    /**
+     * Sends this player to a specified scene at a specified position
+     * @param sceneId The scene to send the player to
+     * @param position The position within the new scene to send the player to
+     * @param reason The reason for the teleport
+     */
+    void sendToScene(int sceneId, @NotNull Position position, int reason);
 
     /**
      * Sends this player to a specified position within their current scene

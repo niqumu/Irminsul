@@ -1,5 +1,6 @@
 package io.irminsul.common.game;
 
+import io.irminsul.common.game.dungeon.DungeonManager;
 import io.irminsul.common.game.event.EventBus;
 import io.irminsul.common.game.net.Session;
 import io.irminsul.common.game.player.PlayerProfile;
@@ -43,6 +44,11 @@ public interface GameServer {
      * @return Whether this server is running in sandbox mode, as opposed to realistic mode
      */
     boolean isSandbox();
+
+    /**
+     * @return This server's {@link DungeonManager}
+     */
+    @NotNull DungeonManager getDungeonManager();
 
     /**
      * Attempt to fetch the social profile data of the player with the provided UID

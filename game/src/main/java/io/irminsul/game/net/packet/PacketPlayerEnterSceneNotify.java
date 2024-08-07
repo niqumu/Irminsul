@@ -8,7 +8,7 @@ import io.irminsul.common.proto.PlayerEnterSceneNotifyOuterClass;
 import io.irminsul.game.net.OutboundPacket;
 
 public class PacketPlayerEnterSceneNotify extends OutboundPacket {
-    public PacketPlayerEnterSceneNotify(Session session, int scene, Position position) {
+    public PacketPlayerEnterSceneNotify(Session session, int scene, Position position, int reason) {
         super(PacketIds.PlayerEnterSceneNotify, session);
 
         if (session.getPlayer() == null) {
@@ -23,6 +23,7 @@ public class PacketPlayerEnterSceneNotify extends OutboundPacket {
                 .setEnterSceneToken(session.getPlayer().getEnterSceneToken())
                 .setPos(position.positionAsVector())
                 .setType(EnterTypeOuterClass.EnterType.ENTER_TYPE_SELF)
+                .setEnterReason(reason)
                 .setTargetUid(session.getPlayer().getUid())
                 .setWorldLevel(session.getPlayer().getWorld().getWorldLevel())
                 .setWorldType(1)

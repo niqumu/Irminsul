@@ -71,6 +71,7 @@ public class IrminsulPlayerProgress implements PlayerProgress {
         // Send open states
         if (event.getPlayer().equals(this.player)) {
             new PacketOpenStateUpdateNotify(this.player.getSession(), this.getOpenStates()).send();
+            System.out.println("Sent open states");
         }
     }
 

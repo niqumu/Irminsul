@@ -24,7 +24,12 @@ public enum TransPointType {
     /**
      * Domain entrance
      */
-    DUNGEON("DungeonEntry");
+    DUNGEON_ENTRY("DungeonEntry"),
+
+    /**
+     * Domain exit (facing away from domain)
+     */
+    DUNGEON_EXIT("DungeonExit");
 
     /**
      * The internal name of the trans point type, as used in scene point JSONs

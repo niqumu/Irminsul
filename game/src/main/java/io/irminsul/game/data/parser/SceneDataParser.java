@@ -4,10 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import io.irminsul.common.game.data.scene.DungeonEntryPoint;
-import io.irminsul.common.game.data.scene.SceneData;
-import io.irminsul.common.game.data.scene.TransPoint;
-import io.irminsul.common.game.data.scene.TransPointType;
+import io.irminsul.common.game.data.scene.*;
 import io.irminsul.common.game.world.Position;
 import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.NotNull;
@@ -102,6 +99,7 @@ public class SceneDataParser {
             switch (entryObject.get("$type").getAsString()) {
                 case "SceneTransPoint" -> parseTransPoint(sceneData, pointId, entryObject);
                 case "DungeonEntry" -> parseDungeonEntry(sceneData, pointId, entryObject);
+                case "DungeonExit" -> parseDungeonExit(sceneData, pointId, entryObject);
             }
         }
     }
@@ -169,16 +167,36 @@ public class SceneDataParser {
         transPosition.setYRot(transRotObj.get("y").getAsFloat());
         transPosition.setZRot(transRotObj.get("z").getAsFloat());
 
-        // Type
-        TransPointType type = TransPointType.of(point.get("pointType").getAsString());
-
         // Dungeon IDs
         List<Integer> dungeonIds = List.of(gson.fromJson(point.get("dungeonIds"), Integer[].class));
 
         // Add point to scene data
         sceneData.getTransPoints().put(pointId,
-            new TransPoint(areaId, gadgetId, position, transPosition, type));
+            new TransPoint(areaId, gadgetId, position, transPosition, TransPointType.DUNGEON_ENTRY));
         sceneData.getDungeonEntryPoints().put(pointId,
-            new DungeonEntryPoint(areaId, gadgetId, position, transPosition, type, dungeonIds));
+            new DungeonEntryPoint(areaId, gadgetId, position, transPosition, dungeonIds));
+    }
+
+    private void parseDungeonExit(SceneData sceneData, int pointId, JsonObject point) {
+
+        // IDs
+        int areaId = point.get("areaId").getAsInt();
+        int gadgetId = point.get("gadgetId").getAsInt();
+
+        // Position and rotation
+        Position position = Position.ORIGIN();
+        JsonObject posObj = point.getAsJsonObject("pos");
+        position.setX(posObj.get("x").getAsFloat());
+        position.setY(posObj.get("y").getAsFloat());
+        position.setZ(posObj.get("z").getAsFloat());
+        JsonObject rotObj = point.getAsJsonObject("rot");
+        position.setXRot(rotObj.get("x").getAsFloat());
+        position.setYRot(rotObj.get("y").getAsFloat());
+        position.setZRot(rotObj.get("z").getAsFloat());
+
+        // Add point to scene data
+        sceneData.getTransPoints().put(pointId,
+            new TransPoint(areaId, gadgetId, position, position, TransPointType.DUNGEON_EXIT));
+        sceneData.getDungeonExitPoints().put(pointId, new DungeonExitPoint(areaId, gadgetId, position, position));
     }
 }

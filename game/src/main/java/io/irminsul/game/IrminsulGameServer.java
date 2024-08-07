@@ -1,10 +1,13 @@
 package io.irminsul.game;
 
 import io.irminsul.common.game.GameServer;
+import io.irminsul.common.game.GameServerContainer;
+import io.irminsul.common.game.event.EventBus;
 import io.irminsul.common.game.net.Session;
 import io.irminsul.common.game.player.PlayerProfile;
 import io.irminsul.common.game.world.World;
 import io.irminsul.common.util.CryptoUtil;
+import io.irminsul.game.event.SimpleEventBus;
 import io.irminsul.game.net.InboundPacket;
 import io.irminsul.game.net.IrminsulSession;
 import io.irminsul.game.net.MalformedPacketException;
@@ -36,6 +39,11 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
      * This server's logger
      */
     private final Logger logger = LoggerFactory.getLogger("Game Server");
+
+    /**
+     * This server's {@link EventBus}
+     */
+    private final EventBus eventBus = new SimpleEventBus();
 
     /**
      * The port this server is running on
@@ -81,6 +89,9 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
         this.logger.info("Starting game server!");
         this.port = port;
         this.sandbox = sandbox;
+
+        // Set game server container instance
+        GameServerContainer.setServer(this);
 
         // Init KCP server
         ChannelConfig channelConfig = new ChannelConfig();

@@ -1,12 +1,15 @@
 package io.irminsul.game.player;
 
+import io.irminsul.common.game.GameServerContainer;
 import io.irminsul.common.game.data.scene.TransPointType;
+import io.irminsul.common.game.event.EventHandler;
 import io.irminsul.game.GameConstants;
 import io.irminsul.common.game.data.scene.TransPoint;
 import io.irminsul.common.game.player.Player;
 import io.irminsul.common.game.player.PlayerProgress;
 import io.irminsul.game.data.ActionReason;
 import io.irminsul.game.data.OpenStateData;
+import io.irminsul.game.event.impl.PlayerLoginEvent;
 import io.irminsul.game.net.packet.PacketOpenStateUpdateNotify;
 import io.irminsul.game.net.packet.PacketScenePointUnlockNotify;
 import lombok.Getter;
@@ -57,18 +60,20 @@ public class IrminsulPlayerProgress implements PlayerProgress {
             OpenStateData.SANDBOX_OPEN_STATES.forEach(state -> this.openStates.put(state, true));
         }
 
-        this.openStates.put(OpenStateData.OPEN_STATE_LIMIT_REGION_FRESHMEAT, false);
+        // Subscribe to events
+        GameServerContainer.getServer().getEventBus().registerSubscriber(this);
     }
 
     /**
      * Called when the player logs in
-     * TODO: event
+     * @param event The event associated with the login
      */
-    @Override
-    public void onLogin() {
-
+    @EventHandler
+    public void onLogin(PlayerLoginEvent event) {
         // Send open states
-        new PacketOpenStateUpdateNotify(this.player.getSession(), this.openStates).send();
+        if (event.getPlayer().equals(this.player)) {
+            new PacketOpenStateUpdateNotify(this.player.getSession(), this.openStates).send();
+        }
     }
 
     /**

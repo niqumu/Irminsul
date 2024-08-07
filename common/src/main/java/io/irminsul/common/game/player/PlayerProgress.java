@@ -15,12 +15,6 @@ public interface PlayerProgress extends PlayerSystem, Serializable {
     @NotNull Map<Integer, Boolean> getOpenStates();
 
     /**
-     * Called when the player logs in
-     * TODO: event
-     */
-    void onLogin();
-
-    /**
      * Gets a list of unlocked scene points within a given scene
      * @param scene The ID of the scene to fetch a list of unlocked scene points for
      * @return A list of unlocked scene points with the specified scene

@@ -1,5 +1,6 @@
 package io.irminsul.game.player;
 
+import io.irminsul.common.game.GameServerContainer;
 import io.irminsul.game.GameConstants;
 import io.irminsul.common.game.avatar.Avatar;
 import io.irminsul.common.game.player.*;
@@ -10,6 +11,7 @@ import io.irminsul.common.game.world.Scene;
 import io.irminsul.common.game.world.World;
 import io.irminsul.game.avatar.IrminsulAvatar;
 import io.irminsul.game.data.PlayerProperty;
+import io.irminsul.game.event.impl.PlayerLoginEvent;
 import io.irminsul.game.net.packet.PacketAvatarDataNotify;
 import io.irminsul.game.net.packet.PacketPlayerDataNotify;
 import io.irminsul.game.net.packet.PacketPlayerEnterSceneNotify;
@@ -210,8 +212,6 @@ public class IrminsulPlayer implements Player {
 
         // If the player has no avatars, give them the traveler
         if (this.avatars.isEmpty()) {
-
-            // Add default avatar
             this.avatars.add(new IrminsulAvatar(GameConstants.FEMALE_TRAVELER_AVATAR_ID, this));
             this.teamManager.getActiveTeam().getAvatars().add(this.avatars.getFirst());
         }
@@ -220,8 +220,8 @@ public class IrminsulPlayer implements Player {
         new PacketPlayerDataNotify(this.session).send();
         new PacketAvatarDataNotify(this.session).send();
 
-        // Let the managers handle this (TODO: let them sub to a login event)
-        this.progress.onLogin();
+        // Fire login event
+        GameServerContainer.getServer().getEventBus().postEvent(new PlayerLoginEvent(this));
 
         // Continue the login process
         this.sendToScene(GameConstants.OVERWORLD_SCENE);

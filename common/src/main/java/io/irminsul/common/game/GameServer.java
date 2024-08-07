@@ -1,5 +1,6 @@
 package io.irminsul.common.game;
 
+import io.irminsul.common.game.event.EventBus;
 import io.irminsul.common.game.net.Session;
 import io.irminsul.common.game.player.PlayerProfile;
 import io.irminsul.common.game.world.World;
@@ -17,6 +18,11 @@ public interface GameServer {
      * @return This server's logger
      */
     @NotNull Logger getLogger();
+
+    /**
+     * @return This server's {@link EventBus}
+     */
+    @NotNull EventBus getEventBus();
 
     /**
      * @return The port this game server is running on

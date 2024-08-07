@@ -385,7 +385,6 @@ public class IrminsulAvatar implements Avatar {
 
         // Avatar abilities
         for (String ability : this.avatarData.getAbilities()) {
-            System.out.println(ability);
             builder.addAbilityEmbryoList(
                 AbilityEmbryoOuterClass.AbilityEmbryo.newBuilder()
                     .setAbilityId(++embryo)

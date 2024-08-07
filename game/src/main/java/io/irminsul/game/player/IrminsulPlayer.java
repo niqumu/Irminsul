@@ -1,6 +1,9 @@
 package io.irminsul.game.player;
 
 import io.irminsul.common.game.GameServerContainer;
+import io.irminsul.common.game.world.Teleport;
+import io.irminsul.common.proto.EnterTypeOuterClass;
+import io.irminsul.common.proto.VisionTypeOuterClass;
 import io.irminsul.game.GameConstants;
 import io.irminsul.common.game.avatar.Avatar;
 import io.irminsul.common.game.player.*;
@@ -16,6 +19,7 @@ import io.irminsul.game.event.impl.PlayerLoginEvent;
 import io.irminsul.game.net.packet.PacketAvatarDataNotify;
 import io.irminsul.game.net.packet.PacketPlayerDataNotify;
 import io.irminsul.game.net.packet.PacketPlayerEnterSceneNotify;
+import io.irminsul.game.net.packet.PacketSceneEntityAppearNotify;
 import io.irminsul.game.world.IrminsulWorld;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
@@ -303,18 +307,35 @@ public class IrminsulPlayer implements Player {
      */
     @Override
     public void sendToScene(int sceneId, @NotNull Position position, int reason) {
+        this.sendToScene(new Teleport(sceneId, position, EnterTypeOuterClass.EnterType.ENTER_TYPE_SELF, reason, 0));
+    }
+
+    /**
+     * Sends this player to a scene at a specified position
+     * @param teleport The teleport data to use
+     */
+    @Override
+    public void sendToScene(Teleport teleport) {
+
+        // Teleporting within the same scene
+        if (teleport.getScene() == this.sceneId) {
+            this.teleport(teleport.getPosition());
+            return;
+        }
+
         this.session.getServer().getLogger().info("Sending {} from scene {} -> {} at {} with reason {}",
-            this, this.sceneId, sceneId, position, EnterReason.getReasonById(reason));
+            this, this.sceneId, teleport.getScene(), teleport.getPosition(),
+            EnterReason.getReasonById(teleport.getEnterReason()));
 
         // Load scene
-        this.world.getOrCreateScene(sceneId);
+        this.world.getOrCreateScene(teleport.getScene());
 
         // Teleport
         this.generateEnterSceneToken();
-        this.position = position;
-        this.sceneId = sceneId;
-        this.world.getScenes().get(sceneId).addPlayer(this);
-        new PacketPlayerEnterSceneNotify(this.session, sceneId, this.position, reason).send();
+        this.position = teleport.getPosition();
+        this.sceneId = teleport.getScene();
+        this.world.getScenes().get(teleport.getScene()).addPlayer(this);
+        new PacketPlayerEnterSceneNotify(this.session, teleport).send();
     }
 
     /**
@@ -327,7 +348,15 @@ public class IrminsulPlayer implements Player {
 
         this.generateEnterSceneToken();
         this.position = position;
-        new PacketPlayerEnterSceneNotify(this.session, this.sceneId, this.position, EnterReason.Gm).send();
+        if (this.getScene() != null) {
+
+            // TODO: removing this has a really cool effect and I might add it as an option (instant TP)
+            new PacketPlayerEnterSceneNotify(this.session, new Teleport(this.sceneId, this.position,
+                EnterTypeOuterClass.EnterType.ENTER_TYPE_GOTO, EnterReason.Gm)).send();
+
+            // Rotate
+            this.getScene().replaceEntity(this.teamManager.getActiveAvatar(), this.teamManager.getActiveAvatar());
+        }
     }
 
     private void generateEnterSceneToken() {

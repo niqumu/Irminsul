@@ -5,6 +5,7 @@ import io.irminsul.common.game.Tickable;
 import io.irminsul.common.game.avatar.Avatar;
 import io.irminsul.common.game.world.Position;
 import io.irminsul.common.game.world.Scene;
+import io.irminsul.common.game.world.Teleport;
 import io.irminsul.common.game.world.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -189,6 +190,12 @@ public interface Player extends Tickable, Serializable {
      * @param reason The reason for the teleport
      */
     void sendToScene(int sceneId, @NotNull Position position, int reason);
+
+    /**
+     * Sends this player to a scene at a specified position
+     * @param teleport The teleport data to use
+     */
+    void sendToScene(Teleport teleport);
 
     /**
      * Sends this player to a specified position within their current scene

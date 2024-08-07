@@ -28,6 +28,7 @@ public interface EventBus {
      * of the bus, and passing the event along to eligible event handlers that accept the provided event.
      *
      * @param event The event to post
+     * @return True if the event has been cancelled
      */
-    void postEvent(Event event);
+    boolean postEvent(Event event);
 }

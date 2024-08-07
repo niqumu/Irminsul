@@ -1,5 +1,6 @@
 package io.irminsul.game.net.handler;
 
+import io.irminsul.common.game.GameServerContainer;
 import io.irminsul.common.game.net.Session;
 import io.irminsul.common.game.world.Position;
 import io.irminsul.common.net.PacketIds;
@@ -33,19 +34,13 @@ public class HandlerMarkMapReq implements PacketHandler {
 
         MarkMapReqOuterClass.MarkMapReq request = MarkMapReqOuterClass.MarkMapReq.parseFrom(packet.getData());
 
+        // Sandbox mode teleportation
         if (request.getOp().equals(MarkMapReqOuterClass.MarkMapReq.Operation.OPERATION_ADD) &&
-                request.getMark().getPointType().equals(MapMarkPointType.MAP_MARK_POINT_TYPE_FISH_POOL)) {
+                request.getMark().getPointType().equals(MapMarkPointType.MAP_MARK_POINT_TYPE_FISH_POOL) &&
+                GameServerContainer.getServer().isSandbox()) {
 
-            try {
-                // Teleport to new scene
-                int scene = Integer.parseInt(request.getMark().getName());
-                session.getPlayer().sendToScene(scene);
-            } catch (Exception ignored) {
-                // Teleport within scene
-                Position position = new Position(request.getMark().getPos().getX(),
-                    300, request.getMark().getPos().getZ());
-                session.getPlayer().sendToScene(request.getMark().getSceneId(), position);
-            }
+            session.getPlayer().sendToScene(request.getMark().getSceneId(),
+                new Position(request.getMark().getPos().getX(), 500, request.getMark().getPos().getZ()));
         }
     }
 }

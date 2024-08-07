@@ -10,6 +10,7 @@ import io.irminsul.common.game.world.Position;
 import io.irminsul.common.game.world.Scene;
 import io.irminsul.common.game.world.World;
 import io.irminsul.game.avatar.IrminsulAvatar;
+import io.irminsul.game.data.OpenStateData;
 import io.irminsul.game.data.PlayerProperty;
 import io.irminsul.game.event.impl.PlayerLoginEvent;
 import io.irminsul.game.net.packet.PacketAvatarDataNotify;
@@ -182,9 +183,18 @@ public class IrminsulPlayer implements Player {
 
         // Add default properties
         this.properties.putAll(PlayerProperty.DEFAULT_PROPERTIES);
-        if (this.session.getServer().isSandbox()) { // todo this part should be per login but kept separate somehow
-            this.properties.putAll(PlayerProperty.SANDBOX_PROPERTIES);
+    }
+
+    /**
+     * @return A map of properties that this player has
+     */
+    public @NotNull Map<Integer, Integer> getProperties() {
+        if (!GameServerContainer.getServer().isSandbox()) {
+            return this.properties;
         }
+        Map<Integer, Integer> map = new HashMap<>(this.properties);
+        map.putAll(PlayerProperty.SANDBOX_PROPERTIES);
+        return map;
     }
 
     /**

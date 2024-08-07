@@ -1,9 +1,11 @@
 package io.irminsul.game.player;
 
+import io.irminsul.common.game.GameServerContainer;
 import io.irminsul.common.game.player.Player;
 import io.irminsul.common.game.avatar.Avatar;
 import io.irminsul.common.game.player.PlayerTeam;
 import io.irminsul.common.game.player.PlayerTeamManager;
+import io.irminsul.game.event.impl.PlayerSwitchAvatarEvent;
 import io.irminsul.game.net.packet.PacketChangeAvatarRsp;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -81,6 +83,13 @@ public class IrminsulPlayerTeamManager implements PlayerTeamManager {
 
         // Sanity check
         if (newIndex == -1 || newIndex == this.activeAvatarIndex || this.player.getScene() == null) {
+            return;
+        }
+
+        // Fire PlayerSwitchAvatarEvent event
+        PlayerSwitchAvatarEvent event = new PlayerSwitchAvatarEvent(this.player, this.getActiveAvatar(),
+            this.getActiveTeam().getAvatars().get(newIndex));
+        if (GameServerContainer.getServer().getEventBus().postEvent(event)) {
             return;
         }
 

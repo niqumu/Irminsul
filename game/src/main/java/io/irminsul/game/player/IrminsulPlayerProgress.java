@@ -1,6 +1,7 @@
 package io.irminsul.game.player;
 
 import io.irminsul.common.game.GameServerContainer;
+import io.irminsul.common.game.data.scene.SceneData;
 import io.irminsul.common.game.data.scene.TransPointType;
 import io.irminsul.common.game.event.EventHandler;
 import io.irminsul.game.GameConstants;
@@ -56,9 +57,6 @@ public class IrminsulPlayerProgress implements PlayerProgress {
 
         // Load default open states
         OpenStateData.DEFAULT_OPEN_STATES.forEach(state -> this.openStates.put(state, true));
-        if (this.player.getSession().getServer().isSandbox()) { // todo this part should be per login but kept separate
-            OpenStateData.SANDBOX_OPEN_STATES.forEach(state -> this.openStates.put(state, true));
-        }
 
         // Subscribe to events
         GameServerContainer.getServer().getEventBus().registerSubscriber(this);
@@ -72,8 +70,20 @@ public class IrminsulPlayerProgress implements PlayerProgress {
     public void onLogin(PlayerLoginEvent event) {
         // Send open states
         if (event.getPlayer().equals(this.player)) {
-            new PacketOpenStateUpdateNotify(this.player.getSession(), this.openStates).send();
+            new PacketOpenStateUpdateNotify(this.player.getSession(), this.getOpenStates()).send();
         }
+    }
+
+    /**
+     * @return A key-value map of client open states, controlling features on the client
+     */
+    public @NotNull Map<Integer, Boolean> getOpenStates() {
+        if (!GameServerContainer.getServer().isSandbox()) {
+            return this.openStates;
+        }
+        Map<Integer, Boolean> map = new HashMap<>(this.openStates);
+        OpenStateData.SANDBOX_OPEN_STATES.forEach(state -> map.put(state, true));
+        return map;
     }
 
     /**
@@ -85,11 +95,13 @@ public class IrminsulPlayerProgress implements PlayerProgress {
     public @NotNull List<Integer> getUnlockedScenePoints(int scene) {
 
         // Sandbox mode
-        if (this.player.getSession().getServer().isSandbox()) {
+        if (GameServerContainer.getServer().isSandbox()) {
             ArrayList<Integer> list = new ArrayList<>();
-            for (int i = 0; i < 1000; i++) {
-                list.add(i);
-            }
+
+            // Add all teleport points from the scene data
+            SceneData sceneData = this.player.getWorld().getOrCreateScene(scene).getSceneData();
+            sceneData.getTransPoints().forEach((id, point) -> list.add(id));
+
             return list;
         }
 
@@ -133,7 +145,7 @@ public class IrminsulPlayerProgress implements PlayerProgress {
     @Override
     public @NotNull List<Integer> getUnlockedSceneAreas(int scene) {
 
-        // Sandbox mode
+        // Sandbox mode TODO: load scene areas from bin
         if (this.player.getSession().getServer().isSandbox()) {
             ArrayList<Integer> list = new ArrayList<>();
             for (int i = 0; i < 100; i++) {

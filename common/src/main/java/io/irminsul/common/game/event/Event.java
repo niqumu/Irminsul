@@ -8,4 +8,8 @@ public interface Event {
     default boolean isCancellable() {
         return this instanceof CancellableEvent;
     }
+
+    default boolean isCancelled() {
+        return false;
+    }
 }

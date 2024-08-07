@@ -69,9 +69,11 @@ public final class SimpleEventBus implements EventBus {
      * of the bus, and passing the event along to eligible event handlers that accept the provided event.
      *
      * @param event The event to post
+     * @return True if the event has been cancelled
      */
-    public synchronized void postEvent(Event event) {
+    public synchronized boolean postEvent(Event event) {
         this.subscribers.forEach(sub -> this.fireEventForSubscriber(event, sub, sub.getClass()));
+        return event.isCancelled();
     }
 
     /**

@@ -3,6 +3,7 @@ package io.irminsul.game.event.impl;
 import io.irminsul.common.game.event.Event;
 import io.irminsul.common.game.player.Player;
 import lombok.Data;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Event that is fired late in the login process, immediately before the player is sent to the overworld scene
@@ -13,5 +14,5 @@ public class PlayerLoginEvent implements Event {
     /**
      * The player logging in
      */
-    private final Player player;
+    private final @NotNull Player player;
 }

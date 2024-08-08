@@ -45,18 +45,18 @@ public class IrminsulDungeonManager implements DungeonManager {
      */
     @Override
     public void enterDungeon(Player player, int point, int dungeon) {
-        int scene = DataContainer.getOrLoadDungeonData(dungeon).getSceneId();
-        SceneData sceneData = player.getWorld().getOrCreateScene(scene).getSceneData();
+        int sceneId = DataContainer.getOrLoadDungeonData(dungeon).getSceneId();
+        Scene scene = player.getWorld().getOrCreateScene(sceneId);
 
         // Sanity check
-        if (scene == 0) {
+        if (sceneId == 0) {
             this.logger.warn("{} attempted to enter dungeon ID {}, but the dungeon is missing data!", player, dungeon);
             return;
         }
 
         this.logger.info("{} is entering dungeon ID {}!", player, dungeon);
         this.currentDungeons.put(player, new Pair<>(point, dungeon));
-        player.sendToScene(new Teleport(scene, sceneData.getSpawn(),
+        player.sendToScene(new Teleport(sceneId, scene.getSpawnPoint(),
             EnterTypeOuterClass.EnterType.ENTER_TYPE_DUNGEON, EnterReason.DungeonEnter, dungeon));
     }
 

@@ -23,6 +23,11 @@ public interface Scene extends Tickable {
     int getId();
 
     /**
+     * @return The spawn point of this scene, as a {@link Position}
+     */
+    @NotNull Position getSpawnPoint();
+
+    /**
      * @return The {@link SceneData} of this scene
      */
     @NotNull SceneData getSceneData();

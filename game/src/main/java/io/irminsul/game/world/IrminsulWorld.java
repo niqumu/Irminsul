@@ -120,14 +120,18 @@ public class IrminsulWorld implements World {
             return; // Multiplayer worlds can't be paused
         }
 
-        // If we're pausing, keep track of what time we paused at
-        if (paused) {
-            this.pauseTime = System.currentTimeMillis();
-        }
+        if (paused != this.paused) {
 
-        // If we're resuming, modify the game time by how long we were paused for
-        else {
-            this.scenes.values().forEach(scene -> scene.modifySceneTime(-(System.currentTimeMillis() - pauseTime)));
+            // If we're pausing, keep track of what time we paused at
+            if (paused) {
+                this.pauseTime = System.currentTimeMillis();
+            }
+
+            // If we're resuming, modify the game time by how long we were paused for
+            else {
+                this.scenes.values().forEach(scene ->
+                    scene.modifySceneTime(-(System.currentTimeMillis() - pauseTime)));
+            }
         }
 
         this.paused = paused;

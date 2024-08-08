@@ -1,6 +1,5 @@
 package io.irminsul.common.game.data.scene;
 
-import io.irminsul.common.game.world.Position;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,11 +11,6 @@ import java.util.Map;
  */
 @Data
 public class SceneData {
-
-    /**
-     * The spawn point of this scene, as a {@link Position}
-     */
-    private final @NotNull Position spawn;
 
     /**
      * A list of TransPoints (teleport points) in this scene, keyed by scene point ID

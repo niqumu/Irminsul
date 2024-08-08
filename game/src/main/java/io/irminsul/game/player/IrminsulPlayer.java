@@ -272,7 +272,7 @@ public class IrminsulPlayer implements Player {
      */
     @Override
     public void sendToScene(int sceneId) {
-        Position spawn = this.world.getOrCreateScene(sceneId).getSceneData().getSpawn();
+        Position spawn = this.world.getOrCreateScene(sceneId).getSpawnPoint();
         this.sendToScene(sceneId, spawn, EnterReason.Gm);
     }
 
@@ -283,7 +283,7 @@ public class IrminsulPlayer implements Player {
      */
     @Override
     public void sendToScene(int sceneId, int reason) {
-        Position spawn = this.world.getOrCreateScene(sceneId).getSceneData().getSpawn();
+        Position spawn = this.world.getOrCreateScene(sceneId).getSpawnPoint();
         this.sendToScene(sceneId, spawn, reason);
     }
 

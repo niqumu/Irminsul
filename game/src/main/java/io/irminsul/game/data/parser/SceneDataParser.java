@@ -13,11 +13,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 // todo ensure the resources exist ahead of time so the server crashes at startup rather than randomly
 @UtilityClass
@@ -28,22 +25,7 @@ public class SceneDataParser {
     private final Gson gson = new Gson();
 
     public @NotNull SceneData parseSceneData(int sceneId) {
-        SceneData sceneData = new SceneData(Position.ORIGIN());
-
-        // Main scene lua
-        File sceneLua = new File("data/lua/scene/" + sceneId + "/scene" + sceneId + ".lua");
-        if (sceneLua.exists()) {
-            try {
-                parseSceneLua(sceneData, sceneLua);
-                logger.info("Parsed and loaded data from {}", sceneLua.getName());
-            } catch (Exception e) {
-                logger.error("Fatal: Failed to load scene lua file for scene {}: {}", sceneId, e.toString());
-                System.exit(1);
-            }
-        } else {
-            logger.error("Fatal: Missing scene lua file for for scene {}!", sceneId);
-            System.exit(1);
-        }
+        SceneData sceneData = new SceneData();
 
         // Scene points
         File scenePoints = new File("data/lua/scene/" + sceneId + "/scene" + sceneId + "_point.json");
@@ -61,26 +43,6 @@ public class SceneDataParser {
         }
 
         return sceneData;
-    }
-
-    private void parseSceneLua(SceneData sceneData, File sceneFile) throws Exception {
-        Pattern pattern = Pattern.compile("-?\\d+\\.\\d+");
-
-        for (String line : Files.readAllLines(sceneFile.toPath())) {
-            if (line.startsWith("\tborn_pos")) {
-                Matcher matcher = pattern.matcher(line);
-                ArrayList<Float> numbers = new ArrayList<>();
-
-                while (matcher.find()) {
-                    numbers.add(Float.parseFloat(matcher.group()));
-                }
-
-                sceneData.getSpawn().setX(numbers.getFirst());
-                sceneData.getSpawn().setY(numbers.get(1));
-                sceneData.getSpawn().setZ(numbers.get(2));
-                return;
-            }
-        }
     }
 
     private void parseScenePoints(SceneData sceneData, File scenePoints) throws Exception {

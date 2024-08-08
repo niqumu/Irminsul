@@ -1,11 +1,8 @@
 package io.irminsul.game.world;
 
-import io.irminsul.common.game.world.Entity;
+import io.irminsul.common.game.world.*;
 import io.irminsul.common.game.data.scene.SceneData;
 import io.irminsul.common.game.player.Player;
-import io.irminsul.common.game.world.Scene;
-import io.irminsul.common.game.world.SceneScriptManager;
-import io.irminsul.common.game.world.World;
 import io.irminsul.common.proto.VisionTypeOuterClass;
 import io.irminsul.game.data.DataContainer;
 import io.irminsul.game.net.packet.PacketPlayerGameTimeNotify;
@@ -33,6 +30,11 @@ public class IrminsulScene implements Scene {
      * This scene's ID
      */
     private final int id;
+
+    /**
+     * The spawn point of this scene, as a {@link Position}
+     */
+    private final Position spawnPoint;
 
     /**
      * The {@link SceneData} of this scene
@@ -78,6 +80,7 @@ public class IrminsulScene implements Scene {
 
         // Set up scripts
         this.scriptManager = new IrminsulSceneScriptManager(this);
+        this.spawnPoint = this.scriptManager.getSceneSpawn();
     }
 
     /**

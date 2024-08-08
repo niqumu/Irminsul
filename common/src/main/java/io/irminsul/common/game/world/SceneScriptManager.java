@@ -10,14 +10,7 @@ public interface SceneScriptManager {
     @NotNull Scene getScene();
 
     /**
-     * Loads and executes the provided block
-     * @param id The ID of the block to load
+     * @return The spawn point of the scene, as derived from the scene's main script
      */
-    void loadBlock(int id);
-
-    /**
-     * Loads and executes the provided group
-     * @param id The ID of the group to load
-     */
-    void loadGroup(int id);
+    @NotNull Position getSceneSpawn();
 }

@@ -1,5 +1,6 @@
 package io.irminsul.game.net.packet;
 
+import io.irminsul.common.game.GameServerContainer;
 import io.irminsul.common.game.net.Session;
 import io.irminsul.common.net.PacketIds;
 import io.irminsul.common.proto.GetPlayerFriendListRspOuterClass;
@@ -12,6 +13,7 @@ public class PacketGetPlayerFriendListRsp extends OutboundPacket {
         GetPlayerFriendListRspOuterClass.GetPlayerFriendListRsp getPlayerFriendListReq =
             GetPlayerFriendListRspOuterClass.GetPlayerFriendListRsp.newBuilder()
 //                .addAllFriendList() // todo add session owner's friends
+                .addFriendList(GameServerContainer.getServer().getCommandManager().getServerFriendBrief())
                 .build();
 
         this.setData(getPlayerFriendListReq.toByteArray());

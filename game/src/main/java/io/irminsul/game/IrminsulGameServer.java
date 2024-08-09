@@ -2,12 +2,14 @@ package io.irminsul.game;
 
 import io.irminsul.common.game.GameServer;
 import io.irminsul.common.game.GameServerContainer;
+import io.irminsul.common.game.command.CommandManager;
 import io.irminsul.common.game.dungeon.DungeonManager;
 import io.irminsul.common.game.event.EventBus;
 import io.irminsul.common.game.net.Session;
 import io.irminsul.common.game.player.PlayerProfile;
 import io.irminsul.common.game.world.World;
 import io.irminsul.common.util.CryptoUtil;
+import io.irminsul.game.command.IrminsulCommandManager;
 import io.irminsul.game.dungeon.IrminsulDungeonManager;
 import io.irminsul.game.event.SimpleEventBus;
 import io.irminsul.game.net.InboundPacket;
@@ -73,6 +75,7 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
     private final PacketManager packetManager = new PacketManager(this);
     private final ShopManager shopManager = new ShopManager(this);
     private final DungeonManager dungeonManager = new IrminsulDungeonManager(this);
+    private final CommandManager commandManager = new IrminsulCommandManager(this);
 
     /**
      * Executor service used to run server ticks

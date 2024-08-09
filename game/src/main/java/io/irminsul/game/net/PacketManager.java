@@ -64,6 +64,7 @@ public class PacketManager implements ServerSystem {
         this.registerHandler(new HandlerEvtAvatarStandUpNotify());
         this.registerHandler(new HandlerGetAllUnlockNameCardReq());
         this.registerHandler(new HandlerGetChatEmojiCollectionReq());
+        this.registerHandler(new HandlerGetPlayerAskFriendListReq());
         this.registerHandler(new HandlerGetPlayerBlacklistReq());
         this.registerHandler(new HandlerGetPlayerFriendListReq());
         this.registerHandler(new HandlerGetPlayerSocialDetailReq());
@@ -79,6 +80,9 @@ public class PacketManager implements ServerSystem {
         this.registerHandler(new HandlerPlayerSetPauseReq());
         this.registerHandler(new HandlerPlayerQuitDungeonReq());
         this.registerHandler(new HandlerPostEnterSceneReq());
+        this.registerHandler(new HandlerPrivateChatReq());
+        this.registerHandler(new HandlerPullPrivateChatReq());
+        this.registerHandler(new HandlerPullRecentChatReq());
         this.registerHandler(new HandlerSceneInitFinishReq());
         this.registerHandler(new HandlerSceneTransToPointReq());
         this.registerHandler(new HandlerSetEquipLockStateReq());

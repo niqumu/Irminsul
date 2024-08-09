@@ -1,5 +1,6 @@
 package io.irminsul.common.game;
 
+import io.irminsul.common.game.command.CommandManager;
 import io.irminsul.common.game.dungeon.DungeonManager;
 import io.irminsul.common.game.event.EventBus;
 import io.irminsul.common.game.net.Session;
@@ -49,6 +50,11 @@ public interface GameServer {
      * @return This server's {@link DungeonManager}
      */
     @NotNull DungeonManager getDungeonManager();
+
+    /**
+     * @return This server's {@link CommandManager}
+     */
+    @NotNull CommandManager getCommandManager();
 
     /**
      * Attempt to fetch the social profile data of the player with the provided UID

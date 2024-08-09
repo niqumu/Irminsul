@@ -14,8 +14,24 @@ public interface CommandManager extends ServerSystem {
      */
     @NotNull Map<String, CommandHandler> getRegisteredCommands();
 
+    /**
+     * Registers a command with the command manager
+     * @param command The command handler to register
+     */
+    void registerCommand(@NotNull CommandHandler command);
+
+    /**
+     * Sends the player a message from the server
+     * @param player The player to send the message to
+     * @param message The message to send
+     */
     void sendMessage(@NotNull Player player, @NotNull String message);
 
+    /**
+     * Sends the player a red error message from the server
+     * @param player The player to send the message to
+     * @param message The message to send
+     */
     void sendError(@NotNull Player player, @NotNull String message);
 
     void handlePullRecentChatReq(@NotNull Player player);

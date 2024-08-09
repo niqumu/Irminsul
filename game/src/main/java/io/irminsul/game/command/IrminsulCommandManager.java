@@ -6,6 +6,8 @@ import io.irminsul.common.game.command.CommandManager;
 import io.irminsul.common.game.player.Player;
 import io.irminsul.common.proto.*;
 import io.irminsul.common.proto.ChatInfoOuterClass.ChatInfo;
+import io.irminsul.game.command.impl.HelpCommand;
+import io.irminsul.game.command.impl.SceneCommand;
 import io.irminsul.game.net.packet.PacketPrivateChatNotify;
 import io.irminsul.game.net.packet.PacketPrivateChatRsp;
 import io.irminsul.game.net.packet.PacketPullPrivateChatRsp;
@@ -37,8 +39,25 @@ public class IrminsulCommandManager implements CommandManager {
 
     public IrminsulCommandManager(GameServer server) {
         this.server = server;
+
+        this.registerCommand(new HelpCommand(this));
+        this.registerCommand(new SceneCommand(this));
     }
 
+    /**
+     * Registers a command with the command manager
+     * @param command The command handler to register
+     */
+    @Override
+    public void registerCommand(@NotNull CommandHandler command) {
+        this.registeredCommands.put(command.getName(), command);
+    }
+
+    /**
+     * Sends the player a message from the server
+     * @param player The player to send the message to
+     * @param message The message to send
+     */
     @Override
     public void sendMessage(@NotNull Player player, @NotNull String message) {
         ChatInfo messageInfo = ChatInfo.newBuilder()
@@ -51,6 +70,11 @@ public class IrminsulCommandManager implements CommandManager {
         new PacketPrivateChatNotify(player.getSession(), messageInfo).send();
     }
 
+    /**
+     * Sends the player a red error message from the server
+     * @param player The player to send the message to
+     * @param message The message to send
+     */
     @Override
     public void sendError(@NotNull Player player, @NotNull String message) {
         this.sendMessage(player, "<color=\"#f97575\">" + message + "</color>");
@@ -90,7 +114,7 @@ public class IrminsulCommandManager implements CommandManager {
             String command = args[0].toLowerCase();
 
             if (registeredCommands.containsKey(command)) {
-                this.registeredCommands.get(command).handle(message, Arrays.copyOfRange(args, 1, args.length));
+                this.registeredCommands.get(command).handle(player, message, Arrays.copyOfRange(args, 1, args.length));
             } else {
                 this.sendError(player, "Unknown command \"" + command + "\"! Try \"help\" for help.");
             }

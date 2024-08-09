@@ -1,9 +1,9 @@
 package io.irminsul.common.game.player;
 
 import io.irminsul.common.game.PlayerSystem;
+import io.irminsul.common.game.data.misc.OpenStateData;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -12,7 +12,7 @@ public interface PlayerProgress extends PlayerSystem {
     /**
      * @return A key-value map of client open states, controlling features on the client
      */
-    @NotNull Map<Integer, Boolean> getOpenStates();
+    @NotNull Map<OpenStateData, Boolean> getOpenStates();
 
     /**
      * Gets a list of unlocked scene points within a given scene

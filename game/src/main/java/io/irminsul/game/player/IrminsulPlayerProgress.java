@@ -1,6 +1,7 @@
 package io.irminsul.game.player;
 
 import io.irminsul.common.game.GameServerContainer;
+import io.irminsul.common.game.data.misc.OpenStateData;
 import io.irminsul.common.game.data.scene.SceneData;
 import io.irminsul.common.game.data.scene.TransPointType;
 import io.irminsul.common.game.event.EventHandler;
@@ -9,8 +10,9 @@ import io.irminsul.common.game.data.scene.TransPoint;
 import io.irminsul.common.game.player.Player;
 import io.irminsul.common.game.player.PlayerProgress;
 import io.irminsul.game.data.ActionReason;
-import io.irminsul.game.data.OpenStateData;
+import io.irminsul.game.data.DataContainer;
 import io.irminsul.game.event.impl.PlayerLoginEvent;
+import io.irminsul.game.net.packet.PacketOpenStateChangeNotify;
 import io.irminsul.game.net.packet.PacketOpenStateUpdateNotify;
 import io.irminsul.game.net.packet.PacketScenePointUnlockNotify;
 import lombok.Getter;
@@ -32,7 +34,7 @@ public class IrminsulPlayerProgress implements PlayerProgress {
     /**
      * A key-value map of client open states, controlling features on the client
      */
-    private final Map<Integer, Boolean> openStates = new HashMap<>();
+    private final Map<OpenStateData, Boolean> openStates = new HashMap<>();
 
     /**
      * A map of unlocked scene points, keying scene IDs to lists of unlocked points
@@ -52,7 +54,7 @@ public class IrminsulPlayerProgress implements PlayerProgress {
         this.player = player;
 
         // Load default open states
-        OpenStateData.DEFAULT_OPEN_STATES.forEach(state -> this.openStates.put(state, true));
+        DataContainer.getAllOpenStateData().forEach(state -> this.openStates.put(state, state.isDefaultState()));
 
         // Subscribe to events
         GameServerContainer.getServer().getEventBus().registerSubscriber(this);
@@ -67,18 +69,19 @@ public class IrminsulPlayerProgress implements PlayerProgress {
         // Send open states
         if (event.getPlayer().equals(this.player)) {
             new PacketOpenStateUpdateNotify(this.player.getSession(), this.getOpenStates()).send();
+            new PacketOpenStateChangeNotify(this.player.getSession(), this.getOpenStates()).send();
         }
     }
 
     /**
      * @return A key-value map of client open states, controlling features on the client
      */
-    public @NotNull Map<Integer, Boolean> getOpenStates() {
+    public @NotNull Map<OpenStateData, Boolean> getOpenStates() {
         if (!GameServerContainer.getServer().isSandbox()) {
             return this.openStates;
         }
-        Map<Integer, Boolean> map = new HashMap<>(this.openStates);
-        OpenStateData.SANDBOX_OPEN_STATES.forEach(state -> map.put(state, true));
+        Map<OpenStateData, Boolean> map = new HashMap<>(this.openStates);
+        DataContainer.getAllOpenStateData().forEach(state -> map.put(state, true));
         return map;
     }
 

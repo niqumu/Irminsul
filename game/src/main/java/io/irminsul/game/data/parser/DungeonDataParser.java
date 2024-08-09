@@ -34,7 +34,7 @@ public class DungeonDataParser {
 
             logger.debug("Successfully loaded dungeon data excel!");
         } catch (Exception e) {
-            logger.warn("Fatal: Failed to load dungeon data excel: {}", e.toString());
+            logger.error("Fatal: Failed to load dungeon data excel: {}", e.toString());
             System.exit(1);
         }
     }
@@ -45,7 +45,7 @@ public class DungeonDataParser {
 
         // Ensure that we have data on this dungeon
         if (dungeonData == null) {
-            logger.warn("SKipped parseDungeonData request for {} as the excel is missing this dungeon!", dungeonId);
+            logger.warn("Skipped parseDungeonData request for {} as the excel is missing this dungeon!", dungeonId);
             return new DungeonData(); // fallback
         }
 

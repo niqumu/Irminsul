@@ -3,6 +3,7 @@ package io.irminsul.game.data;
 import io.irminsul.common.game.data.avatar.AvatarData;
 import io.irminsul.common.game.data.avatar.AvatarSkillDepotData;
 import io.irminsul.common.game.data.dungeon.DungeonData;
+import io.irminsul.common.game.data.misc.OpenStateData;
 import io.irminsul.common.game.data.weapon.WeaponData;
 import io.irminsul.common.game.data.scene.SceneData;
 import io.irminsul.common.game.data.weapon.WeaponPromotionData;
@@ -12,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -80,13 +82,22 @@ public class DataContainer {
     private final Map<Integer, Map<Integer, WeaponPromotionData>> loadedWeaponPromotions = new HashMap<>();
 
     // ================================================================ //
-    //                            Dungeons                              //
+    //                             Dungeons                             //
     // ================================================================ //
 
     /**
      * A map of loaded dungeons (domains) and their {@link DungeonData}, keyed by dungeon IDs
      */
     private final Map<Integer, DungeonData> loadedDungeons = new HashMap<>();
+
+    // ================================================================ //
+    //                               Misc                               //
+    // ================================================================ //
+
+    /**
+     * A map of loaded open states and their {@link OpenStateData}
+     */
+    private final Map<Integer, OpenStateData> loadedOpenStates = new HashMap<>();
 
     // ================================================================ //
 
@@ -271,5 +282,32 @@ public class DataContainer {
 
         logger.debug("Finished loading dungeon {}!", dungeonId);
         return dungeonData;
+    }
+
+    /**
+     * Gets an open state's {@link OpenStateData} by open state ID
+     * @param openState The ID of the open state to fetch the data for
+     * @return The open state's {@link OpenStateData}
+     */
+    public @NotNull OpenStateData getOpenStateData(int openState) {
+        if (loadedOpenStates.isEmpty()) {
+            loadOpenStates();
+        }
+        return loadedOpenStates.get(openState);
+    }
+
+    /**
+     * Gets a list of all known open states and their {@link OpenStateData}
+     * @return A list of all known open states
+     */
+    public @NotNull List<OpenStateData> getAllOpenStateData() {
+        if (loadedOpenStates.isEmpty()) {
+            loadOpenStates();
+        }
+        return new ArrayList<>(loadedOpenStates.values());
+    }
+
+    private void loadOpenStates() {
+        OpenStateDataParser.loadOpenStates().forEach(state -> loadedOpenStates.put(state.getId(), state));
     }
 }

@@ -1,5 +1,7 @@
 package io.irminsul.common.game.item;
 
+import io.irminsul.common.game.database.StateContainer;
+import io.irminsul.common.game.database.StateProvider;
 import io.irminsul.common.game.world.Entity;
 import io.irminsul.common.proto.ItemHintOuterClass;
 import io.irminsul.common.proto.ItemOuterClass;
@@ -8,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Represents an instance of a generic game item
  */
-public interface Item extends Entity {
+public interface Item extends Entity, StateProvider {
 
     /**
      * @return The ID of the item type
@@ -16,14 +18,14 @@ public interface Item extends Entity {
     int getItemId();
 
     /**
-     * @return The GUID of this instance
-     */
-    long getGuid();
-
-    /**
      * @return The quantity of this item
      */
     int getCount();
+
+    /**
+     * @return The GUID of this instance
+     */
+    long getGuid();
 
     /**
      * @return Whether this item is locked

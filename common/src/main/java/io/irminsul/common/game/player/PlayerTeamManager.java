@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.Serializable;
 import java.util.List;
 
-public interface PlayerTeamManager extends PlayerSystem, Serializable {
+public interface PlayerTeamManager extends PlayerSystem {
 
     /**
      * @return A list of teams this manager's player has

@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.Serializable;
 import java.util.List;
 
-public interface PlayerTeam extends Entity, Serializable {
+public interface PlayerTeam extends Entity {
 
     /**
      * @return The name of the team

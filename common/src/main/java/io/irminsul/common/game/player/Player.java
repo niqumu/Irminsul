@@ -10,14 +10,13 @@ import io.irminsul.common.game.world.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
 /**
  * A representation of a player
  */
-public interface Player extends Tickable, Serializable {
+public interface Player extends Tickable {
 
     // ================================================================ //
     //                               Core                               //
@@ -162,6 +161,12 @@ public interface Player extends Tickable, Serializable {
      * @return This next free GUID to assign. Calling this method will mark the returned value as used.
      */
     long getNextGuid();
+
+    /**
+     * Gives this player the provided avatar
+     * @param avatar The avatar to give the player
+     */
+    void addAvatar(@NotNull Avatar avatar);
 
     /**
      * Sends this player to a specified scene at the default spawn position

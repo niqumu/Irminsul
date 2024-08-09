@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * Represents an instance of an avatar (character)
  */
-public interface Avatar extends Entity, Serializable {
+public interface Avatar extends Entity {
 
     // ================================================================ //
     //                               Core                               //

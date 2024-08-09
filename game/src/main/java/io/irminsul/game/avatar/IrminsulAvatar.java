@@ -20,7 +20,6 @@ import io.irminsul.game.net.packet.PacketAvatarFightPropNotify;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.Serial;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,9 +28,6 @@ import java.util.Map;
  */
 @Data
 public class IrminsulAvatar implements Avatar {
-
-    @Serial
-    private final static long serialVersionUID = 1;
 
     // ================================================================ //
     //                               Core                               //

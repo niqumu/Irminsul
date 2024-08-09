@@ -1,11 +1,14 @@
 package io.irminsul.game.item;
 
 import io.irminsul.common.game.data.weapon.WeaponData;
+import io.irminsul.common.game.database.StateContainer;
 import io.irminsul.common.game.item.Weapon;
 import io.irminsul.common.game.player.Player;
 import io.irminsul.common.game.property.EntityIdType;
 import io.irminsul.common.proto.*;
 import io.irminsul.game.data.DataContainer;
+import io.irminsul.game.database.state.ItemState;
+import io.irminsul.game.database.state.WeaponState;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,19 +24,19 @@ public class IrminsulWeapon implements Weapon {
     private final WeaponData weaponData;
 
     /**
-     * The ID of the weapon
+     * The ID of the weapon type
      */
     private final int itemId;
 
     /**
      * The GUID of this instance
      */
-    private final long guid;
+    private long guid;
 
     /**
      * The entity id of this entity
      */
-    private final int entityId;
+    private int entityId;
 
     /**
      * Whether this item is locked
@@ -55,13 +58,43 @@ public class IrminsulWeapon implements Weapon {
      */
     private int promoteLevel = 0;
 
+    /**
+     * Loads an existing weapon from an exported {@link WeaponState}
+     * @param state The state to load
+     */
+    public IrminsulWeapon(@NotNull WeaponState state) {
+        this.itemId = state.getItemId();
+        this.locked = state.isLocked();
+        this.level = state.getLevel();
+        this.exp = state.getExp();
+        this.promoteLevel = state.getPromoteLevel();
+
+        // Load weapon data
+        this.weaponData = DataContainer.getOrLoadWeaponData(this.itemId);
+    }
+
+    /**
+     * Create a new weapon with the given parameters
+     * @param weaponId The ID of the weapon type
+     * @param owner The owner of this weapon
+     */
     public IrminsulWeapon(int weaponId, @NotNull Player owner) {
         this.itemId = weaponId;
         this.guid = owner.getNextGuid();
         this.entityId = owner.getWorld().getNextEntityId(EntityIdType.WEAPON);
 
         // Load weapon data
-        this.weaponData = DataContainer.getOrLoadWeaponData(weaponId);
+        this.weaponData = DataContainer.getOrLoadWeaponData(this.itemId);
+    }
+
+    /**
+     * Exports the state of this object to an appropriate {@link StateContainer} that can be used in a constructor
+     * to recreate this object
+     * @return The state of this object, exported as a {@link StateContainer} implementation
+     */
+    @Override
+    public StateContainer exportState() {
+        return new WeaponState(this.itemId, this.locked, this.level, this.exp, this.promoteLevel);
     }
 
     /**

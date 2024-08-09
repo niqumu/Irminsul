@@ -16,7 +16,6 @@ import io.irminsul.game.net.packet.PacketScenePointUnlockNotify;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.Serial;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,9 +23,6 @@ import java.util.Map;
 
 @Getter
 public class IrminsulPlayerProgress implements PlayerProgress {
-
-    @Serial
-    private final static long serialVersionUID = 1;
 
     /**
      * The {@link Player} this manager belongs to

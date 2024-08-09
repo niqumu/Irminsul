@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * Representation of a player's social profile
  */
-public interface PlayerProfile extends Serializable {
+public interface PlayerProfile {
 
     /**
      * @return This player's UID

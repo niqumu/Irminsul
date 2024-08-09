@@ -10,15 +10,11 @@ import io.irminsul.game.net.packet.PacketItemAddHintNotify;
 import io.irminsul.game.net.packet.PacketStoreItemChangeNotify;
 import lombok.Data;
 
-import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
 public class IrminsulPlayerInventory implements PlayerInventory {
-
-    @Serial
-    private final static long serialVersionUID = 1;
 
     /**
      * The {@link Player} this inventory belongs to

@@ -10,15 +10,11 @@ import io.irminsul.game.net.packet.PacketChangeAvatarRsp;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 public class IrminsulPlayerTeamManager implements PlayerTeamManager {
-
-    @Serial
-    private final static long serialVersionUID = 1;
 
     /**
      * The {@link Player} this manager belongs to

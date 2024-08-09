@@ -15,6 +15,7 @@ import io.irminsul.game.avatar.IrminsulAvatar;
 import io.irminsul.game.data.EnterReason;
 import io.irminsul.game.data.PlayerProperty;
 import io.irminsul.game.event.impl.PlayerLoginEvent;
+import io.irminsul.game.net.packet.PacketAvatarAddNotify;
 import io.irminsul.game.net.packet.PacketAvatarDataNotify;
 import io.irminsul.game.net.packet.PacketPlayerDataNotify;
 import io.irminsul.game.net.packet.PacketPlayerEnterSceneNotify;
@@ -23,7 +24,6 @@ import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.Serial;
 import java.util.*;
 
 /**
@@ -39,9 +39,6 @@ import java.util.*;
  */
 @Data
 public class IrminsulPlayer implements Player {
-
-    @Serial
-    private final static long serialVersionUID = 1;
 
     // ================================================================ //
     //                               Core                               //
@@ -224,7 +221,7 @@ public class IrminsulPlayer implements Player {
 
         // If the player has no avatars, give them the traveler
         if (this.avatars.isEmpty()) {
-            this.avatars.add(new IrminsulAvatar(GameConstants.FEMALE_TRAVELER_AVATAR_ID, this));
+            this.addAvatar(new IrminsulAvatar(GameConstants.FEMALE_TRAVELER_AVATAR_ID, this));
             this.teamManager.getActiveTeam().getAvatars().add(this.avatars.getFirst());
         }
 
@@ -264,6 +261,16 @@ public class IrminsulPlayer implements Player {
         this.world = new IrminsulWorld(this.session.getServer(), this);
         this.session.getServer().getWorlds().add(this.world);
         this.peerId = this.world.getNextPeerId();
+    }
+
+    /**
+     * Gives this player the provided avatar
+     * @param avatar The avatar to give the player
+     */
+    @Override
+    public void addAvatar(@NotNull Avatar avatar) {
+        this.avatars.add(avatar);
+        new PacketAvatarAddNotify(this.session, avatar).send();
     }
 
     /**

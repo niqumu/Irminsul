@@ -6,7 +6,9 @@ import io.irminsul.common.game.command.CommandManager;
 import io.irminsul.common.game.player.Player;
 import io.irminsul.common.proto.*;
 import io.irminsul.common.proto.ChatInfoOuterClass.ChatInfo;
+import io.irminsul.game.command.impl.AvatarCommand;
 import io.irminsul.game.command.impl.HelpCommand;
+import io.irminsul.game.command.impl.ItemCommand;
 import io.irminsul.game.command.impl.SceneCommand;
 import io.irminsul.game.net.packet.PacketPrivateChatNotify;
 import io.irminsul.game.net.packet.PacketPrivateChatRsp;
@@ -40,7 +42,9 @@ public class IrminsulCommandManager implements CommandManager {
     public IrminsulCommandManager(GameServer server) {
         this.server = server;
 
+        this.registerCommand(new AvatarCommand(this)); // todo: disabled until no longer broken
         this.registerCommand(new HelpCommand(this));
+//        this.registerCommand(new ItemCommand(this)); // todo: disabled until no longer broken
         this.registerCommand(new SceneCommand(this));
     }
 
@@ -108,6 +112,7 @@ public class IrminsulCommandManager implements CommandManager {
                 .setToUid(SERVER_UID)
                 .setText(message)
                 .build();
+            this.serverChatHistory.get(player).add(messageInfo);
 
             // Execute command
             String[] args = message.split(" ");
@@ -119,7 +124,6 @@ public class IrminsulCommandManager implements CommandManager {
                 this.sendError(player, "Unknown command \"" + command + "\"! Try \"help\" for help.");
             }
 
-            this.serverChatHistory.get(player).add(messageInfo);
             new PacketPrivateChatRsp(player.getSession()).send();
         }
     }

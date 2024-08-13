@@ -13,6 +13,7 @@ public class PacketAvatarAddNotify extends OutboundPacket {
         AvatarAddNotifyOuterClass.AvatarAddNotify notify =
             AvatarAddNotifyOuterClass.AvatarAddNotify.newBuilder()
                 .setAvatar(avatar.buildAvatarInfo())
+                .setIsInTeam(true)
                 .build();
 
         this.setData(notify.toByteArray());

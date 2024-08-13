@@ -81,7 +81,7 @@ public class IrminsulPlayerProgress implements PlayerProgress {
             return this.openStates;
         }
         Map<OpenStateData, Boolean> map = new HashMap<>(this.openStates);
-        DataContainer.getAllOpenStateData().forEach(state -> map.put(state, true));
+        DataContainer.getAllOpenStateData().forEach(state -> map.put(state, true)); // TODO one of them throws an npe!
         return map;
     }
 

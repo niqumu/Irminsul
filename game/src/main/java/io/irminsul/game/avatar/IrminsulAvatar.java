@@ -293,6 +293,10 @@ public class IrminsulAvatar implements Avatar {
             .setGuid(this.guid)
             .setBornTime(this.bornTime)
             .setLifeState(1)
+            .setFetterInfo(AvatarFetterInfoOuterClass.AvatarFetterInfo.newBuilder()
+                .setExpLevel(1)
+                .setExpNumber(0)
+                .build())
 
             // Cosmetic
             .setWearingFlycloakId(this.flyCloak)

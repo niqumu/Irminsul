@@ -38,9 +38,6 @@ public class PacketAvatarDataNotify extends OutboundPacket {
             avatarDataNotifyBuilder.putAvatarTeamMap(index, avatarTeamBuilder.build());
         }
 
-        // TODO testing
-        avatarDataNotifyBuilder.setChooseAvatarGuid(session.getPlayer().getTeamManager().getActiveAvatar().getGuid());
-
         this.setData(avatarDataNotifyBuilder.build().toByteArray());
     }
 }

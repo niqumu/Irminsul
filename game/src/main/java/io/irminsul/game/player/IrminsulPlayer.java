@@ -221,7 +221,7 @@ public class IrminsulPlayer implements Player {
 
         // If the player has no avatars, give them the traveler
         if (this.avatars.isEmpty()) {
-            this.addAvatar(new IrminsulAvatar(GameConstants.FEMALE_TRAVELER_AVATAR_ID, this));
+            this.avatars.add(new IrminsulAvatar(GameConstants.FEMALE_TRAVELER_AVATAR_ID, this));
             this.teamManager.getActiveTeam().getAvatars().add(this.avatars.getFirst());
         }
 
@@ -235,6 +235,9 @@ public class IrminsulPlayer implements Player {
         // Continue the login process
         this.sendToScene(GameConstants.OVERWORLD_SCENE, EnterReason.Login);
         this.session.setState(SessionState.ACTIVE);
+
+        // todo testing remove
+        this.addAvatar(new IrminsulAvatar(10000058, this));
     }
 
     /**

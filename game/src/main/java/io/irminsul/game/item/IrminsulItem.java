@@ -10,6 +10,8 @@ import io.irminsul.game.database.state.ItemState;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.UUID;
+
 @Data
 public class IrminsulItem implements Item {
 
@@ -17,6 +19,11 @@ public class IrminsulItem implements Item {
      * The ID of the item type
      */
     private int itemId;
+
+    /**
+     * The persistent UUID of this item
+     */
+    private final UUID persistentId;
 
     /**
      * The quantity of this item
@@ -44,7 +51,10 @@ public class IrminsulItem implements Item {
      */
     public IrminsulItem(@NotNull ItemState state) {
         this.itemId = state.getItemId();
+        this.persistentId = state.getPersistentId();
         this.count = state.getCount();
+
+        // todo assign guid and entity id
     }
 
     /**
@@ -65,8 +75,11 @@ public class IrminsulItem implements Item {
     public IrminsulItem(int itemId, int count, @NotNull Player owner) {
         this.itemId = itemId;
         this.count = count;
+
+        this.persistentId = UUID.randomUUID(); // todo: insanely unlikely to happen, but should check for dupe uuid
+
+        // todo: this should only be done when needed!
         this.guid = owner.getNextGuid();
-        this.entityId = owner.getWorld().getNextEntityId(EntityIdType.WEAPON);
     }
 
     /**
@@ -76,7 +89,7 @@ public class IrminsulItem implements Item {
      */
     @Override
     public StateContainer exportState() {
-        return new ItemState(this.itemId, this.count, this.locked);
+        return new ItemState(this.itemId, this.persistentId, this.count, this.locked);
     }
 
     /**

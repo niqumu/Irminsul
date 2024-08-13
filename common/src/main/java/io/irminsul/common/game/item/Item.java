@@ -7,6 +7,8 @@ import io.irminsul.common.proto.ItemHintOuterClass;
 import io.irminsul.common.proto.ItemOuterClass;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.UUID;
+
 /**
  * Represents an instance of a generic game item
  */
@@ -21,6 +23,11 @@ public interface Item extends Entity, StateProvider {
      * @return The quantity of this item
      */
     int getCount();
+
+    /**
+     * @return The persistent UUID of this item
+     */
+    @NotNull UUID getPersistentId();
 
     /**
      * @return The GUID of this instance

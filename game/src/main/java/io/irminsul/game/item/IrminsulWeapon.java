@@ -12,6 +12,8 @@ import io.irminsul.game.database.state.WeaponState;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.UUID;
+
 /**
  * Implementation of {@link Weapon}, representing an instance of a weapon
  */
@@ -27,6 +29,11 @@ public class IrminsulWeapon implements Weapon {
      * The ID of the weapon type
      */
     private final int itemId;
+
+    /**
+     * The persistent UUID of this weapon
+     */
+    private final UUID persistentId;
 
     /**
      * The GUID of this instance
@@ -64,6 +71,7 @@ public class IrminsulWeapon implements Weapon {
      */
     public IrminsulWeapon(@NotNull WeaponState state) {
         this.itemId = state.getItemId();
+        this.persistentId = state.getPersistentId();
         this.locked = state.isLocked();
         this.level = state.getLevel();
         this.exp = state.getExp();
@@ -71,6 +79,8 @@ public class IrminsulWeapon implements Weapon {
 
         // Load weapon data
         this.weaponData = DataContainer.getOrLoadWeaponData(this.itemId);
+
+        // todo assign guid and entity id (or maybe not?)
     }
 
     /**
@@ -80,6 +90,10 @@ public class IrminsulWeapon implements Weapon {
      */
     public IrminsulWeapon(int weaponId, @NotNull Player owner) {
         this.itemId = weaponId;
+
+        this.persistentId = UUID.randomUUID(); // todo: insanely unlikely to happen, but should check for dupe uuid
+
+        // todo: this should only be done when needed!
         this.guid = owner.getNextGuid();
         this.entityId = owner.getWorld().getNextEntityId(EntityIdType.WEAPON);
 
@@ -94,7 +108,7 @@ public class IrminsulWeapon implements Weapon {
      */
     @Override
     public StateContainer exportState() {
-        return new WeaponState(this.itemId, this.locked, this.level, this.exp, this.promoteLevel);
+        return new WeaponState(this.itemId, this.persistentId, this.locked, this.level, this.exp, this.promoteLevel);
     }
 
     /**

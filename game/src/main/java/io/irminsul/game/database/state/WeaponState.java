@@ -6,11 +6,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.UUID;
+
 @Getter
 @AllArgsConstructor
 public class WeaponState implements StateContainer {
 
     private int itemId;
+
+    private UUID persistentId;
 
     private boolean locked;
 
@@ -20,7 +24,8 @@ public class WeaponState implements StateContainer {
 
     private int promoteLevel;
 
-    public WeaponState() {
+    public WeaponState(@NotNull JsonObject state) {
+        this.loadState(state);
     }
 
     /**
@@ -30,6 +35,7 @@ public class WeaponState implements StateContainer {
     @Override
     public void loadState(@NotNull JsonObject state) {
         this.itemId = state.get("id").getAsInt();
+        this.persistentId = UUID.fromString(state.get("uuid").getAsString());
         this.locked = state.get("locked").getAsBoolean();
         this.level = state.get("level").getAsInt();
         this.exp = state.get("exp").getAsInt();
@@ -45,6 +51,7 @@ public class WeaponState implements StateContainer {
     public @NotNull JsonObject exportState() {
         JsonObject object = new JsonObject();
         object.addProperty("id", this.itemId);
+        object.addProperty("uuid", this.persistentId.toString());
         object.addProperty("locked", this.locked);
         object.addProperty("level", this.level);
         object.addProperty("exp", this.exp);

@@ -4,6 +4,7 @@ import io.irminsul.common.game.avatar.Avatar;
 import io.irminsul.common.game.command.CommandHandler;
 import io.irminsul.common.game.command.CommandManager;
 import io.irminsul.common.game.player.Player;
+import io.irminsul.common.util.i18n.I18n;
 import io.irminsul.game.avatar.IrminsulAvatar;
 import io.irminsul.game.data.ActionReason;
 import io.irminsul.game.net.packet.PacketAddNoGachaAvatarCardNotify;
@@ -33,7 +34,7 @@ public class AvatarCommand implements CommandHandler {
      */
     @Override
     public @NotNull String getDescription() {
-        return "Gives you the specified avatar (character)";
+        return I18n.translate("game.command.avatar.description", this.commandManager.getServer().getConfig());
     }
 
     /**
@@ -41,7 +42,7 @@ public class AvatarCommand implements CommandHandler {
      */
     @Override
     public @NotNull String getUsage() {
-        return "avatar <id>";
+        return I18n.translate("game.command.avatar.usage", this.commandManager.getServer().getConfig());
     }
 
     /**
@@ -56,7 +57,10 @@ public class AvatarCommand implements CommandHandler {
 
         // Ensure that an avatar was provided
         if (args.length == 0) {
-            this.commandManager.sendError(sender, "A avatar ID is required! Usage: " + this.getUsage());
+            this.commandManager.sendError(sender, I18n.translate("game.command.avatar.no_id",
+                this.commandManager.getServer().getConfig()));
+            this.commandManager.sendError(sender, I18n.translate("game.command.usage",
+                this.commandManager.getServer().getConfig()).replace("{}", this.getUsage()));
             return;
         }
 
@@ -64,14 +68,16 @@ public class AvatarCommand implements CommandHandler {
         try {
             avatarId = Integer.parseInt(args[0]);
         } catch (NumberFormatException e) {
-            this.commandManager.sendError(sender, "Couldn't parse that as a number! Usage: " + this.getUsage());
+            this.commandManager.sendError(sender, I18n.translate("game.command.avatar.bad_id",
+                this.commandManager.getServer().getConfig()));
             return;
         }
 
         // Make sure that the avatar isn't a duplicate
         for (Avatar avatar : sender.getAvatars()) {
             if (avatar.getAvatarId() == avatarId) {
-                this.commandManager.sendError(sender, "You already have this avatar!");
+                this.commandManager.sendError(sender, I18n.translate("game.command.avatar.duplicate",
+                    this.commandManager.getServer().getConfig()));
                 return;
             }
         }
@@ -81,7 +87,7 @@ public class AvatarCommand implements CommandHandler {
         new PacketAddNoGachaAvatarCardNotify(sender.getSession(), avatar, ActionReason.ADD_AVATAR).send();
         sender.addAvatar(avatar);
 
-        this.commandManager.sendMessage(sender, "Gave you " + avatarId +
-            " (" + avatar.getAvatarData().getName() + ")!");
+        this.commandManager.sendMessage(sender, I18n.translate("game.command.avatar.success",
+            this.commandManager.getServer().getConfig()).replace("{}", avatar.getAvatarData().getName()));
     }
 }

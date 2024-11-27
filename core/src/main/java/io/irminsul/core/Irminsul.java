@@ -1,9 +1,10 @@
 package io.irminsul.core;
 
+import io.irminsul.common.config.Config;
 import io.irminsul.common.game.GameServer;
 import io.irminsul.common.http.HttpServer;
 import io.irminsul.common.config.ConfigEntry;
-import io.irminsul.core.config.IrminsulConfig;
+import io.irminsul.common.util.i18n.I18n;
 import io.irminsul.game.IrminsulGameServer;
 import io.irminsul.http.IrminsulHttpServer;
 import lombok.Getter;
@@ -45,14 +46,15 @@ public class Irminsul {
      */
     public void startup() {
         long startTime = System.currentTimeMillis();
-        this.logger.info("Starting Irminsul...");
-        this.logger.info("This server is of version {}!", SERVER_VERSION);
+        this.logger.info(I18n.translate("core.info.start", null));
+        this.logger.info(I18n.translate("core.info.server_version", null), SERVER_VERSION);
 
         // Parse the configuration file
         this.loadAndVerifyConfig();
 
         // Ignite enabled sub-services
-        this.logger.info("This server is targeting game version {}!", this.config.getValue(ConfigEntry.TARGET_VERSION));
+        this.logger.info(I18n.translate("core.info.game_version", this.config),
+            this.config.getValue(ConfigEntry.TARGET_VERSION));
         this.startHttpServer();
         this.startGameServer();
 
@@ -60,14 +62,15 @@ public class Irminsul {
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
 
         // Done
-        this.logger.info("Done! Started Irminsul in {} seconds!", (System.currentTimeMillis() - startTime) / 1000D);
+        double bootTime = (System.currentTimeMillis() - startTime) / 1000D;
+        this.logger.info(I18n.translate("core.info.done", this.config), bootTime);
     }
 
     /**
      * Shut down this Irminsul instance
      */
     public void shutdown() {
-        this.logger.info("Stopping Irminsul!");
+        this.logger.info(I18n.translate("core.info.stop", this.config));
         this.httpServer.getSpark().stop();
         this.saveConfig();
         Runtime.getRuntime().exit(0);
@@ -81,16 +84,15 @@ public class Irminsul {
         try {
             this.config = new IrminsulConfig();
             this.config.load();
-            this.logger.info("Loaded server configuration");
+            this.logger.info(I18n.translate("core.info.config_loaded", this.config));
         } catch (IOException e) {
-            this.logger.error("Failed to load config file! It's possible that your config file is corrupted. " +
-                "Try resetting your config file by deleting it and re-launching Irminsul.");
+            this.logger.error(I18n.translate("core.error.config_load_failed", null)); // can't use the config
             this.shutdown();
         }
 
         // Make sure the game version is set
         if (this.config.getValue(ConfigEntry.TARGET_VERSION).equals("not set")) {
-            this.logger.error("You must specify a game version in the configuration file! Halting.");
+            this.logger.error(I18n.translate("core.error.game_version_missing", this.config));
             this.shutdown();
         }
     }
@@ -102,10 +104,9 @@ public class Irminsul {
     private void saveConfig() {
         try {
             this.config.save();
-            this.logger.info("Saved server configuration");
+            this.logger.info(I18n.translate("core.info.config_saved", this.config));
         } catch (IOException e) {
-            this.logger.error("Failed to save config file! It's possible that your config file is corrupted. " +
-                "Try resetting your config file by deleting it and re-launching Irminsul.");
+            this.logger.error(I18n.translate("core.error.config_save_failed", this.config));
         }
     }
 
@@ -117,7 +118,7 @@ public class Irminsul {
         if (Boolean.parseBoolean(this.config.getValue(ConfigEntry.HTTP_ENABLED))) {
             this.httpServer = new IrminsulHttpServer(this.config);
         } else {
-            this.logger.info("Skipped ignition of HTTP server as it was not enabled in the configuration...");
+            this.logger.info(I18n.translate("core.info.http_skipped", this.config));
         }
     }
 
@@ -129,7 +130,7 @@ public class Irminsul {
         if (Boolean.parseBoolean(this.config.getValue(ConfigEntry.GAME_ENABLED))) {
             this.gameServer = new IrminsulGameServer(this.config);
         } else {
-            this.logger.info("Skipped ignition of game server as it was not enabled in the configuration...");
+            this.logger.info(I18n.translate("core.info.game_skipped", this.config));
         }
     }
 }

@@ -1,12 +1,14 @@
 package io.irminsul.http.handler;
 
 import com.google.protobuf.ByteString;
+import io.irminsul.common.config.Config;
 import io.irminsul.common.http.HttpServer;
 import io.irminsul.common.proto.http.QueryCurrRegionHttpRspOuterClass;
 import io.irminsul.common.proto.http.RegionInfoOuterClass;
 import io.irminsul.common.proto.http.RetcodeOuterClass;
 import io.irminsul.common.util.CryptoUtil;
 import io.irminsul.common.http.DispatchRegion;
+import io.irminsul.common.util.i18n.I18n;
 import lombok.RequiredArgsConstructor;
 import spark.Request;
 import spark.Response;
@@ -25,7 +27,7 @@ public class QueryCurrentRegionHandler implements Route {
         String region = request.params(":region");
         String keyID = request.queryParams("key_id");
         DispatchRegion resolvedRegion = null;
-        this.server.getLogger().info("Incoming /query_cur_region request for region {} with key id {}", region, keyID);
+        this.server.getLogger().debug("Incoming /query_cur_region request for region {} with key id {}", region, keyID);
 
         for (DispatchRegion serverRegion : this.server.getRegions()) {
             if (serverRegion.name().equals(region)) {
@@ -35,7 +37,7 @@ public class QueryCurrentRegionHandler implements Route {
         }
 
         if (resolvedRegion == null) {
-            this.server.getLogger().error("Couldn't resolve region \"{}\"!", region);
+            this.server.getLogger().error(I18n.translate("http.error.region_resolve_failed", this.server.getConfig()), region);
             return null;
         }
 
@@ -69,7 +71,7 @@ public class QueryCurrentRegionHandler implements Route {
         try {
             return CryptoUtil.encodeCurrentRegion(queryResponse.toByteArray(), keyID);
         } catch (Exception e) {
-            this.server.getLogger().error("Failed to encode current region!", e);
+            this.server.getLogger().error(I18n.translate("http.error.region_encode_failed", this.server.getConfig()), e);
             return null;
         }
     }

@@ -3,6 +3,7 @@ package io.irminsul.game.command.impl;
 import io.irminsul.common.game.command.CommandHandler;
 import io.irminsul.common.game.command.CommandManager;
 import io.irminsul.common.game.player.Player;
+import io.irminsul.common.util.i18n.I18n;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -29,7 +30,7 @@ public class HelpCommand implements CommandHandler {
      */
     @Override
     public @NotNull String getDescription() {
-        return "Prints a list of commands and their usage";
+        return I18n.translate("game.command.help.description", this.commandManager.getServer().getConfig());
     }
 
     /**
@@ -49,7 +50,8 @@ public class HelpCommand implements CommandHandler {
      */
     @Override
     public void handle(@NotNull Player sender, @NotNull String command, @NotNull String[] args) {
-        StringBuilder message = new StringBuilder("Server Commands:");
+        StringBuilder message = new StringBuilder(I18n.translate("game.command.help.commands",
+            this.commandManager.getServer().getConfig()));
 
         for (CommandHandler handler : this.commandManager.getRegisteredCommands().values()) {
             message

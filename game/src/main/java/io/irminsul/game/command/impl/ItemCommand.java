@@ -3,6 +3,7 @@ package io.irminsul.game.command.impl;
 import io.irminsul.common.game.command.CommandHandler;
 import io.irminsul.common.game.command.CommandManager;
 import io.irminsul.common.game.player.Player;
+import io.irminsul.common.util.i18n.I18n;
 import io.irminsul.game.data.ActionReason;
 import io.irminsul.game.item.IrminsulItem;
 import lombok.Getter;
@@ -31,7 +32,7 @@ public class ItemCommand implements CommandHandler {
      */
     @Override
     public @NotNull String getDescription() {
-        return "Gives you the specified item";
+        return I18n.translate("game.command.item.description", this.commandManager.getServer().getConfig());
     }
 
     /**
@@ -39,7 +40,7 @@ public class ItemCommand implements CommandHandler {
      */
     @Override
     public @NotNull String getUsage() {
-        return "item <id> (count)";
+        return I18n.translate("game.command.item.usage", this.commandManager.getServer().getConfig());
     }
 
     /**
@@ -54,7 +55,10 @@ public class ItemCommand implements CommandHandler {
 
         // Ensure that an item was provided
         if (args.length == 0) {
-            this.commandManager.sendError(sender, "An item ID is required! Usage: " + this.getUsage());
+            this.commandManager.sendError(sender, I18n.translate("game.command.item.no_id",
+                this.commandManager.getServer().getConfig()));
+            this.commandManager.sendError(sender, I18n.translate("game.command.usage",
+                this.commandManager.getServer().getConfig()).replace("{}", this.getUsage()));
             return;
         }
 
@@ -65,12 +69,14 @@ public class ItemCommand implements CommandHandler {
                 count = Integer.parseInt(args[1]);
             }
         } catch (NumberFormatException e) {
-            this.commandManager.sendError(sender, "Couldn't parse that as a number! Usage: " + this.getUsage());
+            this.commandManager.sendError(sender, I18n.translate("game.command.item.bad_id",
+                this.commandManager.getServer().getConfig()));
             return;
         }
 
         // Add the item
         sender.getInventory().addItem(new IrminsulItem(itemId, count, sender), ActionReason.NONE);
-        this.commandManager.sendMessage(sender, "Gave you " + itemId + " x" + count + "!");
+        this.commandManager.sendMessage(sender, I18n.translate("game.command.item.success",
+            this.commandManager.getServer().getConfig()).replace("{}", Integer.toString(itemId)));
     }
 }

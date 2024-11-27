@@ -21,7 +21,7 @@ public class LoginHandler implements Route {
         JsonObject requestJson = JsonParser.parseString(request.body()).getAsJsonObject();
         String account = requestJson.get("account").getAsString();
 
-        this.server.getLogger().info("Incoming login request for {}", account);
+        this.server.getLogger().debug("Incoming login request for {}", account);
 
         JsonObject responseJson = new JsonObject();
         JsonObject data = new JsonObject();

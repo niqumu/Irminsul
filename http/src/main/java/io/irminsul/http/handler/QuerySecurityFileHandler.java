@@ -16,7 +16,7 @@ public class QuerySecurityFileHandler implements Route {
 
     @Override
     public Object handle(Request request, Response response) {
-        this.server.getLogger().info("Incoming /query_security_file request!");
+        this.server.getLogger().debug("Incoming /query_security_file request!");
         return "";
     }
 }

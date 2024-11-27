@@ -29,7 +29,7 @@ public class SceneCommand implements CommandHandler {
      */
     @Override
     public @NotNull String getDescription() {
-        return "Sends you to a specified scene - scene 3 is Teyvat";
+        return "Sends you to a specified scene (scene 3 is Teyvat)";
     }
 
     /**

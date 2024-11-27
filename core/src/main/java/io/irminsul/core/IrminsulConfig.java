@@ -1,8 +1,7 @@
-package io.irminsul.core.config;
+package io.irminsul.core;
 
 import io.irminsul.common.config.Config;
 import io.irminsul.common.config.ConfigEntry;
-import io.irminsul.core.Irminsul;
 import lombok.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,16 +1,12 @@
 package io.irminsul.common.http;
 
-import org.slf4j.Logger;
+import io.irminsul.common.ConfigContainer;
+import io.irminsul.common.LoggerContainer;
 import spark.Service;
 
 import java.util.List;
 
-public interface HttpServer {
-
-    /**
-     * @return This server's logger
-     */
-    Logger getLogger();
+public interface HttpServer extends LoggerContainer, ConfigContainer {
 
     /**
      * @return The Spark {@link Service} instance of this web server
@@ -23,7 +19,7 @@ public interface HttpServer {
     int getPort();
 
     /**
-     * @return A list of regions registered on this web server
+     * @return A list of {@link DispatchRegion}s registered on this web server
      */
     List<DispatchRegion> getRegions();
 }

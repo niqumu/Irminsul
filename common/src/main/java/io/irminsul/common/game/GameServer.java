@@ -1,5 +1,7 @@
 package io.irminsul.common.game;
 
+import io.irminsul.common.ConfigContainer;
+import io.irminsul.common.LoggerContainer;
 import io.irminsul.common.game.command.CommandManager;
 import io.irminsul.common.game.dungeon.DungeonManager;
 import io.irminsul.common.game.event.EventBus;
@@ -14,12 +16,7 @@ import org.slf4j.Logger;
 import java.util.HashMap;
 import java.util.List;
 
-public interface GameServer {
-
-    /**
-     * @return This server's logger
-     */
-    @NotNull Logger getLogger();
+public interface GameServer extends LoggerContainer, ConfigContainer {
 
     /**
      * @return This server's {@link EventBus}

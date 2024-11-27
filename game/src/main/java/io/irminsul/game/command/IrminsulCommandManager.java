@@ -6,10 +6,8 @@ import io.irminsul.common.game.command.CommandManager;
 import io.irminsul.common.game.player.Player;
 import io.irminsul.common.proto.*;
 import io.irminsul.common.proto.ChatInfoOuterClass.ChatInfo;
-import io.irminsul.game.command.impl.AvatarCommand;
-import io.irminsul.game.command.impl.HelpCommand;
-import io.irminsul.game.command.impl.ItemCommand;
-import io.irminsul.game.command.impl.SceneCommand;
+import io.irminsul.common.util.i18n.I18n;
+import io.irminsul.game.command.impl.*;
 import io.irminsul.game.net.packet.PacketPrivateChatNotify;
 import io.irminsul.game.net.packet.PacketPrivateChatRsp;
 import io.irminsul.game.net.packet.PacketPullPrivateChatRsp;
@@ -89,7 +87,7 @@ public class IrminsulCommandManager implements CommandManager {
         List<ChatInfo> history = this.serverChatHistory.computeIfAbsent(player, a -> new ArrayList<>());
 
         if (history.isEmpty()) {
-            this.sendMessage(player, "Welcome to Irminsul! Message me to execute commands");
+            this.sendMessage(player, I18n.translate("game.server_profile.welcome", this.getServer().getConfig()));
         }
 
         new PacketPullRecentChatRsp(player.getSession(), this.serverChatHistory.get(player)).send();
@@ -105,7 +103,7 @@ public class IrminsulCommandManager implements CommandManager {
     @Override
     public void handlePrivateChatReq(@NotNull Player player, int uid, @NotNull String message) {
         if (uid == SERVER_UID) {
-            this.server.getLogger().info("{} executed server command: {}", player, message);
+            this.server.getLogger().info(I18n.translate("game.info.command_executed", this.server.getConfig()), player, message);
 
             ChatInfo messageInfo = ChatInfo.newBuilder()
                 .setUid(player.getUid())
@@ -121,7 +119,8 @@ public class IrminsulCommandManager implements CommandManager {
             if (registeredCommands.containsKey(command)) {
                 this.registeredCommands.get(command).handle(player, message, Arrays.copyOfRange(args, 1, args.length));
             } else {
-                this.sendError(player, "Unknown command \"" + command + "\"! Try \"help\" for help.");
+                this.sendError(player, I18n.translate("game.command.unknown", this.getServer().getConfig())
+                    .replace("{}", command));
             }
 
             new PacketPrivateChatRsp(player.getSession()).send();
@@ -132,7 +131,7 @@ public class IrminsulCommandManager implements CommandManager {
     public @NotNull FriendBriefOuterClass.FriendBrief getServerFriendBrief() {
         return FriendBriefOuterClass.FriendBrief.newBuilder()
             .setUid(SERVER_UID)
-            .setNickname("Server")
+            .setNickname(I18n.translate("game.server_profile.name", this.server.getConfig()))
             .setProfilePicture(ProfilePictureOuterClass.ProfilePicture.newBuilder().setAvatarId(0).build())
             .setNameCardId(210001)
             .setFriendEnterHomeOption(FriendEnterHomeOptionOuterClass.FriendEnterHomeOption.FRIEND_ENTER_HOME_OPTION_REFUSE)
@@ -140,7 +139,7 @@ public class IrminsulCommandManager implements CommandManager {
             .setLevel(1)
             .setLastActiveTime((int) (System.currentTimeMillis() / 1000))
             .setOnlineState(FriendOnlineStateOuterClass.FriendOnlineState.FRIEND_ONLINE_STATE_ONLINE)
-            .setSignature("Irminsul server console")
+            .setSignature(I18n.translate("game.server_profile.signature", this.server.getConfig()))
             .setPlatformType(PlatformTypeOuterClass.PlatformType.PLATFORM_TYPE_CLOUD_PC)
             .setIsGameSource(true)
             .setParam(1)

@@ -4,6 +4,7 @@ import io.irminsul.common.config.Config;
 import io.irminsul.common.config.ConfigEntry;
 import io.irminsul.common.http.HttpServer;
 import io.irminsul.common.http.DispatchRegion;
+import io.irminsul.common.util.i18n.I18n;
 import io.irminsul.http.handler.*;
 import lombok.Getter;
 import lombok.NonNull;
@@ -23,6 +24,11 @@ public class IrminsulHttpServer implements HttpServer {
     private final Logger logger = LoggerFactory.getLogger("HTTP Server");
 
     /**
+     * This server's {@link Config}
+     */
+    private final Config config;
+
+    /**
      * The {@link Spark} instance of this web server
      */
     private final Service spark = Service.ignite();
@@ -40,19 +46,21 @@ public class IrminsulHttpServer implements HttpServer {
     );
 
     public IrminsulHttpServer(@NonNull Config config) {
-        this.logger.info("Starting HTTP server!");
+        this.config = config;
+        this.logger.info(I18n.translate("http.info.start", this.config));
 
         // Attempt to parse the provided port number. Halt if it can't be parsed.
         try {
-            this.port = Integer.parseInt(config.getValue(ConfigEntry.HTTP_PORT));
+            this.port = Integer.parseInt(this.config.getValue(ConfigEntry.HTTP_PORT));
         } catch (NumberFormatException e) {
-            this.logger.error("Could not parse provided port \"{}\". Halting!", config.getValue(ConfigEntry.HTTP_PORT), e);
+            this.logger.error(I18n.translate("http.error.bad_port", this.config),
+                this.config.getValue(ConfigEntry.HTTP_PORT), e);
         }
 
-        // Set up HTTPS
-        if (Boolean.parseBoolean(config.getValue(ConfigEntry.HTTP_USE_SSL))) {
+        // Set up HTTPS, if enabled
+        if (Boolean.parseBoolean(this.config.getValue(ConfigEntry.HTTP_USE_SSL))) {
             this.spark.secure("keystore.jks", "password", null, null);
-            this.logger.info("Enabled SSL (HTTPS)!");
+            this.logger.info(I18n.translate("http.info.ssl", this.config));
         }
 
         // Start the spark server
@@ -94,6 +102,6 @@ public class IrminsulHttpServer implements HttpServer {
         this.spark.get("/", (request, response) -> "Irminsul PS");
 
         // Done
-        this.logger.info("HTTP server started on port {}", this.port);
+        this.logger.info(I18n.translate("http.info.done", this.config));
     }
 }

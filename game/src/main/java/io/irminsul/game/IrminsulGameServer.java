@@ -11,6 +11,7 @@ import io.irminsul.common.game.net.Session;
 import io.irminsul.common.game.player.PlayerProfile;
 import io.irminsul.common.game.world.World;
 import io.irminsul.common.util.CryptoUtil;
+import io.irminsul.common.util.i18n.I18n;
 import io.irminsul.game.command.IrminsulCommandManager;
 import io.irminsul.game.dungeon.IrminsulDungeonManager;
 import io.irminsul.game.event.SimpleEventBus;
@@ -46,6 +47,11 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
      * This server's logger
      */
     private final Logger logger = LoggerFactory.getLogger("Game Server");
+
+    /**
+     * This server's {@link Config}
+     */
+    private final Config config;
 
     /**
      * This server's {@link EventBus}
@@ -95,16 +101,18 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
      * @param config The server {@link Config} to use
      */
     public IrminsulGameServer(@NonNull Config config) {
-        this.logger.info("Starting game server!");
+        this.config = config;
+        this.logger.info(I18n.translate("game.info.start", this.config));
 
         // Attempt to parse the provided port number. Halt if it can't be parsed.
         try {
-            this.port = Integer.parseInt(config.getValue(ConfigEntry.GAME_PORT));
+            this.port = Integer.parseInt(this.config.getValue(ConfigEntry.GAME_PORT));
         } catch (NumberFormatException e) {
-            this.logger.error("Could not parse provided port \"{}\". Halting!", config.getValue(ConfigEntry.GAME_PORT), e);
+            this.logger.error(I18n.translate("game.error.bad_port", this.config),
+                this.config.getValue(ConfigEntry.GAME_PORT), e);
         }
 
-        this.sandbox = Boolean.parseBoolean(config.getValue(ConfigEntry.GAME_SANDBOX));
+        this.sandbox = Boolean.parseBoolean(this.config.getValue(ConfigEntry.GAME_SANDBOX));
 
         // Set game server container instance
         GameServerContainer.setServer(this);
@@ -125,7 +133,7 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
             worlds.forEach(world -> executor.submit(world::tick)), 1, 1, TimeUnit.SECONDS);
 
         // Done
-        this.logger.info("Game server started on port {} in {} mode!", this.port, this.sandbox ? "sandbox" : "realism");
+        this.logger.info(I18n.translate("game.info.done_" + (this.sandbox ? "sandbox" : "realism"), this.config), this.port);
     }
 
     /**
@@ -165,7 +173,7 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
         try {
             packet = new InboundPacket(Unpooled.wrappedBuffer(raw), session);
         } catch (MalformedPacketException e) {
-            this.logger.error("Failed to decode packet: {}, bytes: {}", e, Arrays.toString(raw));
+            this.logger.error(I18n.translate("game.error.packet_decode_failed", this.config), e, Arrays.toString(raw));
             return;
         }
 

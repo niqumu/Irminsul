@@ -2,6 +2,7 @@ package io.irminsul.game;
 
 import io.irminsul.common.game.GameServer;
 import io.irminsul.common.game.net.KcpTunnel;
+import io.irminsul.common.util.i18n.I18n;
 import io.irminsul.game.net.IrminsulSession;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -53,7 +54,7 @@ public class GameServerListener implements KcpListener {
 
     @Override
     public void handleException(Throwable throwable, Ukcp ukcp) {
-        this.server.getLogger().error("Server listener raised an exception!", throwable);
+        this.server.getLogger().error(I18n.translate("game.error.listener_error", this.server.getConfig()), throwable);
     }
 
     @Override

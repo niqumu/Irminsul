@@ -17,7 +17,7 @@ public class LoginComboHandler implements Route {
 
     @Override
     public Object handle(Request request, Response response) {
-        this.server.getLogger().info("Incoming token login request");
+        this.server.getLogger().debug("Incoming token login request");
 
         JsonObject responseJson = new JsonObject();
         JsonObject data = new JsonObject();

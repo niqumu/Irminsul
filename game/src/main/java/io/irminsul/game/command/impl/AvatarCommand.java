@@ -78,7 +78,7 @@ public class AvatarCommand implements CommandHandler {
 
         // Add the avatar
         Avatar avatar = new IrminsulAvatar(avatarId, sender);
-        new PacketAddNoGachaAvatarCardNotify(sender.getSession(), avatar, ActionReason.AddAvatar).send();
+        new PacketAddNoGachaAvatarCardNotify(sender.getSession(), avatar, ActionReason.ADD_AVATAR).send();
         sender.addAvatar(avatar);
 
         this.commandManager.sendMessage(sender, "Gave you " + avatarId +

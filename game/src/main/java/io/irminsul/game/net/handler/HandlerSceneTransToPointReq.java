@@ -44,7 +44,7 @@ public class HandlerSceneTransToPointReq implements PacketHandler {
         // Teleport the player TODO rotations are broken, figure that out
         SceneData sceneData = session.getPlayer().getWorld().getOrCreateScene(sceneId).getSceneData();
         session.getPlayer().sendToScene(sceneId, sceneData.getTransPoints().get(pointId).getTransPosition(),
-            EnterReason.TransPoint);
+            EnterReason.TRANS_POINT);
 
         // Respond
         new PacketSceneTransToPointRsp(session, request.getSceneId(), request.getPointId());

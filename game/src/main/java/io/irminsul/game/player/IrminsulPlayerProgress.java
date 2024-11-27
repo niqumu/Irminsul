@@ -127,8 +127,8 @@ public class IrminsulPlayerProgress implements PlayerProgress {
         // Reward the player
         TransPoint transPoint = player.getWorld().getOrCreateScene(scene).getSceneData().getTransPoints().get(point);
         boolean extraEXP = transPoint.getType().equals(TransPointType.STATUE); // statues give more ar exp
-        this.player.getInventory().addItem(GameConstants.ITEM_AR_EXP, extraEXP ? 50 : 10, ActionReason.UnlockPointReward);
-        this.player.getInventory().addItem(GameConstants.ITEM_PRIMOGEM, 5, ActionReason.UnlockPointReward);
+        this.player.getInventory().addItem(GameConstants.ITEM_AR_EXP, extraEXP ? 50 : 10, ActionReason.UNLOCK_POINT_REWARD);
+        this.player.getInventory().addItem(GameConstants.ITEM_PRIMOGEM, 5, ActionReason.UNLOCK_POINT_REWARD);
 
         // Unlock the point
         this.unlockedScenePoints.get(scene).add(point);

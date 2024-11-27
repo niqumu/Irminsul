@@ -233,7 +233,7 @@ public class IrminsulPlayer implements Player {
         GameServerContainer.getServer().getEventBus().postEvent(new PlayerLoginEvent(this));
 
         // Continue the login process
-        this.sendToScene(GameConstants.OVERWORLD_SCENE, EnterReason.Login);
+        this.sendToScene(GameConstants.OVERWORLD_SCENE, EnterReason.LOGIN);
         this.session.setState(SessionState.ACTIVE);
 
         // todo testing remove
@@ -283,7 +283,7 @@ public class IrminsulPlayer implements Player {
     @Override
     public void sendToScene(int sceneId) {
         Position spawn = this.world.getOrCreateScene(sceneId).getSpawnPoint();
-        this.sendToScene(sceneId, spawn, EnterReason.Gm);
+        this.sendToScene(sceneId, spawn, EnterReason.GM);
     }
 
     /**
@@ -304,7 +304,7 @@ public class IrminsulPlayer implements Player {
      */
     @Override
     public void sendToScene(int sceneId, @NotNull Position position) {
-        this.sendToScene(sceneId, position, EnterReason.Gm);
+        this.sendToScene(sceneId, position, EnterReason.GM);
     }
 
     /**
@@ -359,7 +359,7 @@ public class IrminsulPlayer implements Player {
 
         if (this.getScene() != null) {
             new PacketPlayerEnterSceneNotify(this.session, new Teleport(this.sceneId, this.position,
-                EnterTypeOuterClass.EnterType.ENTER_TYPE_GOTO, EnterReason.Gm)).send();
+                EnterTypeOuterClass.EnterType.ENTER_TYPE_GOTO, EnterReason.GM)).send();
 
             // Rotate
             this.getScene().replaceEntity(this.teamManager.getActiveAvatar(), this.teamManager.getActiveAvatar());

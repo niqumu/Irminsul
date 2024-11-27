@@ -1,13 +1,10 @@
 package io.irminsul.game.command.impl;
 
-import io.irminsul.common.game.avatar.Avatar;
 import io.irminsul.common.game.command.CommandHandler;
 import io.irminsul.common.game.command.CommandManager;
 import io.irminsul.common.game.player.Player;
-import io.irminsul.game.avatar.IrminsulAvatar;
 import io.irminsul.game.data.ActionReason;
 import io.irminsul.game.item.IrminsulItem;
-import io.irminsul.game.net.packet.PacketAddNoGachaAvatarCardNotify;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -73,7 +70,7 @@ public class ItemCommand implements CommandHandler {
         }
 
         // Add the item
-        sender.getInventory().addItem(new IrminsulItem(itemId, count, sender), ActionReason.None);
+        sender.getInventory().addItem(new IrminsulItem(itemId, count, sender), ActionReason.NONE);
         this.commandManager.sendMessage(sender, "Gave you " + itemId + " x" + count + "!");
     }
 }

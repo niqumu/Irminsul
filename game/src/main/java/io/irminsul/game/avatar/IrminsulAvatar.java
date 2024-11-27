@@ -136,7 +136,7 @@ public class IrminsulAvatar implements Avatar {
 
         // Create a starter weapon, equip it, and give it to the owner
         this.weapon = new IrminsulWeapon(this.avatarData.getInitialWeapon(), owner);
-        this.owner.getInventory().addItem(this.weapon, ActionReason.AddAvatar);
+        this.owner.getInventory().addItem(this.weapon, ActionReason.ADD_AVATAR);
 
         // Calculate stats
         this.updateStats();

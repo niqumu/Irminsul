@@ -1,4 +1,4 @@
-package io.irminsul.core.config;
+package io.irminsul.common.config;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,6 +10,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ConfigEntry {
     LANGUAGE("language", "en_US"),
+    TARGET_VERSION("target_version", "not set"),
     HTTP_ENABLED("http_enabled", "true"),
     HTTP_PORT("http_port", "3000"),
     HTTP_USE_SSL("http_ssl", "false"),

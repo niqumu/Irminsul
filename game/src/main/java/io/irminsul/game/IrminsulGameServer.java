@@ -1,5 +1,7 @@
 package io.irminsul.game;
 
+import io.irminsul.common.config.Config;
+import io.irminsul.common.config.ConfigEntry;
 import io.irminsul.common.game.GameServer;
 import io.irminsul.common.game.GameServerContainer;
 import io.irminsul.common.game.command.CommandManager;
@@ -22,6 +24,7 @@ import kcp.highway.ChannelConfig;
 import kcp.highway.KcpServer;
 import kcp.highway.Ukcp;
 import lombok.Getter;
+import lombok.NonNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +55,7 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
     /**
      * The port this server is running on
      */
-    private final int port;
+    private int port;
 
     /**
      * A list of {@link World}s on the server
@@ -89,12 +92,19 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
 
     /**
      * Create a new game server on the provided port
-     * @param port The port to expose the server to
+     * @param config The server {@link Config} to use
      */
-    public IrminsulGameServer(int port, boolean sandbox) {
+    public IrminsulGameServer(@NonNull Config config) {
         this.logger.info("Starting game server!");
-        this.port = port;
-        this.sandbox = sandbox;
+
+        // Attempt to parse the provided port number. Halt if it can't be parsed.
+        try {
+            this.port = Integer.parseInt(config.getValue(ConfigEntry.GAME_PORT));
+        } catch (NumberFormatException e) {
+            this.logger.error("Could not parse provided port \"{}\". Halting!", config.getValue(ConfigEntry.GAME_PORT), e);
+        }
+
+        this.sandbox = Boolean.parseBoolean(config.getValue(ConfigEntry.GAME_SANDBOX));
 
         // Set game server container instance
         GameServerContainer.setServer(this);

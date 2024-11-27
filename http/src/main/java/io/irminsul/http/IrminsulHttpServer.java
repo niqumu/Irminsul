@@ -1,9 +1,12 @@
 package io.irminsul.http;
 
+import io.irminsul.common.config.Config;
+import io.irminsul.common.config.ConfigEntry;
 import io.irminsul.common.http.HttpServer;
 import io.irminsul.common.http.DispatchRegion;
 import io.irminsul.http.handler.*;
 import lombok.Getter;
+import lombok.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.Service;
@@ -27,7 +30,7 @@ public class IrminsulHttpServer implements HttpServer {
     /**
      * The port this web server is running on
      */
-    private final int port;
+    private int port;
 
     /**
      * A list of regions registered on this web server
@@ -36,14 +39,20 @@ public class IrminsulHttpServer implements HttpServer {
         new DispatchRegion("os_usa", "Irminsul", "127.0.0.1", 22102)
     );
 
-    public IrminsulHttpServer(int port, boolean ssl) {
+    public IrminsulHttpServer(@NonNull Config config) {
         this.logger.info("Starting HTTP server!");
-        this.port = port;
+
+        // Attempt to parse the provided port number. Halt if it can't be parsed.
+        try {
+            this.port = Integer.parseInt(config.getValue(ConfigEntry.HTTP_PORT));
+        } catch (NumberFormatException e) {
+            this.logger.error("Could not parse provided port \"{}\". Halting!", config.getValue(ConfigEntry.HTTP_PORT), e);
+        }
 
         // Set up HTTPS
-        if (ssl) {
+        if (Boolean.parseBoolean(config.getValue(ConfigEntry.HTTP_USE_SSL))) {
             this.spark.secure("keystore.jks", "password", null, null);
-            this.logger.info("Enabled SSL/HTTPS!");
+            this.logger.info("Enabled SSL (HTTPS)!");
         }
 
         // Start the spark server

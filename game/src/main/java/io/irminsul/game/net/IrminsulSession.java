@@ -57,6 +57,10 @@ public class IrminsulSession implements Session {
 
     @Override
     public void onClose() {
+        if (this.player != null) {
+            this.server.getLogger().info("{} ({}) left the game", this.player.getProfile().getNickname(), this.player.getUid());
+        }
+
         this.server.getLogger().info("Connection to {} closed", this.tunnel.getAddress().toString());
     }
 

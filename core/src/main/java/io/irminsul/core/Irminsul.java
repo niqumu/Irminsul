@@ -38,7 +38,7 @@ public class Irminsul {
     /**
      * SLF4J logger associated with this Irminsul instance
      */
-    private final Logger logger = LoggerFactory.getLogger("Irminsul");
+    private final Logger logger = LoggerFactory.getLogger("Irminsul Core");
 
     /**
      * Configuration containers for services
@@ -77,7 +77,11 @@ public class Irminsul {
         }
 
         // Ignite the configured game servers
-        this.gameServerConfigs.forEach(config -> this.gameServers.add(new IrminsulGameServer(config)));
+        for (int i = 0; i < this.gameServerConfigs.size(); i++) {
+            GameServerConfig gameServerConfig = this.gameServerConfigs.get(i);
+            this.gameServers.add(new IrminsulGameServer(gameServerConfig,
+                "Game Server" + (this.gameServerConfigs.size() > 1 ? " #" + (i + 1) : "")));
+        }
         if (this.gameServers.isEmpty()) {
             this.logger.info(I18n.translate("core.info.game_skipped", this.config));
         }

@@ -94,6 +94,6 @@ public class IrminsulHttpServer implements HttpServer {
         this.spark.get("/", (request, response) -> "Irminsul PS");
 
         // Done
-        this.logger.info(I18n.translate("http.info.done", this.config));
+        this.logger.info(I18n.translate("http.info.done", this.config), this.port);
     }
 }

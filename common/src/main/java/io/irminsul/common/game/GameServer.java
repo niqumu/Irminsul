@@ -12,8 +12,8 @@ import kcp.highway.Ukcp;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public interface GameServer extends LoggerContainer {
 
@@ -35,7 +35,7 @@ public interface GameServer extends LoggerContainer {
     /**
      * @return A map of {@link Session}s connected to the server
      */
-    @NotNull HashMap<Ukcp, Session> getSessions();
+    @NotNull Map<Ukcp, Session> getSessions();
 
     /**
      * @return A list of {@link World}s on the server

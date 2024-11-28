@@ -29,10 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -44,7 +41,7 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
     /**
      * This server's logger
      */
-    private final Logger logger = LoggerFactory.getLogger("Game Server");
+    private final Logger logger;
 
     /**
      * This GameServer's {@link GameServerConfig}
@@ -59,7 +56,7 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
     /**
      * The port this server is running on
      */
-    private int port;
+    private final int port;
 
     /**
      * A list of {@link World}s on the server
@@ -74,7 +71,7 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
     /**
      * A map of {@link IrminsulSession}s connected to the server
      */
-    private final HashMap<Ukcp, Session> sessions = new HashMap<>();
+    private final Map<Ukcp, Session> sessions = new HashMap<>();
 
     /**
      * Managers
@@ -97,11 +94,14 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
     /**
      * Create a new game server using the provided configuration
      * @param config The {@link GameServerConfig} to use
+     * @param name The display name of this game server, used in logging
      */
-    public IrminsulGameServer(@NonNull GameServerConfig config) {
+    public IrminsulGameServer(@NonNull GameServerConfig config, @NonNull String name) {
         this.config = config;
         this.port = this.config.getPort();
         this.sandbox = this.config.isSandbox();
+
+        this.logger = LoggerFactory.getLogger(name);
         this.logger.info(I18n.translate("game.info.start", this.config));
 
         // Init KCP server

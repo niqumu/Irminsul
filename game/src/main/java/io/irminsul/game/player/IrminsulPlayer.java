@@ -237,6 +237,10 @@ public class IrminsulPlayer implements Player {
 
         // todo testing remove
         this.addAvatar(new IrminsulAvatar(10000058, this));
+
+        // Done
+        this.session.getServer().getLogger().info("{} ({}) joined the game from {}",
+            this.profile.getNickname(), this.getUid(), this.getSession().getTunnel().getAddress().toString());
     }
 
     /**

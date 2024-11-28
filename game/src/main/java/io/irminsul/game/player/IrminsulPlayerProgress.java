@@ -1,6 +1,5 @@
 package io.irminsul.game.player;
 
-import io.irminsul.common.game.GameServerContainer;
 import io.irminsul.common.game.data.misc.OpenStateData;
 import io.irminsul.common.game.data.scene.SceneData;
 import io.irminsul.common.game.data.scene.TransPointType;
@@ -57,7 +56,7 @@ public class IrminsulPlayerProgress implements PlayerProgress {
         DataContainer.getAllOpenStateData().forEach(state -> this.openStates.put(state, state.isDefaultState()));
 
         // Subscribe to events
-        GameServerContainer.getServer().getEventBus().registerSubscriber(this);
+        this.player.getSession().getServer().getEventBus().registerSubscriber(this);
     }
 
     /**
@@ -77,7 +76,7 @@ public class IrminsulPlayerProgress implements PlayerProgress {
      * @return A key-value map of client open states, controlling features on the client
      */
     public @NotNull Map<OpenStateData, Boolean> getOpenStates() {
-        if (!GameServerContainer.getServer().isSandbox()) {
+        if (!this.player.getSession().getServer().isSandbox()) {
             return this.openStates;
         }
         Map<OpenStateData, Boolean> map = new HashMap<>(this.openStates);
@@ -94,7 +93,7 @@ public class IrminsulPlayerProgress implements PlayerProgress {
     public @NotNull List<Integer> getUnlockedScenePoints(int scene) {
 
         // Sandbox mode
-        if (GameServerContainer.getServer().isSandbox()) {
+        if (this.player.getSession().getServer().isSandbox()) {
             ArrayList<Integer> list = new ArrayList<>();
 
             // Add all teleport points from the scene data

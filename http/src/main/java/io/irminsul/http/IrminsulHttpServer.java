@@ -1,7 +1,6 @@
 package io.irminsul.http;
 
-import io.irminsul.common.config.Config;
-import io.irminsul.common.config.ConfigEntry;
+import io.irminsul.common.config.HttpServerConfig;
 import io.irminsul.common.http.HttpServer;
 import io.irminsul.common.http.DispatchRegion;
 import io.irminsul.common.util.i18n.I18n;
@@ -24,9 +23,9 @@ public class IrminsulHttpServer implements HttpServer {
     private final Logger logger = LoggerFactory.getLogger("HTTP Server");
 
     /**
-     * This server's {@link Config}
+     * This HttpServer's {@link HttpServerConfig}
      */
-    private final Config config;
+    private final HttpServerConfig config;
 
     /**
      * The {@link Spark} instance of this web server
@@ -36,29 +35,22 @@ public class IrminsulHttpServer implements HttpServer {
     /**
      * The port this web server is running on
      */
-    private int port;
+    private final int port;
 
     /**
      * A list of regions registered on this web server
      */
-    private final List<DispatchRegion> regions = List.of(
-        new DispatchRegion("os_usa", "Irminsul", "127.0.0.1", 22102)
-    );
+    private final List<DispatchRegion> regions;
 
-    public IrminsulHttpServer(@NonNull Config config) {
+    public IrminsulHttpServer(@NonNull HttpServerConfig config) {
         this.config = config;
+        this.port = config.getPort();
+        this.regions = config.getRegions();
+
         this.logger.info(I18n.translate("http.info.start", this.config));
 
-        // Attempt to parse the provided port number. Halt if it can't be parsed.
-        try {
-            this.port = Integer.parseInt(this.config.getValue(ConfigEntry.HTTP_PORT));
-        } catch (NumberFormatException e) {
-            this.logger.error(I18n.translate("http.error.bad_port", this.config),
-                this.config.getValue(ConfigEntry.HTTP_PORT), e);
-        }
-
         // Set up HTTPS, if enabled
-        if (Boolean.parseBoolean(this.config.getValue(ConfigEntry.HTTP_USE_SSL))) {
+        if (this.config.isSsl()) {
             this.spark.secure("keystore.jks", "password", null, null);
             this.logger.info(I18n.translate("http.info.ssl", this.config));
         }

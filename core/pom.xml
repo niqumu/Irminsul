@@ -36,6 +36,11 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/../lib/kcp-1.5.1.jar</systemPath>
         </dependency>
+        <dependency>
+            <groupId>org.hjson</groupId>
+            <artifactId>hjson</artifactId>
+            <version>3.1.0</version>
+        </dependency>
     </dependencies>
 
 </project>

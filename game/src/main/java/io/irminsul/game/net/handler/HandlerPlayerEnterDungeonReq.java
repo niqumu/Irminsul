@@ -1,6 +1,5 @@
 package io.irminsul.game.net.handler;
 
-import io.irminsul.common.game.GameServerContainer;
 import io.irminsul.common.game.net.Session;
 import io.irminsul.common.net.PacketIds;
 import io.irminsul.common.proto.PlayerEnterDungeonReqOuterClass;
@@ -35,7 +34,7 @@ public class HandlerPlayerEnterDungeonReq implements PacketHandler {
             PlayerEnterDungeonReqOuterClass.PlayerEnterDungeonReq.parseFrom(packet.getData());
 
         // Send the player to the dungeon
-        GameServerContainer.getServer().getDungeonManager().enterDungeon(session.getPlayer(),
+        session.getServer().getDungeonManager().enterDungeon(session.getPlayer(),
             request.getPointId(), request.getDungeonId());
 
         // Respond

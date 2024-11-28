@@ -1,6 +1,5 @@
 package io.irminsul.game.net.handler;
 
-import io.irminsul.common.game.GameServerContainer;
 import io.irminsul.common.game.net.Session;
 import io.irminsul.common.net.PacketIds;
 import io.irminsul.game.net.InboundPacket;
@@ -28,6 +27,6 @@ public class HandlerPullRecentChatReq implements PacketHandler {
             return;
         }
 
-        GameServerContainer.getServer().getCommandManager().handlePullRecentChatReq(session.getPlayer());
+        session.getServer().getCommandManager().handlePullRecentChatReq(session.getPlayer());
     }
 }

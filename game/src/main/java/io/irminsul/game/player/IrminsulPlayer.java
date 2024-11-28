@@ -1,6 +1,5 @@
 package io.irminsul.game.player;
 
-import io.irminsul.common.game.GameServerContainer;
 import io.irminsul.common.game.world.Teleport;
 import io.irminsul.common.proto.EnterTypeOuterClass;
 import io.irminsul.game.GameConstants;
@@ -188,7 +187,7 @@ public class IrminsulPlayer implements Player {
      * @return A map of properties that this player has
      */
     public @NotNull Map<Integer, Integer> getProperties() {
-        if (!GameServerContainer.getServer().isSandbox()) {
+        if (!this.session.getServer().isSandbox()) {
             return this.properties;
         }
         Map<Integer, Integer> map = new HashMap<>(this.properties);
@@ -230,7 +229,7 @@ public class IrminsulPlayer implements Player {
         new PacketAvatarDataNotify(this.session).send();
 
         // Fire login event
-        GameServerContainer.getServer().getEventBus().postEvent(new PlayerLoginEvent(this));
+        this.session.getServer().getEventBus().postEvent(new PlayerLoginEvent(this));
 
         // Continue the login process
         this.sendToScene(GameConstants.OVERWORLD_SCENE, EnterReason.LOGIN);

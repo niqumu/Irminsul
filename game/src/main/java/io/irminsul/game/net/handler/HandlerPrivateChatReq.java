@@ -1,6 +1,5 @@
 package io.irminsul.game.net.handler;
 
-import io.irminsul.common.game.GameServerContainer;
 import io.irminsul.common.game.net.Session;
 import io.irminsul.common.net.PacketIds;
 import io.irminsul.common.proto.PrivateChatReqOuterClass;
@@ -33,7 +32,6 @@ public class HandlerPrivateChatReq implements PacketHandler {
         PrivateChatReqOuterClass.PrivateChatReq request =
             PrivateChatReqOuterClass.PrivateChatReq.parseFrom(packet.getData());
 
-        GameServerContainer.getServer().getCommandManager()
-            .handlePrivateChatReq(session.getPlayer(), request.getTargetUid(), request.getText());
+        session.getServer().getCommandManager().handlePrivateChatReq(session.getPlayer(), request.getTargetUid(), request.getText());
     }
 }

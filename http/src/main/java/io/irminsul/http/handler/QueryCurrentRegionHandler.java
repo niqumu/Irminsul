@@ -1,7 +1,6 @@
 package io.irminsul.http.handler;
 
 import com.google.protobuf.ByteString;
-import io.irminsul.common.config.Config;
 import io.irminsul.common.http.HttpServer;
 import io.irminsul.common.proto.http.QueryCurrRegionHttpRspOuterClass;
 import io.irminsul.common.proto.http.RegionInfoOuterClass;

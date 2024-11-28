@@ -1,6 +1,5 @@
 package io.irminsul.game.net.handler;
 
-import io.irminsul.common.game.GameServerContainer;
 import io.irminsul.common.game.net.Session;
 import io.irminsul.common.net.PacketIds;
 import io.irminsul.common.proto.PlayerQuitDungeonReqOuterClass;
@@ -35,7 +34,7 @@ public class HandlerPlayerQuitDungeonReq implements PacketHandler {
             PlayerQuitDungeonReqOuterClass.PlayerQuitDungeonReq.parseFrom(packet.getData());
 
         // Send the player to the overworld
-        GameServerContainer.getServer().getDungeonManager().quitDungeon(session.getPlayer(), request.getPointId());
+        session.getServer().getDungeonManager().quitDungeon(session.getPlayer(), request.getPointId());
 
         // Respond
         new PacketPlayerQuitDungeonRsp(session, request.getPointId()).send();

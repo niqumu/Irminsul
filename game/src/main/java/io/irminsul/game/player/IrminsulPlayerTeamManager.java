@@ -1,6 +1,5 @@
 package io.irminsul.game.player;
 
-import io.irminsul.common.game.GameServerContainer;
 import io.irminsul.common.game.player.Player;
 import io.irminsul.common.game.avatar.Avatar;
 import io.irminsul.common.game.player.PlayerTeam;
@@ -85,7 +84,7 @@ public class IrminsulPlayerTeamManager implements PlayerTeamManager {
         // Fire PlayerSwitchAvatarEvent event
         PlayerSwitchAvatarEvent event = new PlayerSwitchAvatarEvent(this.player, this.getActiveAvatar(),
             this.getActiveTeam().getAvatars().get(newIndex));
-        if (GameServerContainer.getServer().getEventBus().postEvent(event)) {
+        if (this.player.getSession().getServer().getEventBus().postEvent(event)) {
             return;
         }
 

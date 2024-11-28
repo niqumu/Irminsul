@@ -1,7 +1,6 @@
 package io.irminsul.common.util.i18n;
 
-import io.irminsul.common.config.Config;
-import io.irminsul.common.config.ConfigEntry;
+import io.irminsul.common.config.LanguageSupplier;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import org.slf4j.Logger;
@@ -11,6 +10,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
@@ -24,7 +24,7 @@ public class I18n {
      */
     private final Map<String, Map<String, String>> translations = new HashMap<>();
 
-    public @NonNull String translate(@NonNull String key, Config config) {
+    public @NonNull String translate(@NonNull String key, LanguageSupplier supplier) {
 
         // Check to make sure that the translations have been loaded
         if (translations.isEmpty()) {
@@ -33,10 +33,10 @@ public class I18n {
 
         // Get the language to translate to
         String language;
-        if (config == null) {
-            language = ConfigEntry.LANGUAGE.getDefaultValue();
+        if (supplier == null) {
+            language = Locale.getDefault().getLanguage().equals("zh") ? "zh_CN" : "en_US";
         } else {
-            language = config.getValue(ConfigEntry.LANGUAGE);
+            language = supplier.getLanguage();
         }
 
         // Check to see if the language to translate to is valid

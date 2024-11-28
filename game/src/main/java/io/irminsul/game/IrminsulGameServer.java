@@ -1,9 +1,7 @@
 package io.irminsul.game;
 
-import io.irminsul.common.config.Config;
-import io.irminsul.common.config.ConfigEntry;
+import io.irminsul.common.config.GameServerConfig;
 import io.irminsul.common.game.GameServer;
-import io.irminsul.common.game.GameServerContainer;
 import io.irminsul.common.game.command.CommandManager;
 import io.irminsul.common.game.dungeon.DungeonManager;
 import io.irminsul.common.game.event.EventBus;
@@ -49,9 +47,9 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
     private final Logger logger = LoggerFactory.getLogger("Game Server");
 
     /**
-     * This server's {@link Config}
+     * This GameServer's {@link GameServerConfig}
      */
-    private final Config config;
+    private final GameServerConfig config;
 
     /**
      * This server's {@link EventBus}
@@ -97,25 +95,14 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
     private final ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newCachedThreadPool();
 
     /**
-     * Create a new game server on the provided port
-     * @param config The server {@link Config} to use
+     * Create a new game server using the provided configuration
+     * @param config The {@link GameServerConfig} to use
      */
-    public IrminsulGameServer(@NonNull Config config) {
+    public IrminsulGameServer(@NonNull GameServerConfig config) {
         this.config = config;
+        this.port = this.config.getPort();
+        this.sandbox = this.config.isSandbox();
         this.logger.info(I18n.translate("game.info.start", this.config));
-
-        // Attempt to parse the provided port number. Halt if it can't be parsed.
-        try {
-            this.port = Integer.parseInt(this.config.getValue(ConfigEntry.GAME_PORT));
-        } catch (NumberFormatException e) {
-            this.logger.error(I18n.translate("game.error.bad_port", this.config),
-                this.config.getValue(ConfigEntry.GAME_PORT), e);
-        }
-
-        this.sandbox = Boolean.parseBoolean(this.config.getValue(ConfigEntry.GAME_SANDBOX));
-
-        // Set game server container instance
-        GameServerContainer.setServer(this);
 
         // Init KCP server
         ChannelConfig channelConfig = new ChannelConfig();

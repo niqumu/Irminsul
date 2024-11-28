@@ -52,27 +52,70 @@ or multiple (under multiple Irminsul instances).
 
 ### A simple monolithic setup (default)
 
-![InfrastructureExample1.png](img/InfrastructureExample1.png)
+<p align="center">
+<img src="img/InfrastructureExample1.png" alt="A diagram showing the default setup of Irminsul">
+</p>
 
-<i>A diagram showing the default setup of Irminsul. Purple arrows represent ignition, green arrows represent data.</i>
+<p align="center"><i>A diagram showing the default setup of Irminsul. Purple arrows represent ignition, green arrows 
+represent data.</i></p>
 
 This diagram shows the default configuration of Irminsul: running as a monolithic service on a single machine with a 
 singular game server. In this example, the HTTP server must be configured with `200:200:200:200:22102` as a game server, 
-which is then passed along to the client on the login screen.
+which is then passed along to the client on the login screen. 
 
+This setup can be recreated using the default config, 
+which is cloned automatically upon first start. For reference, a copy of the default config file exists alongside
+this document (`default.hjson`).
+[default.hjson](default.hjson)
 In this scenario, the end user would connect to `200:200:200:200:3000`, and would be given one server to join.
 
 ### A complex multi-machine network
 
-![InfrastructureExample2.png](img/InfrastructureExample2.png)
+<p align="center">
+<img src="img/InfrastructureExample2.png" alt="A diagram showing a complex setup of Irminsul">
+</p>
 
-<i>A diagram showing a complex setup of Irminsul. Purple arrows represent ignition, green arrows represent data.</i>
+<p align="center"><i>A diagram showing a complex setup of Irminsul. Purple arrows represent ignition, green arrows 
+represent data.</i></p>
 
 Here, we see a more complex setup of four Irminsul instances across four machines to build a single, large network of 
 servers, forming an ecosystem. In this example, the HTTP server must be configured to point to the game servers at
-`300:300:300:300:22102`, `300:300:300:300:22103`, and `400:400:400:400:22102`. Machines A, C, and D must be visible to 
-the outside world on ports 3000, 22102 + 22103, and 22102 respectively. Machine B does not need to be visible to the 
-outside world (and shouldn't be!).
+`300:300:300:300:22102`, `300:300:300:300:22103`, and `400:400:400:400:22102`. 
+
+```hjson
+    # The settings used to configure the HTTP server.
+    "http": {
+        "enabled": true
+        "port": 3000
+        "ssl": false
+
+        # A list of target game servers this HTTP server will dispatch to.
+        "targets": [
+            {
+                "name": "machine_c_1"
+                "title": "Server A"
+                "ip": "300.300.300.300"
+                "port": 22102
+            }
+            {
+                "name": "machine_c_2"
+                "title": "Server B"
+                "ip": "300.300.300.300"
+                "port": 22103
+            }
+            {
+                "name": "machine_d_1"
+                "title": "Server C"
+                "ip": "400.400.400.400"
+                "port": 22102
+            }
+        ]
+    }
+```
+<p align="center"><i>The HTTP section of the configuration file in use on Machine A.</i></p>
+
+Machines A, C, and D must be visible to the outside world on ports 3000, 22102 + 22103, and 22102 respectively. Machine 
+B does not need to be visible to the outside world (and shouldn't be!).
 
 Remember that the core implements next to no logic, and merely parses the ecosystem configuration and ignites services. 
 You can replace it with custom code for complex arrangements like this and add your own features, such as profiling

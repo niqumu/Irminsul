@@ -52,6 +52,7 @@ public class IrminsulCommandManager implements CommandManager {
         this.registerCommand(new AvatarCommand(this)); // todo: disabled until no longer broken
         this.registerCommand(new HelpCommand(this));
 //        this.registerCommand(new ItemCommand(this)); // todo: disabled until no longer broken
+        this.registerCommand(new PluginsCommand(this));
         this.registerCommand(new SceneCommand(this));
     }
 
@@ -128,7 +129,6 @@ public class IrminsulCommandManager implements CommandManager {
                 .setUid(player.getUid())
                 .setToUid(SERVER_UID)
                 .setText(message)
-                .setIcon(icon)
                 .setTime((int) (System.currentTimeMillis() / 1000))
                 .build();
             this.serverChatHistory.get(player).add(messageInfo);

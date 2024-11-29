@@ -32,6 +32,7 @@ public class PluginManager implements ServerSystem {
     /**
      * A map of loaded and fully enabled plugins, keyed as plugin ID -> plugin instance
      */
+    @Getter
     private final Map<String, GamePlugin> loadedPlugins = new HashMap<>();
 
     private final URLClassLoader pluginClassLoader = new URLClassLoader(new URL[]{});
@@ -173,6 +174,7 @@ public class PluginManager implements ServerSystem {
             properties.get("id").toString(),
             properties.getOrDefault("version", "(unknown)").toString(),
             properties.getOrDefault("name", properties.get("id")).toString(),
+            properties.getOrDefault("description", "(none)").toString(),
             properties.getOrDefault("author", "(unknown)").toString(),
             properties.getOrDefault("website", "(none)").toString(),
             file.getName()

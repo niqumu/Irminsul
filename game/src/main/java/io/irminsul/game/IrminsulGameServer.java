@@ -8,6 +8,8 @@ import io.irminsul.common.event.EventBus;
 import io.irminsul.common.game.net.Session;
 import io.irminsul.common.game.player.PlayerProfile;
 import io.irminsul.common.game.world.World;
+import io.irminsul.common.plugin.GamePlugin;
+import io.irminsul.common.plugin.PluginInfo;
 import io.irminsul.common.util.CryptoUtil;
 import io.irminsul.common.util.i18n.I18n;
 import io.irminsul.game.command.IrminsulCommandManager;
@@ -24,6 +26,7 @@ import kcp.highway.KcpServer;
 import kcp.highway.Ukcp;
 import lombok.Getter;
 import lombok.NonNull;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -133,6 +136,20 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
 
         // Done
         this.logger.info(I18n.translate("game.info.done_" + (this.sandbox ? "sandbox" : "realism"), this.config), this.port);
+    }
+
+    /**
+     * @return A list of loaded and enabled plugins on the server
+     */
+    @Override
+    public @NotNull List<PluginInfo> getPlugins() {
+        List<PluginInfo> plugins = new ArrayList<>();
+
+        for (GamePlugin plugin : this.pluginManager.getLoadedPlugins().values()) {
+            plugins.add(plugin.getPluginInfo());
+        }
+
+        return plugins;
     }
 
     /**

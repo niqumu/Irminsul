@@ -57,9 +57,9 @@ public class HelpCommand implements CommandHandler {
             message
                 .append("\n - ")
                 .append(handler.getName())
-                .append(": <i>")
+                .append(": <i><color=\"#aaaaaa\">")
                 .append(handler.getDescription())
-                .append("</i>");
+                .append("</color></i>");
         }
 
         this.commandManager.sendMessage(sender, message.toString());

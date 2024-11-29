@@ -24,7 +24,7 @@ required `onEnable` and `onDisable` methods. Your plugin **must** have a public 
 Java creates this implicitly if you have no other constructor.
 
 ```java
-package com.example.discordplugin;
+package dev.niqumu.discordplugin;
 
 import io.irminsul.common.game.GameServer;
 
@@ -68,6 +68,9 @@ version=1.0.0
 # Optional, but highly recommended. The display/friendly name of your plugin
 name=Discord Logger
 
+# Optional, but highly recommended. A brief description of your plugin
+description=Example plugin to demonstrate the Irminsul plugin API!
+
 # Optional, but highly recommended. The author(s) of your plugin
 author=Irminsul Team
 
@@ -86,6 +89,10 @@ Let's try it out! Build your plugin using Maven via the Package task.  Install t
 down in this document. Try running Irminsul and see what happens!
 
 <img src="img/ApiFigure1.png" alt="A screenshot of our plugin logging a message to the server">
+
+You can also try using the `plugins` command to verify that your plugin is loaded, and to see some information on it.
+
+<img src="img/ApiFigure5.png" alt="Output of the plugins command">
 
 It works! It's not very interesting though. Let's make our plugin actually *do something*.
 

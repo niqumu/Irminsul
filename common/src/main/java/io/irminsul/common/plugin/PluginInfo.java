@@ -25,6 +25,11 @@ public class PluginInfo {
     private final @NonNull String name;
 
     /**
+     * A brief description of this plugin
+     */
+    private final @NonNull String description;
+
+    /**
      * The author(s) of this plugin
      */
     private final @NonNull String author;

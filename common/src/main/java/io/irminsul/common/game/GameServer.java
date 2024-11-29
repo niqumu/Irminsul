@@ -8,6 +8,7 @@ import io.irminsul.common.event.EventBus;
 import io.irminsul.common.game.net.Session;
 import io.irminsul.common.game.player.PlayerProfile;
 import io.irminsul.common.game.world.World;
+import io.irminsul.common.plugin.PluginInfo;
 import kcp.highway.Ukcp;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -56,6 +57,11 @@ public interface GameServer extends LoggerContainer {
      * @return This server's {@link CommandManager}
      */
     @NotNull CommandManager getCommandManager();
+
+    /**
+     * @return A list of loaded and enabled plugins on the server
+     */
+    @NotNull List<PluginInfo> getPlugins();
 
     /**
      * Attempt to fetch the social profile data of the player with the provided UID

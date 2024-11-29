@@ -14,7 +14,6 @@ import io.irminsul.common.util.i18n.I18n;
 import io.irminsul.game.IrminsulGameServer;
 import io.irminsul.http.IrminsulHttpServer;
 import lombok.Getter;
-import lombok.NonNull;
 import org.hjson.JsonValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +24,6 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Getter
 public class Irminsul {
@@ -34,6 +32,11 @@ public class Irminsul {
      * The release version of Irminsul
      */
     public static final String SERVER_VERSION = "1.0.0";
+
+    /**
+     * The configuration file version this version of Irminsul understands and uses
+     */
+    private static final int CONFIGURATION_VERSION = 1;
 
     /**
      * SLF4J logger associated with this Irminsul instance
@@ -117,7 +120,7 @@ public class Irminsul {
 
             // If the config file doesn't exit, create a copy of the default one stored internally
             if (!configFile.exists()) {
-                this.logger.warn(I18n.translate("core.warn.config_cloned", this.config));
+                this.logger.warn(I18n.translate("core.warn.config_cloned", null));
 
                 InputStream defaultConfig = Objects.requireNonNull(Irminsul.class.getResourceAsStream("/default.hjson"));
                 Files.write(configFile.toPath(), defaultConfig.readAllBytes());
@@ -130,11 +133,24 @@ public class Irminsul {
             String rawJsonContents = JsonValue.readHjson(configContents).toString();
             JsonObject jsonContents = JsonParser.parseString(rawJsonContents).getAsJsonObject();
 
-            // Read global config first
+            // Read config version
+            int configVersion = jsonContents.get("version").getAsInt();
+
+            // Compare the detected config revision to the revision this Irminsul version uses
+            if (configVersion < CONFIGURATION_VERSION) {
+                int revisionsBehind = CONFIGURATION_VERSION - configVersion;
+                this.logger.warn(I18n.translate("core.warn.too_old_config", null), revisionsBehind);
+            } else if (configVersion > CONFIGURATION_VERSION) {
+                int revisionsAhead = configVersion - CONFIGURATION_VERSION;
+                this.logger.warn(I18n.translate("core.warn.too_new_config", null), revisionsAhead);
+            }
+
+            // Read global config
             JsonObject globalObject = jsonContents.getAsJsonObject("global");
             this.config = new GlobalConfig(
                 globalObject.get("target_version").getAsString(),
-                globalObject.get("language").getAsString()
+                globalObject.get("language").getAsString(),
+                globalObject.get("hide_addresses").getAsBoolean()
             );
 
             // Read HTTP server config
@@ -143,7 +159,8 @@ public class Irminsul {
                 this.config,
                 httpObject.get("enabled").getAsBoolean(),
                 httpObject.get("port").getAsInt(),
-                httpObject.get("ssl").getAsBoolean()
+                httpObject.get("ssl").getAsBoolean(),
+                httpObject.get("client_debugging").getAsBoolean()
             );
             for (JsonElement element : httpObject.getAsJsonArray("targets")) {
                 JsonObject target = element.getAsJsonObject();

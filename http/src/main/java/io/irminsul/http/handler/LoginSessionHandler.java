@@ -8,7 +8,7 @@ import spark.Response;
 import spark.Route;
 
 @RequiredArgsConstructor
-public class LoginComboHandler implements Route {
+public class LoginSessionHandler implements Route {
 
     /**
      * The {@link HttpServer} this handler belongs to
@@ -17,7 +17,7 @@ public class LoginComboHandler implements Route {
 
     @Override
     public Object handle(Request request, Response response) {
-        this.server.getLogger().debug("Incoming token login request");
+        this.server.getLogger().info("Incoming session login request");
 
         JsonObject responseJson = new JsonObject();
         JsonObject data = new JsonObject();

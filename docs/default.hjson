@@ -1,17 +1,21 @@
 # Irminsul default configuration file
 {
+    "version": 1        # Configuration file standard revision
+
     # Global settings that affect the entire network/ecosystem
     "global": {
         "target_version": "not set" # The game version that may connect to this network
         "language": "en_US"         # The language for Irminsul to use in logs and in-game. Either "en_US" or "zh_CN".
+        "hide_addresses": true      # Whether to prevent the logging of the IP addresses of clients
     }
 
     # The settings used to configure the HTTP server.
     # If you do not need the HTTP server, set "enabled" to false.
     "http": {
-        "enabled": true     # Whether the HTTP server is enabled
-        "port": 3000        # The port the HTTP server will run on. End users connect to this.
-        "ssl": false        # Whether the HTTP server should use HTTPS encryption
+        "enabled": true             # Whether the HTTP server is enabled
+        "port": 3000                # The port the HTTP server will run on. End users connect to this.
+        "ssl": false                # Whether the HTTP server should use HTTPS encryption
+        "client_debugging": false   # Whether to enable integration with the game client's debugging/logging system
 
         # A list of target game servers this HTTP server will dispatch to.
         # Refer to the example configuration file if you need help building entries for this array.

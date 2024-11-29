@@ -26,9 +26,14 @@ public class LogHandler implements Route {
     private final List<String> alreadyLoggedMessages = new ArrayList<>();
 
     @Override
-    public Object handle(Request request, Response response) throws Exception {
-        JsonObject jsonRequest = JsonParser.parseString(request.body()).getAsJsonObject();
+    public Object handle(Request request, Response response) {
 
+        // If client logging is disabled, return early
+        if (!server.getConfig().isClientDebugging()) {
+            return null;
+        }
+
+        JsonObject jsonRequest = JsonParser.parseString(request.body()).getAsJsonObject();
         String message = jsonRequest.get("logStr").getAsString();
         String stackTrace = jsonRequest.get("stackTrace").getAsString();
 

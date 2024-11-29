@@ -14,4 +14,9 @@ public class GlobalConfig implements LanguageSupplier {
      * The language this Irminsul network will use in logs and in-game
      */
     private final String language;
+
+    /**
+     * Whether to prevent the logging of the IP addresses of clients
+     */
+    private final boolean hideAddresses;
 }

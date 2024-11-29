@@ -32,6 +32,11 @@ public class HttpServerConfig implements LanguageSupplier {
     private final boolean ssl;
 
     /**
+     * Whether to enable integration with the game client's debugging/logging system
+     */
+    private final boolean clientDebugging;
+
+    /**
      * A list of target game servers this HTTP server will dispatch to
      */
     private final List<DispatchRegion> regions = new ArrayList<>();

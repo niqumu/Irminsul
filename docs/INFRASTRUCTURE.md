@@ -85,9 +85,7 @@ servers, forming an ecosystem. In this example, the HTTP server must be configur
 ```hjson
     # The settings used to configure the HTTP server.
     "http": {
-        "enabled": true
-        "port": 3000
-        "ssl": false
+        # Other settings truncated for brevity
 
         # A list of target game servers this HTTP server will dispatch to.
         "targets": [

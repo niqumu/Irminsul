@@ -14,8 +14,8 @@ public class PacketGetPlayerFriendListRsp extends OutboundPacket {
 //                .addAllFriendList() // todo add session owner's friends
         ;
 
-        // If in-game commands are enabled on the server, add the server bot to the friends list
-        if (session.getServer().getConfig().isCommands()) {
+        // If the server account is enabled, add it to the friends list
+        if (session.getServer().getConfig().getServerAccountConfig().isEnabled()) {
             getPlayerFriendListReq.addFriendList(session.getServer().getCommandManager().getServerFriendBrief());
         }
 

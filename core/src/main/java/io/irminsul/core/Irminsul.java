@@ -7,6 +7,7 @@ import com.google.gson.JsonParser;
 import io.irminsul.common.config.GameServerConfig;
 import io.irminsul.common.config.GlobalConfig;
 import io.irminsul.common.config.HttpServerConfig;
+import io.irminsul.common.config.ServerAccountConfig;
 import io.irminsul.common.game.GameServer;
 import io.irminsul.common.http.DispatchRegion;
 import io.irminsul.common.http.HttpServer;
@@ -36,7 +37,7 @@ public class Irminsul {
     /**
      * The configuration file version this version of Irminsul understands and uses
      */
-    private static final int CONFIGURATION_VERSION = 1;
+    private static final int CONFIGURATION_VERSION = 2;
 
     /**
      * SLF4J logger associated with this Irminsul instance
@@ -176,11 +177,20 @@ public class Irminsul {
             JsonArray gameServersArray = jsonContents.getAsJsonArray("game_servers");
             for (JsonElement element : gameServersArray) {
                 JsonObject server = element.getAsJsonObject();
+                JsonObject serverAccount = server.getAsJsonObject("server_account");
+
                 this.gameServerConfigs.add(new GameServerConfig(
                     this.config,
                     server.get("port").getAsInt(),
                     server.get("sandbox").getAsBoolean(),
-                    server.get("commands").getAsBoolean()
+                    new ServerAccountConfig(
+                        serverAccount.get("enabled").getAsBoolean(),
+                        serverAccount.get("account_nickname").getAsString(),
+                        serverAccount.get("account_signature").getAsString(),
+                        serverAccount.get("welcome_message").getAsString(),
+                        serverAccount.get("welcome_emote").getAsInt(),
+                        serverAccount.get("commands_enabled").getAsBoolean()
+                    )
                 ));
             }
 

@@ -23,9 +23,9 @@ public class GameServerConfig implements LanguageSupplier {
     private final boolean sandbox;
 
     /**
-     * Whether this game server will provide a way for users to execute commands in-game
+     * Configuration for in-game server account, a way for users to execute commands in-game
      */
-    private final boolean commands;
+    private final ServerAccountConfig serverAccountConfig;
 
     @Override
     public String getLanguage() {

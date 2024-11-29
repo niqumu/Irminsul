@@ -1,13 +1,16 @@
 package io.irminsul.game.command;
 
+import io.irminsul.common.config.ServerAccountConfig;
 import io.irminsul.common.game.GameServer;
 import io.irminsul.common.game.command.CommandHandler;
 import io.irminsul.common.game.command.CommandManager;
+import io.irminsul.common.game.event.EventHandler;
 import io.irminsul.common.game.player.Player;
 import io.irminsul.common.proto.*;
 import io.irminsul.common.proto.ChatInfoOuterClass.ChatInfo;
 import io.irminsul.common.util.i18n.I18n;
 import io.irminsul.game.command.impl.*;
+import io.irminsul.game.event.impl.PlayerLoginEvent;
 import io.irminsul.game.net.packet.PacketPrivateChatNotify;
 import io.irminsul.game.net.packet.PacketPrivateChatRsp;
 import io.irminsul.game.net.packet.PacketPullPrivateChatRsp;
@@ -21,6 +24,11 @@ import java.util.*;
 public class IrminsulCommandManager implements CommandManager {
 
     private final static int SERVER_UID = 0;
+
+    /**
+     * The {@link ServerAccountConfig} configuring this command manager
+     */
+    private final ServerAccountConfig config;
 
     /**
      * The {@link GameServer} this command manager belongs to
@@ -39,6 +47,9 @@ public class IrminsulCommandManager implements CommandManager {
 
     public IrminsulCommandManager(GameServer server) {
         this.server = server;
+        this.config = server.getConfig().getServerAccountConfig();
+
+        this.server.getEventBus().registerSubscriber(this);
 
         this.registerCommand(new AvatarCommand(this)); // todo: disabled until no longer broken
         this.registerCommand(new HelpCommand(this));
@@ -66,6 +77,7 @@ public class IrminsulCommandManager implements CommandManager {
             .setUid(SERVER_UID)
             .setToUid(player.getUid())
             .setText(message)
+            .setTime((int) (System.currentTimeMillis() / 1000))
             .build();
 
         this.serverChatHistory.get(player).add(messageInfo);
@@ -87,7 +99,7 @@ public class IrminsulCommandManager implements CommandManager {
         List<ChatInfo> history = this.serverChatHistory.computeIfAbsent(player, a -> new ArrayList<>());
 
         if (history.isEmpty()) {
-            this.sendMessage(player, I18n.translate("game.server_profile.welcome", this.getServer().getConfig()));
+            this.sendWelcomeMessages(player);
         }
 
         new PacketPullRecentChatRsp(player.getSession(), this.serverChatHistory.get(player)).send();
@@ -96,21 +108,43 @@ public class IrminsulCommandManager implements CommandManager {
     @Override
     public void handlePullPrivateChatReq(@NotNull Player player, int uid) {
         if (uid == SERVER_UID) {
+            List<ChatInfo> history = this.serverChatHistory.computeIfAbsent(player, a -> new ArrayList<>());
+
+            if (history.isEmpty()) {
+                this.sendWelcomeMessages(player);
+            }
+
             new PacketPullPrivateChatRsp(player.getSession(), this.serverChatHistory.get(player)).send();
         }
     }
 
     @Override
-    public void handlePrivateChatReq(@NotNull Player player, int uid, @NotNull String message) {
+    public void handlePrivateChatReq(@NotNull Player player, int uid, @NotNull String message, int icon) {
+
+        // If the private chat was sent to the server account, it's a command and we must handle it
         if (uid == SERVER_UID) {
-            this.server.getLogger().info(I18n.translate("game.info.command_executed", this.server.getConfig()), player, message);
+            String messageToLog = icon != 0 ? "(emote " + icon + ")" : message;
+            this.server.getLogger().info(I18n.translate("game.info.command_executed", this.server.getConfig()), player, messageToLog);
 
             ChatInfo messageInfo = ChatInfo.newBuilder()
                 .setUid(player.getUid())
                 .setToUid(SERVER_UID)
                 .setText(message)
+                .setIcon(icon)
+                .setTime((int) (System.currentTimeMillis() / 1000))
                 .build();
             this.serverChatHistory.get(player).add(messageInfo);
+
+            // We have to do this before handling the command so the order is right on the client
+            // I also think it's stupid to need both of these. But here we are.
+            new PacketPrivateChatRsp(player.getSession()).send();
+            new PacketPrivateChatNotify(player.getSession(), messageInfo).send(); // needed for the player to see their message
+
+            // Verify that commands are enabled
+            if (!this.config.isCommandsEnabled()) {
+                this.sendError(player, "<i>" + I18n.translate("game.command.disabled", this.server.getConfig()) + "</i>");
+                return;
+            }
 
             // Execute command
             String[] args = message.split(" ");
@@ -119,11 +153,9 @@ public class IrminsulCommandManager implements CommandManager {
             if (registeredCommands.containsKey(command)) {
                 this.registeredCommands.get(command).handle(player, message, Arrays.copyOfRange(args, 1, args.length));
             } else {
-                this.sendError(player, I18n.translate("game.command.unknown", this.getServer().getConfig())
+                this.sendError(player, I18n.translate("game.command.unknown", this.server.getConfig())
                     .replace("{}", command));
             }
-
-            new PacketPrivateChatRsp(player.getSession()).send();
         }
     }
 
@@ -131,7 +163,7 @@ public class IrminsulCommandManager implements CommandManager {
     public @NotNull FriendBriefOuterClass.FriendBrief getServerFriendBrief() {
         return FriendBriefOuterClass.FriendBrief.newBuilder()
             .setUid(SERVER_UID)
-            .setNickname(I18n.translate("game.server_profile.name", this.server.getConfig()))
+            .setNickname("<color=\"#00a8b7\">" + this.config.getNickname() + "</color>")
             .setProfilePicture(ProfilePictureOuterClass.ProfilePicture.newBuilder().setAvatarId(0).build())
             .setNameCardId(210001)
             .setFriendEnterHomeOption(FriendEnterHomeOptionOuterClass.FriendEnterHomeOption.FRIEND_ENTER_HOME_OPTION_REFUSE)
@@ -139,10 +171,32 @@ public class IrminsulCommandManager implements CommandManager {
             .setLevel(1)
             .setLastActiveTime((int) (System.currentTimeMillis() / 1000))
             .setOnlineState(FriendOnlineStateOuterClass.FriendOnlineState.FRIEND_ONLINE_STATE_ONLINE)
-            .setSignature(I18n.translate("game.server_profile.signature", this.server.getConfig()))
+            .setSignature(this.config.getSignature())
             .setPlatformType(PlatformTypeOuterClass.PlatformType.PLATFORM_TYPE_CLOUD_PC)
             .setIsGameSource(true)
             .setParam(1)
             .build();
+    }
+
+    private void sendWelcomeMessages(@NotNull Player player) {
+        this.serverChatHistory.computeIfAbsent(player, a -> new ArrayList<>());
+
+        // Message
+        if (this.config.getWelcomeMessage() != null && !this.config.getWelcomeMessage().isBlank()) {
+            this.sendMessage(player, this.config.getWelcomeMessage());
+        }
+
+        // Emote
+        if (this.config.getWelcomeEmote() > 0) {
+            ChatInfo messageInfo = ChatInfo.newBuilder()
+                .setUid(SERVER_UID)
+                .setToUid(player.getUid())
+                .setIcon(this.config.getWelcomeEmote())
+                .setTime((int) (System.currentTimeMillis() / 1000))
+                .build();
+
+            this.serverChatHistory.get(player).add(messageInfo);
+            new PacketPrivateChatNotify(player.getSession(), messageInfo).send();
+        }
     }
 }

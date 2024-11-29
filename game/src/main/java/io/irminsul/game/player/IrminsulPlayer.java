@@ -235,9 +235,6 @@ public class IrminsulPlayer implements Player {
         this.sendToScene(GameConstants.OVERWORLD_SCENE, EnterReason.LOGIN);
         this.session.setState(SessionState.ACTIVE);
 
-        // todo testing remove
-        this.addAvatar(new IrminsulAvatar(10000058, this));
-
         // Done
         this.session.getServer().getLogger().info("{} ({}) joined the game from {}",
             this.profile.getNickname(), this.getUid(), this.getSession().getTunnel().getAddress().toString());

@@ -1,5 +1,6 @@
 package io.irminsul.common.game.command;
 
+import io.irminsul.common.config.ServerAccountConfig;
 import io.irminsul.common.game.ServerSystem;
 import io.irminsul.common.game.player.Player;
 import io.irminsul.common.proto.FriendBriefOuterClass.FriendBrief;
@@ -8,6 +9,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 
 public interface CommandManager extends ServerSystem {
+
+    /**
+     * @return The {@link ServerAccountConfig} configuring this command manager
+     */
+    @NotNull ServerAccountConfig getConfig();
 
     /**
      * @return A map of registered command handlers, keyed by command name
@@ -38,7 +44,7 @@ public interface CommandManager extends ServerSystem {
 
     void handlePullPrivateChatReq(@NotNull Player player, int uid);
 
-    void handlePrivateChatReq(@NotNull Player player, int uid, @NotNull String message);
+    void handlePrivateChatReq(@NotNull Player player, int uid, @NotNull String message, int icon);
 
     @NotNull FriendBrief getServerFriendBrief();
 }

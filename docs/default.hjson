@@ -1,6 +1,6 @@
 # Irminsul default configuration file
 {
-    "version": 1        # Configuration file standard revision
+    "version": 2        # Configuration file standard revision
 
     # Global settings that affect the entire network/ecosystem
     "global": {
@@ -36,7 +36,22 @@
         {
             "port": 22102       # The port this game server will run on.
             "sandbox": true     # Whether this game server will operate in sandbox mode, unlocking basically everything.
-            "commands": true    # Whether this game server will provide a way for users to execute commands in-game.
+
+            # Configuration for in-game server account, a way to provide an interactive message bot for users
+            "server_account": {
+                "enabled": true                             # Used to enable/disable the entire in-game server account
+
+                # Account customization
+                "account_nickname": "Server"                # The in-game display name of the server account
+                "account_signature": "Server console"       # The in-game signature of the server account
+
+                # Message sent to users when they join the server
+                "welcome_message": "Welcome to the server!" # Message sent to players upon joining. Blank to disable.
+                "welcome_emote": 4010                       # Emote sent to players upon joining. Zero to disable.
+
+                # Commands
+                "commands_enabled": true                    # Toggle the ability to execute commands via the account
+            }
         }
     ]
 }

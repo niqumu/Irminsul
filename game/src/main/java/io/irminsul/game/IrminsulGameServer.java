@@ -76,10 +76,10 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
     /**
      * Managers
      */
-    private final PacketManager packetManager = new PacketManager(this);
-    private final ShopManager shopManager = new ShopManager(this);
-    private final DungeonManager dungeonManager = new IrminsulDungeonManager(this);
-    private final CommandManager commandManager = new IrminsulCommandManager(this);
+    private final PacketManager packetManager;
+    private final ShopManager shopManager;
+    private final DungeonManager dungeonManager;
+    private final CommandManager commandManager;
 
     /**
      * Executor service used to run server ticks
@@ -103,6 +103,12 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
 
         this.logger = LoggerFactory.getLogger(name);
         this.logger.info(I18n.translate("game.info.start", this.config));
+
+        // Create managers
+        this.packetManager = new PacketManager(this);
+        this.shopManager = new ShopManager(this);
+        this.dungeonManager = new IrminsulDungeonManager(this);
+        this.commandManager = new IrminsulCommandManager(this);
 
         // Init KCP server
         ChannelConfig channelConfig = new ChannelConfig();

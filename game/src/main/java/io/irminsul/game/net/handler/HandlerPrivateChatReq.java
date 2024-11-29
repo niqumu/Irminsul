@@ -32,6 +32,6 @@ public class HandlerPrivateChatReq implements PacketHandler {
         PrivateChatReqOuterClass.PrivateChatReq request =
             PrivateChatReqOuterClass.PrivateChatReq.parseFrom(packet.getData());
 
-        session.getServer().getCommandManager().handlePrivateChatReq(session.getPlayer(), request.getTargetUid(), request.getText());
+        session.getServer().getCommandManager().handlePrivateChatReq(session.getPlayer(), request.getTargetUid(), request.getText(), request.getIcon());
     }
 }

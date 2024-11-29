@@ -35,5 +35,8 @@ public class HandlerSetPlayerSignatureReq implements PacketHandler {
 
         session.getPlayer().getProfile().setSignature(request.getSignature());
         new PacketSetPlayerSignatureRsp(session, request.getSignature()).send();
+
+        // Log
+        session.getServer().getLogger().info("{} set their signature to \"{}\"!", session.getPlayer(), request.getSignature());
     }
 }

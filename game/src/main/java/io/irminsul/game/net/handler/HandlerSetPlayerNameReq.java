@@ -33,6 +33,9 @@ public class HandlerSetPlayerNameReq implements PacketHandler {
         SetPlayerNameReqOuterClass.SetPlayerNameReq request =
             SetPlayerNameReqOuterClass.SetPlayerNameReq.parseFrom(packet.getData());
 
+        // Log
+        session.getServer().getLogger().info("{} changed their name (now {})!", session.getPlayer(), request.getNickName());
+
         session.getPlayer().getProfile().setNickname(request.getNickName());
         new PacketSetPlayerNameRsp(session, request.getNickName()).send();
     }

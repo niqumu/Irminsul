@@ -35,5 +35,8 @@ public class HandlerSetNameCardReq implements PacketHandler {
 
         session.getPlayer().getProfile().setNameCard(request.getNameCardId());
         new PacketSetNameCardRsp(session).send();
+
+        // Log
+        session.getServer().getLogger().info("{} set their namecard to {}!", session.getPlayer(), request.getNameCardId());
     }
 }

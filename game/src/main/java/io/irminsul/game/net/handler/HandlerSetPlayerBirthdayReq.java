@@ -37,5 +37,8 @@ public class HandlerSetPlayerBirthdayReq implements PacketHandler {
 
         session.getPlayer().getProfile().setBirthday(month, day);
         new PacketSetPlayerBirthdayRsp(session, month, day).send();
+
+        // Log
+        session.getServer().getLogger().info("{} set their birthday to {}/{}!", session.getPlayer(), month, day);
     }
 }

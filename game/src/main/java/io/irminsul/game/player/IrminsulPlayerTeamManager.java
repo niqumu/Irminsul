@@ -4,7 +4,7 @@ import io.irminsul.common.game.player.Player;
 import io.irminsul.common.game.avatar.Avatar;
 import io.irminsul.common.game.player.PlayerTeam;
 import io.irminsul.common.game.player.PlayerTeamManager;
-import io.irminsul.game.event.impl.PlayerSwitchAvatarEvent;
+import io.irminsul.common.game.event.PlayerSwitchAvatarEvent;
 import io.irminsul.game.net.packet.PacketChangeAvatarRsp;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;

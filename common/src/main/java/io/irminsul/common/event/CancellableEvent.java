@@ -1,4 +1,4 @@
-package io.irminsul.common.game.event;
+package io.irminsul.common.event;
 
 public interface CancellableEvent extends Event {
 

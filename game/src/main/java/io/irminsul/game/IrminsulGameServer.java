@@ -4,7 +4,7 @@ import io.irminsul.common.config.GameServerConfig;
 import io.irminsul.common.game.GameServer;
 import io.irminsul.common.game.command.CommandManager;
 import io.irminsul.common.game.dungeon.DungeonManager;
-import io.irminsul.common.game.event.EventBus;
+import io.irminsul.common.event.EventBus;
 import io.irminsul.common.game.net.Session;
 import io.irminsul.common.game.player.PlayerProfile;
 import io.irminsul.common.game.world.World;
@@ -77,9 +77,10 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
      * Managers
      */
     private final PacketManager packetManager;
+    private final CommandManager commandManager;
+    private final PluginManager pluginManager;
     private final ShopManager shopManager;
     private final DungeonManager dungeonManager;
-    private final CommandManager commandManager;
 
     /**
      * Executor service used to run server ticks
@@ -106,9 +107,14 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
 
         // Create managers
         this.packetManager = new PacketManager(this);
+        this.commandManager = new IrminsulCommandManager(this);
+        this.pluginManager = new PluginManager(this);
         this.shopManager = new ShopManager(this);
         this.dungeonManager = new IrminsulDungeonManager(this);
-        this.commandManager = new IrminsulCommandManager(this);
+
+        // Load and enable plugins
+        this.pluginManager.loadPlugins();
+        this.pluginManager.enablePlugins();
 
         // Init KCP server
         ChannelConfig channelConfig = new ChannelConfig();

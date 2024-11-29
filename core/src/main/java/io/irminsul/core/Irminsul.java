@@ -25,6 +25,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Getter
 public class Irminsul {
@@ -37,7 +38,7 @@ public class Irminsul {
     /**
      * The configuration file version this version of Irminsul understands and uses
      */
-    private static final int CONFIGURATION_VERSION = 2;
+    private static final int CONFIGURATION_VERSION = 3;
 
     /**
      * SLF4J logger associated with this Irminsul instance
@@ -190,7 +191,11 @@ public class Irminsul {
                         serverAccount.get("welcome_message").getAsString(),
                         serverAccount.get("welcome_emote").getAsInt(),
                         serverAccount.get("commands_enabled").getAsBoolean()
-                    )
+                    ),
+                    server.get("plugins").getAsJsonArray().asList()
+                        .stream()
+                        .map(JsonElement::getAsString)
+                        .collect(Collectors.toList())
                 ));
             }
 

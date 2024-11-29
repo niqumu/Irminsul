@@ -4,7 +4,7 @@ import io.irminsul.common.LoggerContainer;
 import io.irminsul.common.config.GameServerConfig;
 import io.irminsul.common.game.command.CommandManager;
 import io.irminsul.common.game.dungeon.DungeonManager;
-import io.irminsul.common.game.event.EventBus;
+import io.irminsul.common.event.EventBus;
 import io.irminsul.common.game.net.Session;
 import io.irminsul.common.game.player.PlayerProfile;
 import io.irminsul.common.game.world.World;

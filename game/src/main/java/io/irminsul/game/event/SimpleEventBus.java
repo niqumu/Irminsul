@@ -1,8 +1,8 @@
 package io.irminsul.game.event;
 
-import io.irminsul.common.game.event.Event;
-import io.irminsul.common.game.event.EventBus;
-import io.irminsul.common.game.event.EventHandler;
+import io.irminsul.common.event.Event;
+import io.irminsul.common.event.EventBus;
+import io.irminsul.common.event.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

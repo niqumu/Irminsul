@@ -1,6 +1,6 @@
 # Irminsul default configuration file
 {
-    "version": 2        # Configuration file standard revision
+    "version": 3        # Configuration file standard revision
 
     # Global settings that affect the entire network/ecosystem
     "global": {
@@ -52,6 +52,10 @@
                 # Commands
                 "commands_enabled": true                    # Toggle the ability to execute commands via the account
             }
+
+            # List of enabled plugins on this server
+            "plugins": [
+            ]
         }
     ]
 }

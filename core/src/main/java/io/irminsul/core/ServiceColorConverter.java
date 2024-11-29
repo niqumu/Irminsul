@@ -14,6 +14,8 @@ public class ServiceColorConverter extends ForegroundCompositeConverterBase<ILog
             return "92"; // green
         } else if (iLoggingEvent.getLoggerName().startsWith("Game Server")) {
             return "91"; // red
+        } else if (iLoggingEvent.getLoggerName().startsWith("Plugin/")) {
+            return "95"; // pink
         }
 
         return "37"; // white

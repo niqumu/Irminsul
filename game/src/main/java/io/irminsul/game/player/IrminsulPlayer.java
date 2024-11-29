@@ -13,7 +13,7 @@ import io.irminsul.common.game.world.World;
 import io.irminsul.game.avatar.IrminsulAvatar;
 import io.irminsul.game.data.EnterReason;
 import io.irminsul.game.data.PlayerProperty;
-import io.irminsul.game.event.impl.PlayerLoginEvent;
+import io.irminsul.common.game.event.PlayerLoginEvent;
 import io.irminsul.game.net.packet.PacketAvatarAddNotify;
 import io.irminsul.game.net.packet.PacketAvatarDataNotify;
 import io.irminsul.game.net.packet.PacketPlayerDataNotify;

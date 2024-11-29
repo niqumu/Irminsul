@@ -1,6 +1,6 @@
-package io.irminsul.game.event.impl;
+package io.irminsul.common.game.event;
 
-import io.irminsul.common.game.event.Event;
+import io.irminsul.common.event.Event;
 import io.irminsul.common.game.player.Player;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;

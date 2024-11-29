@@ -2,6 +2,8 @@ package io.irminsul.common.config;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class GameServerConfig implements LanguageSupplier {
 
@@ -26,6 +28,11 @@ public class GameServerConfig implements LanguageSupplier {
      * Configuration for in-game server account, a way for users to execute commands in-game
      */
     private final ServerAccountConfig serverAccountConfig;
+
+    /**
+     * List of enabled plugins on this server
+     */
+    private final List<String> plugins;
 
     @Override
     public String getLanguage() {

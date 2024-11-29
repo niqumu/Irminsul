@@ -1,4 +1,4 @@
-package io.irminsul.common.game.event;
+package io.irminsul.common.event;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

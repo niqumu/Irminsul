@@ -11,7 +11,8 @@ to implement a certain protocol that some software may happen to support. This p
 be interesting or helpful to people. I am not responsible for how people use this project.
 
 ## Links
-[<b>INFRASTRUCTURE.md:</b> Start here if you have no idea what Irminsul is](docs/INFRASTRUCTURE.md)
+- [<b>INFRASTRUCTURE.md:</b> Start here if you have no idea what Irminsul is](docs/INFRASTRUCTURE.md)
+- [<b>API.md:</b> Head over here if you're interested in developing plugins for Irminsul](docs/API.md)
 
 ## Credits
 - The wonderful [Grasscutter](https://github.com/Grasscutters/Grasscutter) community for helping with protocol research

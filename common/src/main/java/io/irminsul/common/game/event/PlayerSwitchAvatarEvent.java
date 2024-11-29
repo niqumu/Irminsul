@@ -13,6 +13,11 @@ import org.jetbrains.annotations.NotNull;
 public class PlayerSwitchAvatarEvent implements CancellableEvent {
 
     /**
+     * Whether this even has been cancelled
+     */
+    private boolean cancelled;
+
+    /**
      * The player switching avatars
      */
     private final @NotNull Player player;
@@ -26,9 +31,4 @@ public class PlayerSwitchAvatarEvent implements CancellableEvent {
      * The avatar the player is switching to
      */
     private final @NotNull Avatar to;
-
-    /**
-     * Whether this even has been cancelled
-     */
-    private boolean cancelled;
 }

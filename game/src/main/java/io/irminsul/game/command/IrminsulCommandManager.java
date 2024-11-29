@@ -4,6 +4,8 @@ import io.irminsul.common.config.ServerAccountConfig;
 import io.irminsul.common.game.GameServer;
 import io.irminsul.common.game.command.CommandHandler;
 import io.irminsul.common.game.command.CommandManager;
+import io.irminsul.common.game.event.PlayerExecuteCommandEvent;
+import io.irminsul.common.game.event.PlayerSendCommandEvent;
 import io.irminsul.common.game.player.Player;
 import io.irminsul.common.proto.*;
 import io.irminsul.common.proto.ChatInfoOuterClass.ChatInfo;
@@ -138,18 +140,37 @@ public class IrminsulCommandManager implements CommandManager {
             new PacketPrivateChatRsp(player.getSession()).send();
             new PacketPrivateChatNotify(player.getSession(), messageInfo).send(); // needed for the player to see their message
 
+            String[] args = message.split(" ");
+            String command = args[0].toLowerCase();
+
+            // Create and fire send command event
+            PlayerSendCommandEvent sendEvent = new PlayerSendCommandEvent(false, player, command,
+                Arrays.copyOfRange(args, 1, args.length));
+            this.server.getEventBus().postEvent(sendEvent);
+
+            // Return if the send command event was cancelled
+            if (sendEvent.isCancelled()) {
+                return;
+            }
+
             // Verify that commands are enabled
             if (!this.config.isCommandsEnabled()) {
                 this.sendError(player, "<i>" + I18n.translate("game.command.disabled", this.server.getConfig()) + "</i>");
                 return;
             }
 
-            // Execute command
-            String[] args = message.split(" ");
-            String command = args[0].toLowerCase();
-
+            // If we found the command in the command registry
             if (registeredCommands.containsKey(command)) {
-                this.registeredCommands.get(command).handle(player, message, Arrays.copyOfRange(args, 1, args.length));
+
+                // Create and fire execute command event
+                PlayerExecuteCommandEvent executeEvent = new PlayerExecuteCommandEvent(player,
+                    this.registeredCommands.get(command), Arrays.copyOfRange(args, 1, args.length));
+                this.server.getEventBus().postEvent(executeEvent);
+
+                // Actually invoke the command handler if the even wasn't cancelled
+                if (!executeEvent.isCancelled()) {
+                    this.registeredCommands.get(command).handle(player, message, Arrays.copyOfRange(args, 1, args.length));
+                }
             } else {
                 this.sendError(player, I18n.translate("game.command.unknown", this.server.getConfig())
                     .replace("{}", command));

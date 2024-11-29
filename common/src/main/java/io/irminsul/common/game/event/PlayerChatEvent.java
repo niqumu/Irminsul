@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 public class PlayerChatEvent implements CancellableEvent {
 
     /**
-     * Whether this even has been cancelled
+     * Whether this event has been cancelled
      */
     private boolean cancelled;
 

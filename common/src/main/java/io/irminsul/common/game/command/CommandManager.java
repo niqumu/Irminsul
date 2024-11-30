@@ -23,8 +23,9 @@ public interface CommandManager extends ServerSystem {
     /**
      * Registers a command with the command manager
      * @param command The command handler to register
+     * @param registrar The plugin or module registering this command
      */
-    void registerCommand(@NotNull CommandHandler command);
+    void registerCommand(@NotNull CommandHandler command, @NotNull String registrar);
 
     /**
      * Sends the player a message from the server

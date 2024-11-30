@@ -51,20 +51,38 @@ public class IrminsulCommandManager implements CommandManager {
 
         this.server.getEventBus().registerSubscriber(this);
 
-        this.registerCommand(new AvatarCommand(this)); // todo: disabled until no longer broken
-        this.registerCommand(new HelpCommand(this));
-//        this.registerCommand(new ItemCommand(this)); // todo: disabled until no longer broken
-        this.registerCommand(new PluginsCommand(this));
-        this.registerCommand(new SceneCommand(this));
+        this.registerIrminsulCommand(new AvatarCommand()); // todo: broken!
+        this.registerIrminsulCommand(new HelpCommand());
+        this.registerIrminsulCommand(new ItemCommand()); // todo: broken!
+        this.registerIrminsulCommand(new PluginsCommand());
+        this.registerIrminsulCommand(new SceneCommand());
+    }
+
+    private void registerIrminsulCommand(@NotNull CommandHandler command) {
+        this.registerCommand(command, "irminsul");
     }
 
     /**
      * Registers a command with the command manager
      * @param command The command handler to register
+     * @param registrar The plugin or module registering this command
      */
     @Override
-    public void registerCommand(@NotNull CommandHandler command) {
-        this.registeredCommands.put(command.getName(), command);
+    public void registerCommand(@NotNull CommandHandler command, @NotNull String registrar) {
+
+        // Make sure that the command handler contains a @CommandInfo annotation
+        if (command.getCommandInfo() == null) {
+            this.getLogger().error(I18n.translate("game.error.command_info_missing", this.server.getConfig()),
+                command.getClass().getName(), registrar);
+            return;
+        }
+
+        // Set command data
+        command.setCommandManager(this);
+        command.setRegistrar(registrar);
+
+        // Insert command into the commands map
+        this.registeredCommands.put(command.getCommandInfo().name(), command);
     }
 
     /**

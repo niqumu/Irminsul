@@ -32,7 +32,7 @@ public abstract class GamePlugin extends BasePlugin {
      * Registers the provided command handler with the command manager of this plugin's server
      * @param handler The {@link CommandHandler} to register with the server
      */
-    protected void registerCommandHandler(@NonNull CommandHandler handler) {
-        this.server.getCommandManager().registerCommand(handler);
+    protected void registerCommand(@NonNull CommandHandler handler) {
+        this.server.getCommandManager().registerCommand(handler, this.getPluginInfo().getId());
     }
 }

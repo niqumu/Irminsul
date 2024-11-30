@@ -1,44 +1,12 @@
 package io.irminsul.game.command.impl;
 
 import io.irminsul.common.game.command.CommandHandler;
-import io.irminsul.common.game.command.CommandManager;
+import io.irminsul.common.game.command.CommandInfo;
 import io.irminsul.common.game.player.Player;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
-@Getter
-@RequiredArgsConstructor
-public class SceneCommand implements CommandHandler {
-
-    /**
-     * The {@link CommandManager} that this command is registered with
-     */
-    private final CommandManager commandManager;
-
-    /**
-     * @return The all-lowercase name of this command
-     */
-    @Override
-    public @NotNull String getName() {
-        return "scene";
-    }
-
-    /**
-     * @return A brief description of this command
-     */
-    @Override
-    public @NotNull String getDescription() {
-        return "Sends you to a specified scene (scene 3 is Teyvat)";
-    }
-
-    /**
-     * @return A brief example of this command's usage
-     */
-    @Override
-    public @NotNull String getUsage() {
-        return "scene <id>";
-    }
+@CommandInfo(name = "scene", description = "Sends you to a scene", usage = "scene <id>")
+public class SceneCommand extends CommandHandler {
 
     /**
      * Handles this command when executed
@@ -52,7 +20,8 @@ public class SceneCommand implements CommandHandler {
 
         // Ensure that a scene was provided
         if (args.length == 0) {
-            this.commandManager.sendError(sender, "A destination scene ID is required! Usage: " + this.getUsage());
+            this.sendError(sender, "A destination scene ID is required!");
+            this.sendUsage(sender);
             return;
         }
 
@@ -60,11 +29,12 @@ public class SceneCommand implements CommandHandler {
         try {
             sceneId = Integer.parseInt(args[0]);
         } catch (NumberFormatException e) {
-            this.commandManager.sendError(sender, "Couldn't parse that as a number! Usage: " + this.getUsage());
+            this.sendError(sender, "Couldn't parse that as a number!");
+            this.sendUsage(sender);
             return;
         }
 
         sender.sendToScene(sceneId);
-        this.commandManager.sendMessage(sender, "Sending to you to scene" + sceneId + "...");
+        this.sendMessage(sender, "Sending to you to scene" + sceneId + "...");
     }
 }

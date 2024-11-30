@@ -10,6 +10,7 @@
     <!-- Disable Jetty and Spark logging -->
     <logger name="org.eclipse.jetty" level="OFF"/>
     <logger name="spark.embeddedserver.jetty" level="OFF"/>
+    <logger name="spark.http.matching.MatcherFilter" level="OFF"/>
 
     <root level="info">
         <appender-ref ref="STDOUT" />

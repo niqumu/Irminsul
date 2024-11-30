@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import javax.crypto.Cipher;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.security.*;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -16,6 +17,7 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.Objects;
 
 @UtilityClass
 public class CryptoUtil {
@@ -28,9 +30,12 @@ public class CryptoUtil {
     public byte[] DISPATCH_SEED;
     public byte[] DISPATCH_KEY;
     static {
-        try {
-            DISPATCH_SEED = Files.readAllBytes(new File("dispatchSeed.bin").toPath());
-            DISPATCH_KEY = Files.readAllBytes(new File("dispatchKey.bin").toPath());
+        try (
+            InputStream seed = CryptoUtil.class.getResourceAsStream("/keys/dispatchSeed.bin");
+            InputStream key = CryptoUtil.class.getResourceAsStream("/keys/dispatchKey.bin");
+        ) {
+            DISPATCH_SEED = Objects.requireNonNull(seed).readAllBytes();
+            DISPATCH_KEY = Objects.requireNonNull(key).readAllBytes();
         } catch (Exception e) {
             LOGGER.error("Failed reading dispatch keys!", e);
         }
@@ -41,9 +46,9 @@ public class CryptoUtil {
      */
     public PrivateKey REGION_SIGNING_KEY;
     static {
-        try {
+        try (InputStream key = CryptoUtil.class.getResourceAsStream("/keys/regionKey.der")) {
             REGION_SIGNING_KEY = KeyFactory.getInstance("RSA").generatePrivate(
-                new PKCS8EncodedKeySpec(Files.readAllBytes(new File("regionKey.der").toPath())));
+                new PKCS8EncodedKeySpec(Objects.requireNonNull(key).readAllBytes()));
         } catch (Exception e) {
             LOGGER.error("Failed reading region signing key!", e);
         }
@@ -60,13 +65,13 @@ public class CryptoUtil {
      */
     public HashMap<Integer, PublicKey> ENCRYPTION_KEYS = new HashMap<>();
     static {
-        try {
-            for (int i = 2; i <= 5; i++) {
+        for (int i = 2; i <= 5; i++) {
+            try (InputStream key = CryptoUtil.class.getResourceAsStream("/keys/" + i + "_Pub.der")) {
                 ENCRYPTION_KEYS.put(i, KeyFactory.getInstance("RSA")
-                    .generatePublic(new X509EncodedKeySpec(Files.readAllBytes(new File(i + "_Pub.der").toPath()))));
+                    .generatePublic(new X509EncodedKeySpec(Objects.requireNonNull(key).readAllBytes())));
+            } catch (Exception e) {
+                LOGGER.error("Failed reading encryption key {}!", i, e);
             }
-        } catch (Exception e) {
-            LOGGER.error("Failed reading encryption keys!", e);
         }
     }
 
@@ -74,9 +79,12 @@ public class CryptoUtil {
     public byte[] ENCRYPT_SEED_BUFFER;
     public byte[] ENCRYPT_KEY;
     static {
-        try {
-            ENCRYPT_SEED_BUFFER = Files.readAllBytes(new File("secretKeyBuffer.bin").toPath());
-            ENCRYPT_KEY = Files.readAllBytes(new File("secretKey.bin").toPath());
+        try (
+            InputStream buffer = CryptoUtil.class.getResourceAsStream("/keys/secretKeyBuffer.bin");
+            InputStream key = CryptoUtil.class.getResourceAsStream("/keys/secretKey.bin");
+        ) {
+            ENCRYPT_SEED_BUFFER = Objects.requireNonNull(buffer).readAllBytes();
+            ENCRYPT_KEY = Objects.requireNonNull(key).readAllBytes();
         } catch (Exception e) {
             LOGGER.error("Failed reading secret key!", e);
         }
@@ -84,9 +92,9 @@ public class CryptoUtil {
 
     public PrivateKey SIGNING_KEY;
     static {
-        try {
-            SIGNING_KEY = KeyFactory.getInstance("RSA").generatePrivate(new PKCS8EncodedKeySpec(
-                Files.readAllBytes(new File("SigningKey.der").toPath())));
+        try (InputStream key = CryptoUtil.class.getResourceAsStream("/keys/SigningKey.der")) {
+            SIGNING_KEY = KeyFactory.getInstance("RSA")
+                .generatePrivate(new PKCS8EncodedKeySpec(Objects.requireNonNull(key).readAllBytes()));
         } catch (Exception e) {
             LOGGER.error("Failed reading signing key!", e);
         }

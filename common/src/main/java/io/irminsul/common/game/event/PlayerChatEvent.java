@@ -28,7 +28,7 @@ public class PlayerChatEvent implements CancellableEvent {
     /**
      * The text of the message. This will be empty if the player sent an emote
      */
-    private String text;
+    private @NotNull String text;
 
     /**
      * The emote attached with the message. This will be zero if no emote was sent

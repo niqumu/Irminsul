@@ -1,5 +1,6 @@
 package io.irminsul.game.player;
 
+import io.irminsul.common.game.event.PlayerTeleportEvent;
 import io.irminsul.common.game.world.Teleport;
 import io.irminsul.common.proto.EnterTypeOuterClass;
 import io.irminsul.game.GameConstants;
@@ -14,10 +15,7 @@ import io.irminsul.game.avatar.IrminsulAvatar;
 import io.irminsul.game.data.EnterReason;
 import io.irminsul.game.data.PlayerProperty;
 import io.irminsul.common.game.event.PlayerLoginEvent;
-import io.irminsul.game.net.packet.PacketAvatarAddNotify;
-import io.irminsul.game.net.packet.PacketAvatarDataNotify;
-import io.irminsul.game.net.packet.PacketPlayerDataNotify;
-import io.irminsul.game.net.packet.PacketPlayerEnterSceneNotify;
+import io.irminsul.game.net.packet.*;
 import io.irminsul.game.world.IrminsulWorld;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
@@ -324,13 +322,46 @@ public class IrminsulPlayer implements Player {
      */
     @Override
     public void sendToScene(Teleport teleport) {
+        this.sendToScene(teleport, true);
+    }
+
+    /**
+     * Sends this player to a scene at a specified position
+     * @param teleport The teleport data to use
+     * @param fireEvent Whether to fire a {@link PlayerTeleportEvent} as a result of the teleport
+     */
+    private void sendToScene(Teleport teleport, boolean fireEvent) {
+
+        if (fireEvent) {
+            // Create and fire teleport event
+            PlayerTeleportEvent event = new PlayerTeleportEvent(false, this, this.sceneId,
+                teleport.getScene(), this.getPosition(), teleport.getPosition(), teleport.getEnterReason());
+            this.session.getServer().getEventBus().postEvent(event);
+
+            // If the event was cancelled, do nothing
+            if (event.isCancelled()) {
+                return;
+            }
+
+            // Make sure that the event still has sane values after being posted
+            if (event.getToScene() == 0) {
+                this.session.getServer().getLogger().warn("Event {} is bad! toScene must be non-zero. " +
+                    "The event will not be processed", event);
+                return;
+            }
+
+            teleport.setScene(event.getToScene());
+            teleport.setPosition(event.getToPos().copy());
+            teleport.setEnterReason(event.getReason());
+        }
 
         // Teleporting within the same scene
         if (teleport.getScene() == this.sceneId) {
-            this.teleport(teleport.getPosition());
+            this.teleport(teleport.getPosition(), false); // don't fire the event again
             return;
         }
 
+        // Log
         this.session.getServer().getLogger().info("Sending {} from scene {} -> {} at {} with reason {}",
             this, this.sceneId, teleport.getScene(), teleport.getPosition(),
             EnterReason.getReasonById(teleport.getEnterReason()));
@@ -352,6 +383,38 @@ public class IrminsulPlayer implements Player {
      */
     @Override
     public void teleport(@NotNull Position position) {
+        this.teleport(position, true);
+    }
+
+    /**
+     * Sends this player to a specified position within their current scene
+     * @param position The position within the current scene to send the player to
+     * @param fireEvent Whether to fire a {@link PlayerTeleportEvent} as a result of the teleport
+     */
+    private void teleport(@NotNull Position position, boolean fireEvent) {
+
+        if (fireEvent) {
+            // Create and fire teleport event
+            PlayerTeleportEvent event = new PlayerTeleportEvent(false, this, this.sceneId,
+                this.sceneId, this.getPosition(), position, EnterReason.GM);
+            this.session.getServer().getEventBus().postEvent(event);
+
+            // If the event was cancelled, do nothing
+            if (event.isCancelled()) {
+                return;
+            }
+
+            // Teleporting to a different scene
+            if (event.getToScene() != this.sceneId) {
+                this.sendToScene(new Teleport(event.getToScene(), event.getToPos(),
+                    EnterTypeOuterClass.EnterType.ENTER_TYPE_SELF, event.getReason()), false); // don't fire again
+                return;
+            }
+
+            position = event.getToPos().copy();
+        }
+
+        // Log
         this.session.getServer().getLogger().info("Teleporting {} to {} within scene {}", this, position, this.sceneId);
 
         this.generateEnterSceneToken();
@@ -363,6 +426,8 @@ public class IrminsulPlayer implements Player {
 
             // Rotate
             this.getScene().replaceEntity(this.teamManager.getActiveAvatar(), this.teamManager.getActiveAvatar());
+        } else {
+            this.session.getServer().getLogger().warn("Tried to teleport {} within a null scene!", this);
         }
     }
 

@@ -8,15 +8,15 @@ import lombok.Data;
 @AllArgsConstructor
 public class Teleport {
 
-    private final int scene;
+    private int scene;
 
-    private final Position position;
+    private Position position;
 
-    private final EnterType enterType;
+    private EnterType enterType;
 
-    private final int enterReason;
+    private int enterReason;
 
-    private final int destinationDungeon;
+    private int destinationDungeon;
 
     public Teleport(int scene, Position position) {
         this(scene, position, EnterType.ENTER_TYPE_SELF, 0, 0);

@@ -1,5 +1,6 @@
 package io.irminsul.game.player;
 
+import io.irminsul.common.game.GameServer;
 import io.irminsul.common.game.event.PlayerTeleportEvent;
 import io.irminsul.common.game.world.Teleport;
 import io.irminsul.common.proto.EnterTypeOuterClass;
@@ -185,12 +186,20 @@ public class IrminsulPlayer implements Player {
      * @return A map of properties that this player has
      */
     public @NotNull Map<Integer, Integer> getProperties() {
-        if (!this.session.getServer().isSandbox()) {
+        if (!this.getServer().getConfig().isSandbox()) {
             return this.properties;
         }
         Map<Integer, Integer> map = new HashMap<>(this.properties);
         map.putAll(PlayerProperty.SANDBOX_PROPERTIES);
         return map;
+    }
+
+    /**
+     * @return The {@link GameServer} this player is connected to
+     */
+    @Override
+    public @NotNull GameServer getServer() {
+        return this.session.getServer();
     }
 
     /**
@@ -216,10 +225,18 @@ public class IrminsulPlayer implements Player {
             throw new IllegalStateException("No world to log into!");
         }
 
-        // If the player has no avatars, give them the traveler
+        // Add the player to the online players list
+        this.getServer().getOnlinePlayers().put(this.uid, this);
+
+        // If the player is joining for the first time
         if (this.avatars.isEmpty()) {
+
+            // Give the player the traveler
             this.avatars.add(new IrminsulAvatar(GameConstants.FEMALE_TRAVELER_AVATAR_ID, this));
             this.teamManager.getActiveTeam().getAvatars().add(this.avatars.getFirst());
+
+            // Send the player the welcome mail
+            this.getServer().getMailManager().sendWelcomeMail(this);
         }
 
         // Send player data

@@ -2,6 +2,7 @@ package io.irminsul.common.config;
 
 import io.irminsul.common.http.DispatchRegion;
 import lombok.Data;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,7 @@ public class HttpServerConfig implements LanguageSupplier {
     /**
      * The global config this config is under
      */
-    private final GlobalConfig globalConfig;
+    private final @NotNull GlobalConfig globalConfig;
 
 
 
@@ -39,7 +40,7 @@ public class HttpServerConfig implements LanguageSupplier {
     /**
      * A list of target game servers this HTTP server will dispatch to
      */
-    private final List<DispatchRegion> regions = new ArrayList<>();
+    private final @NotNull List<DispatchRegion> regions = new ArrayList<>();
 
     @Override
     public String getLanguage() {

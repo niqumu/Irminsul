@@ -1,6 +1,6 @@
 package io.irminsul.common.game.command;
 
-import io.irminsul.common.config.ServerAccountConfig;
+import io.irminsul.common.config.game.ServerAccountConfig;
 import io.irminsul.common.game.ServerSystem;
 import io.irminsul.common.game.player.Player;
 import io.irminsul.common.proto.FriendBriefOuterClass.FriendBrief;

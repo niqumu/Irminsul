@@ -1,6 +1,9 @@
 package io.irminsul.common.config;
 
+import io.irminsul.common.config.game.ServerAccountConfig;
+import io.irminsul.common.config.game.WelcomeMailConfig;
 import lombok.Data;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -10,7 +13,7 @@ public class GameServerConfig implements LanguageSupplier {
     /**
      * The global config this config is under
      */
-    private final GlobalConfig globalConfig;
+    private final @NotNull GlobalConfig globalConfig;
 
 
 
@@ -25,14 +28,19 @@ public class GameServerConfig implements LanguageSupplier {
     private final boolean sandbox;
 
     /**
-     * Configuration for in-game server account, a way for users to execute commands in-game
+     * Configuration for in-game server account, a way to provide an interactive message bot for users
      */
-    private final ServerAccountConfig serverAccountConfig;
+    private final @NotNull ServerAccountConfig serverAccountConfig;
+
+    /**
+     * Configuration for mail sent to players when they join the server for the first time
+     */
+    private final @NotNull WelcomeMailConfig welcomeMailConfig;
 
     /**
      * List of enabled plugins on this server
      */
-    private final List<String> plugins;
+    private final @NotNull List<String> plugins;
 
     @Override
     public String getLanguage() {

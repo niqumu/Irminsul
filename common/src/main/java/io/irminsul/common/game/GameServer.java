@@ -5,7 +5,9 @@ import io.irminsul.common.config.GameServerConfig;
 import io.irminsul.common.game.command.CommandManager;
 import io.irminsul.common.game.dungeon.DungeonManager;
 import io.irminsul.common.event.EventBus;
+import io.irminsul.common.game.mail.MailManager;
 import io.irminsul.common.game.net.Session;
+import io.irminsul.common.game.player.Player;
 import io.irminsul.common.game.player.PlayerProfile;
 import io.irminsul.common.game.world.World;
 import io.irminsul.common.plugin.PluginInfo;
@@ -39,14 +41,14 @@ public interface GameServer extends LoggerContainer {
     @NotNull Map<Ukcp, Session> getSessions();
 
     /**
+     * @return A map of connected {@link Player}s, keyed by player UID
+     */
+    @NotNull Map<Integer, Player> getOnlinePlayers();
+
+    /**
      * @return A list of {@link World}s on the server
      */
     @NotNull List<World> getWorlds();
-
-    /**
-     * @return Whether this server is running in sandbox mode, as opposed to realistic mode
-     */
-    boolean isSandbox();
 
     /**
      * @return This server's {@link DungeonManager}
@@ -57,6 +59,11 @@ public interface GameServer extends LoggerContainer {
      * @return This server's {@link CommandManager}
      */
     @NotNull CommandManager getCommandManager();
+
+    /**
+     * @return This server's {@link MailManager}
+     */
+    @NotNull MailManager getMailManager();
 
     /**
      * @return A list of loaded and enabled plugins on the server

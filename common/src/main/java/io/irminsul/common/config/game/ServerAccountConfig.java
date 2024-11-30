@@ -1,7 +1,10 @@
-package io.irminsul.common.config;
+package io.irminsul.common.config.game;
 
 import lombok.Data;
 
+/**
+ * Configuration for in-game server account, a way to provide an interactive message bot for users
+ */
 @Data
 public class ServerAccountConfig {
 

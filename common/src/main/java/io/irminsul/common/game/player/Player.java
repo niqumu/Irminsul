@@ -1,5 +1,6 @@
 package io.irminsul.common.game.player;
 
+import io.irminsul.common.game.GameServer;
 import io.irminsul.common.game.net.Session;
 import io.irminsul.common.game.Tickable;
 import io.irminsul.common.game.avatar.Avatar;
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A representation of a player
+ * A representation of an online player
  */
 public interface Player extends Tickable {
 
@@ -26,6 +27,11 @@ public interface Player extends Tickable {
      * @return The {@link Session} this player is connecting through
      */
     @NotNull Session getSession();
+
+    /**
+     * @return The {@link GameServer} this player is connected to
+     */
+    @NotNull GameServer getServer();
 
     /**
      * Sets the {@link Session} that this player is connecting through

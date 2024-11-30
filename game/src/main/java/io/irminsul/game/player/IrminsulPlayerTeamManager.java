@@ -84,7 +84,7 @@ public class IrminsulPlayerTeamManager implements PlayerTeamManager {
         // Fire PlayerSwitchAvatarEvent event
         PlayerSwitchAvatarEvent event = new PlayerSwitchAvatarEvent(this.player, this.getActiveAvatar(),
             this.getActiveTeam().getAvatars().get(newIndex));
-        if (this.player.getSession().getServer().getEventBus().postEvent(event)) {
+        if (this.player.getServer().getEventBus().postEvent(event)) {
             return;
         }
 

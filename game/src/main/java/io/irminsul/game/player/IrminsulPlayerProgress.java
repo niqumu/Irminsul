@@ -56,7 +56,7 @@ public class IrminsulPlayerProgress implements PlayerProgress {
         DataContainer.getAllOpenStateData().forEach(state -> this.openStates.put(state, state.isDefaultState()));
 
         // Subscribe to events
-        this.player.getSession().getServer().getEventBus().registerSubscriber(this);
+        this.player.getServer().getEventBus().registerSubscriber(this);
     }
 
     /**
@@ -76,7 +76,7 @@ public class IrminsulPlayerProgress implements PlayerProgress {
      * @return A key-value map of client open states, controlling features on the client
      */
     public @NotNull Map<OpenStateData, Boolean> getOpenStates() {
-        if (!this.player.getSession().getServer().isSandbox()) {
+        if (!this.player.getServer().getConfig().isSandbox()) {
             return this.openStates;
         }
         Map<OpenStateData, Boolean> map = new HashMap<>(this.openStates);
@@ -93,7 +93,7 @@ public class IrminsulPlayerProgress implements PlayerProgress {
     public @NotNull List<Integer> getUnlockedScenePoints(int scene) {
 
         // Sandbox mode
-        if (this.player.getSession().getServer().isSandbox()) {
+        if (this.player.getServer().getConfig().isSandbox()) {
             ArrayList<Integer> list = new ArrayList<>();
 
             // Add all teleport points from the scene data
@@ -144,7 +144,7 @@ public class IrminsulPlayerProgress implements PlayerProgress {
     public @NotNull List<Integer> getUnlockedSceneAreas(int scene) {
 
         // Sandbox mode TODO: load scene areas from bin
-        if (this.player.getSession().getServer().isSandbox()) {
+        if (this.player.getServer().getConfig().isSandbox()) {
             ArrayList<Integer> list = new ArrayList<>();
             for (int i = 0; i < 100; i++) {
                 list.add(i);

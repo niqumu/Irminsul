@@ -36,7 +36,7 @@ public class HandlerMarkMapReq implements PacketHandler {
         // Sandbox mode teleportation
         if (request.getOp().equals(MarkMapReqOuterClass.MarkMapReq.Operation.OPERATION_ADD) &&
                 request.getMark().getPointType().equals(MapMarkPointType.MAP_MARK_POINT_TYPE_FISH_POOL) &&
-                session.getServer().isSandbox()) {
+                session.getServer().getConfig().isSandbox()) {
 
             session.getPlayer().sendToScene(request.getMark().getSceneId(),
                 new Position(request.getMark().getPos().getX(), 500, request.getMark().getPos().getZ()));

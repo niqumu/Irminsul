@@ -5,7 +5,9 @@ import io.irminsul.common.game.GameServer;
 import io.irminsul.common.game.command.CommandManager;
 import io.irminsul.common.game.dungeon.DungeonManager;
 import io.irminsul.common.event.EventBus;
+import io.irminsul.common.game.mail.MailManager;
 import io.irminsul.common.game.net.Session;
+import io.irminsul.common.game.player.Player;
 import io.irminsul.common.game.player.PlayerProfile;
 import io.irminsul.common.game.world.World;
 import io.irminsul.common.plugin.GamePlugin;
@@ -15,6 +17,7 @@ import io.irminsul.common.util.i18n.I18n;
 import io.irminsul.game.command.IrminsulCommandManager;
 import io.irminsul.game.dungeon.IrminsulDungeonManager;
 import io.irminsul.game.event.SimpleEventBus;
+import io.irminsul.game.mail.IrminsulMailManager;
 import io.irminsul.game.net.InboundPacket;
 import io.irminsul.game.net.IrminsulSession;
 import io.irminsul.game.net.MalformedPacketException;
@@ -67,14 +70,14 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
     private final List<World> worlds = new ArrayList<>();
 
     /**
-     * Whether this server is running in sandbox mode, as opposed to realistic mode
-     */
-    private final boolean sandbox;
-
-    /**
      * A map of {@link IrminsulSession}s connected to the server
      */
     private final Map<Ukcp, Session> sessions = new HashMap<>();
+
+    /**
+     * A map of connected {@link Player}s, keyed by player UID
+     */
+    private final Map<Integer, Player> onlinePlayers = new HashMap<>();
 
     /**
      * Managers
@@ -84,6 +87,7 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
     private final PluginManager pluginManager;
     private final ShopManager shopManager;
     private final DungeonManager dungeonManager;
+    private final MailManager mailManager;
 
     /**
      * Executor service used to run server ticks
@@ -103,7 +107,6 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
     public IrminsulGameServer(@NonNull GameServerConfig config, @NonNull String name) {
         this.config = config;
         this.port = this.config.getPort();
-        this.sandbox = this.config.isSandbox();
 
         this.logger = LoggerFactory.getLogger(name);
         this.logger.info(I18n.translate("game.info.start", this.config));
@@ -114,6 +117,7 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
         this.pluginManager = new PluginManager(this);
         this.shopManager = new ShopManager(this);
         this.dungeonManager = new IrminsulDungeonManager(this);
+        this.mailManager = new IrminsulMailManager(this);
 
         // Load and enable plugins
         this.pluginManager.loadPlugins();
@@ -135,7 +139,8 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
             worlds.forEach(world -> executor.submit(world::tick)), 1, 1, TimeUnit.SECONDS);
 
         // Done
-        this.logger.info(I18n.translate("game.info.done_" + (this.sandbox ? "sandbox" : "realism"), this.config), this.port);
+        String key = this.config.isSandbox() ? "game.info.done_sandbox" : "game.info.done_realism";
+        this.logger.info(I18n.translate(key, this.config), this.port);
     }
 
     /**

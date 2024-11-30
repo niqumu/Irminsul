@@ -27,11 +27,6 @@ public class IrminsulDungeonManager implements DungeonManager {
     private final GameServer server;
 
     /**
-     * This dungeon manager's logger
-     */
-    private final Logger logger = LoggerFactory.getLogger("Dungeon Manager");
-
-    /**
      * A map of players and a nullable (point, dungeon ID) pair representing their current dungeon
      */
     private final Map<Player, Pair<Integer, Integer>> currentDungeons = new HashMap<>();
@@ -49,11 +44,11 @@ public class IrminsulDungeonManager implements DungeonManager {
 
         // Sanity check
         if (sceneId == 0) {
-            this.logger.warn("{} attempted to enter dungeon ID {}, but the dungeon is missing data!", player, dungeon);
+            this.getLogger().warn("{} attempted to enter dungeon ID {}, but the dungeon is missing data!", player, dungeon);
             return;
         }
 
-        this.logger.info("{} is entering dungeon ID {}!", player, dungeon);
+        this.getLogger().info("{} is entering dungeon ID {}!", player, dungeon);
         this.currentDungeons.put(player, new Pair<>(point, dungeon));
         player.sendToScene(new Teleport(sceneId, scene.getSpawnPoint(),
             EnterTypeOuterClass.EnterType.ENTER_TYPE_DUNGEON, EnterReason.DUNGEON_ENTER, dungeon));
@@ -74,14 +69,14 @@ public class IrminsulDungeonManager implements DungeonManager {
             int entrancePoint = this.currentDungeons.get(player).getLeft();
             TransPoint dungeonEntrance = overworld.getSceneData().getTransPoints().get(entrancePoint);
 
-            this.logger.info("{} is returning from their dungeon to entrance point {}!", player, entrancePoint);
+            this.getLogger().info("{} is returning from their dungeon to entrance point {}!", player, entrancePoint);
             this.currentDungeons.remove(player);
             player.sendToScene(new Teleport(overworld.getId(), dungeonEntrance.getTransPosition(),
                 EnterTypeOuterClass.EnterType.ENTER_TYPE_BACK, EnterReason.DUNGEON_QUIT));
             return;
         }
 
-        this.logger.info("{} is returning from their dungeon to exit point {}!", player, point);
+        this.getLogger().info("{} is returning from their dungeon to exit point {}!", player, point);
         this.currentDungeons.remove(player);
         player.sendToScene(new Teleport(overworld.getId(), dungeonExit.getTransPosition(),
             EnterTypeOuterClass.EnterType.ENTER_TYPE_BACK, EnterReason.DUNGEON_QUIT));

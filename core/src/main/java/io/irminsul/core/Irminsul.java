@@ -7,7 +7,8 @@ import com.google.gson.JsonParser;
 import io.irminsul.common.config.GameServerConfig;
 import io.irminsul.common.config.GlobalConfig;
 import io.irminsul.common.config.HttpServerConfig;
-import io.irminsul.common.config.ServerAccountConfig;
+import io.irminsul.common.config.game.ServerAccountConfig;
+import io.irminsul.common.config.game.WelcomeMailConfig;
 import io.irminsul.common.game.GameServer;
 import io.irminsul.common.http.DispatchRegion;
 import io.irminsul.common.http.HttpServer;
@@ -38,7 +39,7 @@ public class Irminsul {
     /**
      * The configuration file version this version of Irminsul understands and uses
      */
-    private static final int CONFIGURATION_VERSION = 3;
+    private static final int CONFIGURATION_VERSION = 4;
 
     /**
      * SLF4J logger associated with this Irminsul instance
@@ -182,6 +183,7 @@ public class Irminsul {
             for (JsonElement element : gameServersArray) {
                 JsonObject server = element.getAsJsonObject();
                 JsonObject serverAccount = server.getAsJsonObject("server_account");
+                JsonObject welcomeMail = server.getAsJsonObject("welcome_mail");
 
                 this.gameServerConfigs.add(new GameServerConfig(
                     this.config,
@@ -194,6 +196,12 @@ public class Irminsul {
                         serverAccount.get("welcome_message").getAsString(),
                         serverAccount.get("welcome_emote").getAsInt(),
                         serverAccount.get("commands_enabled").getAsBoolean()
+                    ),
+                    new WelcomeMailConfig(
+                        welcomeMail.get("enabled").getAsBoolean(),
+                        welcomeMail.get("file").getAsString(),
+                        welcomeMail.get("subject").getAsString(),
+                        welcomeMail.get("sender").getAsString()
                     ),
                     server.get("plugins").getAsJsonArray().asList()
                         .stream()

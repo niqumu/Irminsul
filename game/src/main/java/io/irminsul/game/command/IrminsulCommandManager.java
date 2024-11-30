@@ -1,6 +1,6 @@
 package io.irminsul.game.command;
 
-import io.irminsul.common.config.ServerAccountConfig;
+import io.irminsul.common.config.game.ServerAccountConfig;
 import io.irminsul.common.game.GameServer;
 import io.irminsul.common.game.command.CommandHandler;
 import io.irminsul.common.game.command.CommandManager;

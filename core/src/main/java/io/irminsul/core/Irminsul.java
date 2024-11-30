@@ -74,6 +74,9 @@ public class Irminsul {
         this.loadAndVerifyConfig();
         this.logger.info(I18n.translate("core.info.game_version", this.config), this.config.getTargetVersion());
 
+        // Check for unused plugins
+        this.checkForUnusedPlugins();
+
         // Ignite the HTTP server if enabled
         if (this.httpServerConfig.isEnabled()) {
             this.httpServer = new IrminsulHttpServer(this.httpServerConfig);
@@ -209,6 +212,42 @@ public class Irminsul {
         if (this.config.getTargetVersion().equals("not set")) {
             this.logger.error(I18n.translate("core.error.game_version_missing", this.config));
             this.shutdown();
+        }
+    }
+
+    /**
+     * Looks at game server plugins in the /plugins directory and raises a warning if any are unused.
+     * This is necessary since people used to things like Minecraft might add plugins to their plugins directory and
+     * forget to add them to the game server's configuration file
+     */
+    private void checkForUnusedPlugins() {
+
+        // List of plugins used by game servers
+        List<String> usedPlugins = new ArrayList<>();
+
+        // Iterate over game server configs to build a list of used plugins
+        for (GameServerConfig gameServerConfig : this.gameServerConfigs) {
+            for (String plugin : gameServerConfig.getPlugins()) {
+                if (!usedPlugins.contains(plugin)) {
+                    usedPlugins.add(plugin);
+                }
+            }
+        }
+
+        File pluginsDirectory = new File("plugins");
+
+        // Create the plugins directory if it doesn't exist
+        if (pluginsDirectory.mkdirs()) {
+            this.logger.debug("Created plugins folder");
+        }
+
+        // Iterate over plugins in the directory and make sure they're used
+        for (File plugin : Objects.requireNonNull(pluginsDirectory.listFiles())) {
+            String pluginName = plugin.getName().replace(".jar", "");
+
+            if (!usedPlugins.contains(pluginName)) {
+                this.logger.warn(I18n.translate("core.warn.unused_plugin", this.config), pluginName);
+            }
         }
     }
 }

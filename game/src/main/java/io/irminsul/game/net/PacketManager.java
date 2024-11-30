@@ -62,6 +62,7 @@ public class PacketManager implements ServerSystem {
         this.registerHandler(new HandlerEvtAvatarLockChairReq());
         this.registerHandler(new HandlerEvtAvatarSitDownNotify());
         this.registerHandler(new HandlerEvtAvatarStandUpNotify());
+        this.registerHandler(new HandlerGetAllMailNotify());
         this.registerHandler(new HandlerGetAllUnlockNameCardReq());
         this.registerHandler(new HandlerGetChatEmojiCollectionReq());
         this.registerHandler(new HandlerGetPlayerAskFriendListReq());

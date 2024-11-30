@@ -1,1 +1,6 @@
 Hello! Welcome to Irminsul!
+
+Need help getting started? Check out the Irminsul...
+<type="browser" text="GitHub" href="https://github.com/niqumu/Irminsul"/><type="browser" text="Docs" href="https://irminsul.gitbook.io/irminsul"/>
+
+<i>Best of luck!~</i>

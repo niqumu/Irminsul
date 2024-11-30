@@ -82,9 +82,9 @@ public class IrminsulMail implements Mail {
             Objects.requireNonNullElse(sender, "(server)"),
             content.replace("\n", "\r\n"), // Thanks guys.
             recipient,
-            (int) System.currentTimeMillis() / 1000,
+            (int) (System.currentTimeMillis() / 1000),
             expireTime < System.currentTimeMillis() / 1000 ?
-                (int) System.currentTimeMillis() / 1000 + DEFAULT_MAIL_DURATION :
+                (int) (System.currentTimeMillis() / 1000) + DEFAULT_MAIL_DURATION :
                 expireTime
         );
     }

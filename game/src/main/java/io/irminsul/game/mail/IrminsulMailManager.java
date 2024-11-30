@@ -140,7 +140,7 @@ public class IrminsulMailManager implements MailManager {
             this.server.getConfig().getWelcomeMailConfig().getSender(),
             this.welcomeMailContents,
             player.getUid(),
-            Integer.MAX_VALUE
+            Integer.MAX_VALUE // This is going to break in 2038 lol
         ));
     }
 

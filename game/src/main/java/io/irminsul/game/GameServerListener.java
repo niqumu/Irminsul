@@ -54,7 +54,7 @@ public class GameServerListener implements KcpListener {
 
     @Override
     public void handleException(Throwable throwable, Ukcp ukcp) {
-        this.server.getLogger().error(I18n.translate("game.error.listener_error", this.server.getConfig()), throwable);
+        this.server.getLogger().error(I18n.translate("game.error.listener_error"), throwable);
     }
 
     @Override

@@ -45,11 +45,16 @@ public class PluginsCommand extends CommandHandler {
                 if (plugin.getId().equalsIgnoreCase(args[0])) {
                     String message = "%s (%s):".formatted(plugin.getName(), plugin.getId());
 
-                    message += "\nDescription: <i><color=\"#aaaaaa\">" + plugin.getDescription() + "</color></i>";
-                    message += "\nVersion: <i><color=\"#aaaaaa\">" + plugin.getVersion() + "</color></i>";
-                    message += "\nAuthor: <i><color=\"#aaaaaa\">" + plugin.getAuthor() + "</color></i>";
-                    message += "\nWebsite: <i><color=\"#aaaaaa\">" + plugin.getWebsite() + "</color></i>";
-                    message += "\n\nLoaded from <i><color=\"#aaaaaa\">" + plugin.getFilename() + "</color></i>";
+                    message += "\n" + I18n.translate("game.command.plugins.list_description")
+                        .replace("{}", "<i><color=\"#aaaaaa\">" + plugin.getDescription() + "</color></i>");
+                    message += "\n" + I18n.translate("game.command.plugins.list_version")
+                        .replace("{}", "<i><color=\"#aaaaaa\">" + plugin.getVersion() + "</color></i>");
+                    message += "\n" + I18n.translate("game.command.plugins.list_author")
+                        .replace("{}", "<i><color=\"#aaaaaa\">" + plugin.getAuthor() + "</color></i>");
+                    message += "\n" + I18n.translate("game.command.plugins.list_website")
+                        .replace("{}", "<i><color=\"#aaaaaa\">" + plugin.getWebsite() + "</color></i>");
+                    message += "\n\n" + I18n.translate("game.command.plugins.list_file")
+                        .replace("{}", "<i><color=\"#aaaaaa\">" + plugin.getFilename() + "</color></i>");
 
                     this.sendMessage(sender, message);
 
@@ -58,8 +63,7 @@ public class PluginsCommand extends CommandHandler {
             }
 
             // We didn't find the plugin
-            this.sendError(sender, I18n.translate("game.command.plugins.not_found",
-                this.getServer().getConfig()).replace("{}", args[0]));
+            this.sendError(sender, I18n.translate("game.command.plugins.not_found").replace("{}", args[0]));
         }
     }
 }

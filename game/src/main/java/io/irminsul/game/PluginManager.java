@@ -54,7 +54,7 @@ public class PluginManager implements ServerSystem {
 
             // Verify that the plugin exists
             if (!pluginFile.exists()) {
-                this.server.getLogger().warn(I18n.translate("game.plugin.missing", this.server.getConfig()), plugin);
+                this.server.getLogger().warn(I18n.translate("game.plugin.missing"), plugin);
                 continue;
             }
 
@@ -87,7 +87,7 @@ public class PluginManager implements ServerSystem {
         try {
             plugin = new JarFile(file);
         } catch (IOException e) {
-            this.server.getLogger().error(I18n.translate("game.plugin.restricted", this.server.getConfig()),
+            this.server.getLogger().error(I18n.translate("game.plugin.restricted"),
                 file.getName());
             return; // Failed to read the file, return early
         }
@@ -95,7 +95,7 @@ public class PluginManager implements ServerSystem {
         // Read plugin properties file and verify that it exists
         ZipEntry propertiesEntry = plugin.getEntry("plugin.properties");
         if (propertiesEntry == null) {
-            this.server.getLogger().error(I18n.translate("game.plugin.no_properties", this.server.getConfig()),
+            this.server.getLogger().error(I18n.translate("game.plugin.no_properties"),
                 file.getName());
             return; // Plugin doesn't have a plugin.properties, return early
         }
@@ -106,24 +106,24 @@ public class PluginManager implements ServerSystem {
             propertiesStream = plugin.getInputStream(propertiesEntry);
             properties.load(propertiesStream);
         } catch (IOException e) {
-            this.server.getLogger().error(I18n.translate("game.plugin.properties_locked", this.server.getConfig()),
+            this.server.getLogger().error(I18n.translate("game.plugin.properties_locked"),
                 file.getName());
             return; // Can't read plugin.properties, return early
         }
 
         // Verify that the properties file contains required keys
         if (!properties.containsKey("id")) {
-            this.server.getLogger().error(I18n.translate("game.plugin.no_id", this.server.getConfig()), file.getName());
+            this.server.getLogger().error(I18n.translate("game.plugin.no_id"), file.getName());
             return; // No ID declared, return early
         } else if (!properties.containsKey("main")) {
-            this.server.getLogger().error(I18n.translate("game.plugin.no_main", this.server.getConfig()),
+            this.server.getLogger().error(I18n.translate("game.plugin.no_main"),
                 properties.getOrDefault("name", properties.get("id")));
             return; // No main declared, return early
         }
 
         // Verify that the plugin ID is unique
         if (this.loadedPlugins.containsKey(properties.getProperty("key"))) {
-            this.server.getLogger().error(I18n.translate("game.plugin.duplicate", this.server.getConfig()),
+            this.server.getLogger().error(I18n.translate("game.plugin.duplicate"),
                 properties.getOrDefault("name", properties.get("id")), properties.get("id"),
                 this.loadedPlugins.get(properties.getProperty("key")).getPluginInfo().getFilename());
             return; // Duplicate plugin, return early
@@ -135,7 +135,7 @@ public class PluginManager implements ServerSystem {
             method.setAccessible(true);
             method.invoke(this.pluginClassLoader, file.toURI().toURL());
         } catch (Exception e) {
-            this.server.getLogger().error(I18n.translate("game.plugin.classloader", this.server.getConfig()),
+            this.server.getLogger().error(I18n.translate("game.plugin.classloader"),
                 properties.getOrDefault("name", properties.get("id")), e);
             return; // Can't add the plugin to the class loader, return early
         }
@@ -145,14 +145,14 @@ public class PluginManager implements ServerSystem {
         try {
             pluginMain = Class.forName(properties.getProperty("main"), true, this.pluginClassLoader);
         } catch (Exception e) {
-            this.server.getLogger().error(I18n.translate("game.plugin.missing_main", this.server.getConfig()),
+            this.server.getLogger().error(I18n.translate("game.plugin.missing_main"),
                 properties.getOrDefault("name", properties.get("id")), properties.getProperty("main"));
             return; // Plugin main doesn't exist, return early
         }
 
         // Verify that the main class is valid
         if (!GamePlugin.class.isAssignableFrom(pluginMain)) {
-            this.server.getLogger().error(I18n.translate("game.plugin.bad_main", this.server.getConfig()),
+            this.server.getLogger().error(I18n.translate("game.plugin.bad_main"),
                 properties.getOrDefault("name", properties.get("id")), properties.getProperty("main"));
             return; // Plugin main isn't valid, return early
         }
@@ -163,7 +163,7 @@ public class PluginManager implements ServerSystem {
             Constructor<?> constructor = pluginMain.getConstructor();
             pluginInstance = (GamePlugin) constructor.newInstance();
         } catch (Exception e) {
-            this.server.getLogger().error(I18n.translate("game.plugin.instantiation", this.server.getConfig()),
+            this.server.getLogger().error(I18n.translate("game.plugin.instantiation"),
                 properties.getOrDefault("name", properties.get("id")), e);
             return; // Couldn't instantiate plugin, return early
         }

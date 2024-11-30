@@ -40,7 +40,7 @@ public class IrminsulMailManager implements MailManager {
     private void readWelcomeMailContents() {
 
         // Fallback
-        this.welcomeMailContents = I18n.translate("generic.error", this.server.getConfig());
+        this.welcomeMailContents = I18n.translate("generic.error");
 
         File welcomeMailFile = new File(this.server.getConfig().getWelcomeMailConfig().getFile());
 
@@ -58,16 +58,14 @@ public class IrminsulMailManager implements MailManager {
 
                 // Otherwise, log that the mail file is missing and return.
                 else {
-                    this.getLogger().error(I18n.translate("game.error.welcome_mail_missing",
-                        this.server.getConfig()), welcomeMailFile.getName());
+                    this.getLogger().error(I18n.translate("game.error.welcome_mail_missing"), welcomeMailFile.getName());
                     return;
                 }
             }
 
             this.welcomeMailContents = String.join("\n", Files.readAllLines(welcomeMailFile.toPath()));
         } catch (Exception e) {
-            this.getLogger().error(I18n.translate("game.error.welcome_mail_locked",
-                this.server.getConfig()), welcomeMailFile.getName());
+            this.getLogger().error(I18n.translate("game.error.welcome_mail_locked"), welcomeMailFile.getName());
         }
     }
 
@@ -100,8 +98,8 @@ public class IrminsulMailManager implements MailManager {
     public @NotNull Mail generateMail(String title, String sender, @NotNull String content, int recipient, int expireTime) {
 
         // Verify that the expiration time is valid (not less than the send time)
-        if (expireTime < System.currentTimeMillis() / 1000) {;
-            this.getLogger().warn(I18n.translate("game.warn.mail_invalid_expiry", this.server.getConfig()), expireTime);
+        if (expireTime < System.currentTimeMillis() / 1000) {
+            this.getLogger().warn(I18n.translate("game.warn.mail_invalid_expiry"), expireTime);
         }
 
         return new IrminsulMail(title, sender, content, recipient, expireTime);
@@ -116,8 +114,7 @@ public class IrminsulMailManager implements MailManager {
     public void sendMail(@NotNull Mail mail) {
 
         // Log the mail
-        this.getLogger().info(I18n.translate("game.info.mail", this.server.getConfig()),
-            mail.getSender(), mail.getOwner(), mail.getTitle());
+        this.getLogger().info(I18n.translate("game.info.mail"), mail.getSender(), mail.getOwner(), mail.getTitle());
 
         // Add the mail to the player's mailbox
         this.mailboxes.computeIfAbsent(mail.getOwner(), f -> new ArrayList<>()).add(mail);

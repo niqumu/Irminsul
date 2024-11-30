@@ -1,6 +1,5 @@
 package io.irminsul.common.util.i18n;
 
-import io.irminsul.common.config.LanguageSupplier;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import org.slf4j.Logger;
@@ -24,19 +23,13 @@ public class I18n {
      */
     private final Map<String, Map<String, String>> translations = new HashMap<>();
 
-    public @NonNull String translate(@NonNull String key, LanguageSupplier supplier) {
+    public String language = Locale.getDefault().getLanguage().equals("zh") ? "zh_CN" : "en_US";
+
+    public @NonNull String translate(@NonNull String key) {
 
         // Check to make sure that the translations have been loaded
         if (translations.isEmpty()) {
             loadTranslations();
-        }
-
-        // Get the language to translate to
-        String language;
-        if (supplier == null) {
-            language = Locale.getDefault().getLanguage().equals("zh") ? "zh_CN" : "en_US";
-        } else {
-            language = supplier.getLanguage();
         }
 
         // Check to see if the language to translate to is valid

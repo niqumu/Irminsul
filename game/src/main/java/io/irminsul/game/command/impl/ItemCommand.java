@@ -23,7 +23,7 @@ public class ItemCommand extends CommandHandler {
 
         // Ensure that an item was provided
         if (args.length == 0) {
-            this.sendError(sender, I18n.translate("game.command.item.no_id", this.getServer().getConfig()));
+            this.sendError(sender, I18n.translate("game.command.item.no_id"));
             this.sendUsage(sender);
             return;
         }
@@ -35,13 +35,12 @@ public class ItemCommand extends CommandHandler {
                 count = Integer.parseInt(args[1]);
             }
         } catch (NumberFormatException e) {
-            this.sendError(sender, I18n.translate("game.command.item.bad_id", this.getServer().getConfig()));
+            this.sendError(sender, I18n.translate("game.command.item.bad_id"));
             return;
         }
 
         // Add the item
         sender.getInventory().addItem(new IrminsulItem(itemId, count, sender), ActionReason.NONE);
-        this.sendMessage(sender, I18n.translate("game.command.item.success",
-            this.getServer().getConfig()).replace("{}", Integer.toString(itemId)));
+        this.sendMessage(sender, I18n.translate("game.command.item.success").replace("{}", Integer.toString(itemId)));
     }
 }

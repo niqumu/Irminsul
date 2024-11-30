@@ -109,7 +109,7 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
         this.port = this.config.getPort();
 
         this.logger = LoggerFactory.getLogger(name);
-        this.logger.info(I18n.translate("game.info.start", this.config));
+        this.logger.info(I18n.translate("game.info.start"));
 
         // Create managers
         this.packetManager = new PacketManager(this);
@@ -140,7 +140,7 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
 
         // Done
         String key = this.config.isSandbox() ? "game.info.done_sandbox" : "game.info.done_realism";
-        this.logger.info(I18n.translate(key, this.config), this.port);
+        this.logger.info(I18n.translate(key), this.port);
     }
 
     /**
@@ -194,7 +194,7 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
         try {
             packet = new InboundPacket(Unpooled.wrappedBuffer(raw), session);
         } catch (MalformedPacketException e) {
-            this.logger.error(I18n.translate("game.error.packet_decode_failed", this.config), e, Arrays.toString(raw));
+            this.logger.error(I18n.translate("game.error.packet_decode_failed"), e, Arrays.toString(raw));
             return;
         }
 

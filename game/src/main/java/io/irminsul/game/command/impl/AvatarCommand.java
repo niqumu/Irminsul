@@ -25,7 +25,7 @@ public class AvatarCommand extends CommandHandler {
 
         // Ensure that an avatar was provided
         if (args.length == 0) {
-            this.sendError(sender, I18n.translate("game.command.avatar.no_id", this.getServer().getConfig()));
+            this.sendError(sender, I18n.translate("game.command.avatar.no_id"));
             this.sendUsage(sender);
             return;
         }
@@ -34,14 +34,14 @@ public class AvatarCommand extends CommandHandler {
         try {
             avatarId = Integer.parseInt(args[0]);
         } catch (NumberFormatException e) {
-            this.sendError(sender, I18n.translate("game.command.avatar.bad_id", this.getServer().getConfig()));
+            this.sendError(sender, I18n.translate("game.command.avatar.bad_id"));
             return;
         }
 
         // Make sure that the avatar isn't a duplicate
         for (Avatar avatar : sender.getAvatars()) {
             if (avatar.getAvatarId() == avatarId) {
-                this.sendError(sender, I18n.translate("game.command.avatar.duplicate", this.getServer().getConfig()));
+                this.sendError(sender, I18n.translate("game.command.avatar.duplicate"));
                 return;
             }
         }
@@ -51,7 +51,7 @@ public class AvatarCommand extends CommandHandler {
         new PacketAddNoGachaAvatarCardNotify(sender.getSession(), avatar, ActionReason.ADD_AVATAR).send();
         sender.addAvatar(avatar);
 
-        this.sendMessage(sender, I18n.translate("game.command.avatar.success",
-            this.getServer().getConfig()).replace("{}", avatar.getAvatarData().getName()));
+        this.sendMessage(sender, I18n.translate("game.command.avatar.success")
+            .replace("{}", avatar.getAvatarData().getName()));
     }
 }

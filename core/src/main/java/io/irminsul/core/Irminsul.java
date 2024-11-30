@@ -68,12 +68,12 @@ public class Irminsul {
      */
     public void startup() {
         long startTime = System.currentTimeMillis();
-        this.logger.info(I18n.translate("core.info.start", null));
-        this.logger.info(I18n.translate("core.info.server_version", null), SERVER_VERSION);
+        this.logger.info(I18n.translate("core.info.start"));
+        this.logger.info(I18n.translate("core.info.server_version"), SERVER_VERSION);
 
         // Parse the configuration file
         this.loadAndVerifyConfig();
-        this.logger.info(I18n.translate("core.info.game_version", this.config), this.config.getTargetVersion());
+        this.logger.info(I18n.translate("core.info.game_version"), this.config.getTargetVersion());
 
         // Check for unused plugins
         this.checkForUnusedPlugins();
@@ -82,7 +82,7 @@ public class Irminsul {
         if (this.httpServerConfig.isEnabled()) {
             this.httpServer = new IrminsulHttpServer(this.httpServerConfig);
         } else {
-            this.logger.info(I18n.translate("core.info.http_skipped", this.config));
+            this.logger.info(I18n.translate("core.info.http_skipped"));
         }
 
         // Ignite the configured game servers
@@ -92,7 +92,7 @@ public class Irminsul {
                 "Game Server" + (this.gameServerConfigs.size() > 1 ? " #" + (i + 1) : "")));
         }
         if (this.gameServers.isEmpty()) {
-            this.logger.info(I18n.translate("core.info.game_skipped", this.config));
+            this.logger.info(I18n.translate("core.info.game_skipped"));
         }
 
         // Register shutdown hook
@@ -100,14 +100,14 @@ public class Irminsul {
 
         // Done
         double bootTime = (System.currentTimeMillis() - startTime) / 1000D;
-        this.logger.info(I18n.translate("core.info.done", this.config), bootTime);
+        this.logger.info(I18n.translate("core.info.done"), bootTime);
     }
 
     /**
      * Shut down this Irminsul instance
      */
     public void shutdown() {
-        this.logger.info(I18n.translate("core.info.stop", this.config));
+        this.logger.info(I18n.translate("core.info.stop"));
 
         // Stop the HTTP server if it exists
         if (this.httpServer != null) {
@@ -126,7 +126,7 @@ public class Irminsul {
 
             // If the config file doesn't exit, create a copy of the default one stored internally
             if (!configFile.exists()) {
-                this.logger.warn(I18n.translate("core.warn.config_cloned", null));
+                this.logger.warn(I18n.translate("core.warn.config_cloned"));
 
                 InputStream defaultConfig = Objects.requireNonNull(Irminsul.class.getResourceAsStream("/default.hjson"));
                 Files.write(configFile.toPath(), defaultConfig.readAllBytes());
@@ -145,10 +145,10 @@ public class Irminsul {
             // Compare the detected config revision to the revision this Irminsul version uses
             if (configVersion < CONFIGURATION_VERSION) {
                 int revisionsBehind = CONFIGURATION_VERSION - configVersion;
-                this.logger.warn(I18n.translate("core.warn.too_old_config", null), revisionsBehind);
+                this.logger.warn(I18n.translate("core.warn.too_old_config"), revisionsBehind);
             } else if (configVersion > CONFIGURATION_VERSION) {
                 int revisionsAhead = configVersion - CONFIGURATION_VERSION;
-                this.logger.warn(I18n.translate("core.warn.too_new_config", null), revisionsAhead);
+                this.logger.warn(I18n.translate("core.warn.too_new_config"), revisionsAhead);
             }
 
             // Read global config
@@ -158,6 +158,9 @@ public class Irminsul {
                 globalObject.get("language").getAsString(),
                 globalObject.get("hide_addresses").getAsBoolean()
             );
+
+            // Set language
+            I18n.language = this.config.getLanguage();
 
             // Read HTTP server config
             JsonObject httpObject = jsonContents.getAsJsonObject("http");
@@ -210,15 +213,15 @@ public class Irminsul {
                 ));
             }
 
-            this.logger.info(I18n.translate("core.info.config_loaded", this.config));
+            this.logger.info(I18n.translate("core.info.config_loaded"));
         } catch (Exception e) {
-            this.logger.error(I18n.translate("core.error.config_load_failed", null), e);
+            this.logger.error(I18n.translate("core.error.config_load_failed"), e);
             this.shutdown();
         }
 
         // Make sure the game version is set
         if (this.config.getTargetVersion().equals("not set")) {
-            this.logger.error(I18n.translate("core.error.game_version_missing", this.config));
+            this.logger.error(I18n.translate("core.error.game_version_missing"));
             this.shutdown();
         }
     }
@@ -254,7 +257,7 @@ public class Irminsul {
             String pluginName = plugin.getName().replace(".jar", "");
 
             if (!usedPlugins.contains(pluginName)) {
-                this.logger.warn(I18n.translate("core.warn.unused_plugin", this.config), pluginName);
+                this.logger.warn(I18n.translate("core.warn.unused_plugin"), pluginName);
             }
         }
     }

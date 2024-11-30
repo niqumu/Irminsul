@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 @Data
-public class GameServerConfig implements LanguageSupplier {
+public class GameServerConfig {
 
     /**
      * The global config this config is under
@@ -41,9 +41,4 @@ public class GameServerConfig implements LanguageSupplier {
      * List of enabled plugins on this server
      */
     private final @NotNull List<String> plugins;
-
-    @Override
-    public String getLanguage() {
-        return this.globalConfig.getLanguage();
-    }
 }

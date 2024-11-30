@@ -3,7 +3,7 @@ package io.irminsul.common.config;
 import lombok.Data;
 
 @Data
-public class GlobalConfig implements LanguageSupplier {
+public class GlobalConfig {
 
     /**
      * The game version that may connect to this Irminsul network

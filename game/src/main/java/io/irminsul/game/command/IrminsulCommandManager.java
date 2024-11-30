@@ -72,8 +72,7 @@ public class IrminsulCommandManager implements CommandManager {
 
         // Make sure that the command handler contains a @CommandInfo annotation
         if (command.getCommandInfo() == null) {
-            this.getLogger().error(I18n.translate("game.error.command_info_missing", this.server.getConfig()),
-                command.getClass().getName(), registrar);
+            this.getLogger().error(I18n.translate("game.error.command_info_missing"), command.getClass().getName(), registrar);
             return;
         }
 
@@ -143,7 +142,7 @@ public class IrminsulCommandManager implements CommandManager {
         // If the private chat was sent to the server account, it's a command and we must handle it
         if (uid == SERVER_UID) {
             String messageToLog = icon != 0 ? "(emote " + icon + ")" : message;
-            this.server.getLogger().info(I18n.translate("game.info.command_executed", this.server.getConfig()), player, messageToLog);
+            this.server.getLogger().info(I18n.translate("game.info.command_executed"), player, messageToLog);
 
             ChatInfo messageInfo = ChatInfo.newBuilder()
                 .setUid(player.getUid())
@@ -173,7 +172,7 @@ public class IrminsulCommandManager implements CommandManager {
 
             // Verify that commands are enabled
             if (!this.config.isCommandsEnabled()) {
-                this.sendError(player, "<i>" + I18n.translate("game.command.disabled", this.server.getConfig()) + "</i>");
+                this.sendError(player, "<i>" + I18n.translate("game.command.disabled") + "</i>");
                 return;
             }
 
@@ -190,7 +189,7 @@ public class IrminsulCommandManager implements CommandManager {
                     this.registeredCommands.get(command).handle(player, message, Arrays.copyOfRange(args, 1, args.length));
                 }
             } else {
-                this.sendError(player, I18n.translate("game.command.unknown", this.server.getConfig())
+                this.sendError(player, I18n.translate("game.command.unknown")
                     .replace("{}", command));
             }
         }

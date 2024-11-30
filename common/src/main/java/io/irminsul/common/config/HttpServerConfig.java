@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class HttpServerConfig implements LanguageSupplier {
+public class HttpServerConfig {
 
     /**
      * The global config this config is under
@@ -41,9 +41,4 @@ public class HttpServerConfig implements LanguageSupplier {
      * A list of target game servers this HTTP server will dispatch to
      */
     private final @NotNull List<DispatchRegion> regions = new ArrayList<>();
-
-    @Override
-    public String getLanguage() {
-        return this.globalConfig.getLanguage();
-    }
 }

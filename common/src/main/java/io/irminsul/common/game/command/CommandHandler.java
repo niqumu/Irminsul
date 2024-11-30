@@ -63,8 +63,8 @@ public abstract class CommandHandler {
      * @param player The player to send the command usage to
      */
     protected void sendUsage(@NotNull Player player) {
-        this.sendError(player, I18n.translate("game.command.usage", this.getServer().getConfig())
-            .replace("{}", I18n.translate(this.getCommandInfo().usage(), this.getServer().getConfig())));
+        this.sendError(player, I18n.translate("game.command.usage")
+            .replace("{}", I18n.translate(this.getCommandInfo().usage())));
     }
 
     /**

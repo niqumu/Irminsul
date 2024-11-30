@@ -36,7 +36,7 @@ public class QueryCurrentRegionHandler implements Route {
         }
 
         if (resolvedRegion == null) {
-            this.server.getLogger().error(I18n.translate("http.error.region_resolve_failed", this.server.getConfig()), region);
+            this.server.getLogger().error(I18n.translate("http.error.region_resolve_failed"), region);
             return null;
         }
 
@@ -70,7 +70,7 @@ public class QueryCurrentRegionHandler implements Route {
         try {
             return CryptoUtil.encodeCurrentRegion(queryResponse.toByteArray(), keyID);
         } catch (Exception e) {
-            this.server.getLogger().error(I18n.translate("http.error.region_encode_failed", this.server.getConfig()), e);
+            this.server.getLogger().error(I18n.translate("http.error.region_encode_failed"), e);
             return null;
         }
     }

@@ -15,6 +15,7 @@ import org.luaj.vm2.LuaValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.util.HashMap;
 
 @Getter
@@ -33,7 +34,7 @@ public class IrminsulSceneScriptManager implements SceneScriptManager {
     /**
      * Lua Globals instance of the main scene script
      */
-    private final Globals globals = LuaGlobalsFactory.newGlobals();
+    private final Globals globals;
 
     /**
      * The main scene script
@@ -50,10 +51,15 @@ public class IrminsulSceneScriptManager implements SceneScriptManager {
      */
     private final HashMap<Integer, Group> loadedGroups = new HashMap<>();
 
+    private final DataContainer dataContainer;
+
     public IrminsulSceneScriptManager(@NotNull Scene scene, @NotNull DataContainer dataContainer) {
         this.scene = scene;
+        this.dataContainer = dataContainer;
         this.scriptPathBase = dataContainer.getDataDirectory().getAbsolutePath() +
             "/lua/scene/" + scene.getId() + "/scene" + scene.getId();
+
+        this.globals = LuaGlobalsFactory.newGlobals(new File(this.dataContainer.getDataDirectory(), "lua"));
 
         // Load and call main script
         this.mainScript = this.globals.loadfile(this.scriptPathBase + ".lua");
@@ -67,7 +73,7 @@ public class IrminsulSceneScriptManager implements SceneScriptManager {
 //        }
 
         // Done
-        dataContainer.getLogger().info("Finished loading scripts for scene {} - loaded {} blocks with {} groups in total!",
+        this.dataContainer.getLogger().info("Finished loading scripts for scene {} - loaded {} blocks with {} groups in total!",
             this.scene.getId(), this.loadedBlocks.size(), this.loadedGroups.size());
     }
 
@@ -87,7 +93,7 @@ public class IrminsulSceneScriptManager implements SceneScriptManager {
     private void loadBlock(int id) {
 
         // Load block
-        Globals blockGlobals = LuaGlobalsFactory.newGlobals();
+        Globals blockGlobals = LuaGlobalsFactory.newGlobals(new File(this.dataContainer.getDataDirectory(), "lua"));
         LuaValue blockScript = blockGlobals.loadfile(this.scriptPathBase + "_block" + id + ".lua");
         blockScript.call();
         this.loadedBlocks.put(id, new Block(blockGlobals, blockScript, id));
@@ -108,7 +114,7 @@ public class IrminsulSceneScriptManager implements SceneScriptManager {
         int area = groupTable.get("id").toint(0);
         Position position = LuaUtil.positionFromTable(groupTable.get("pos"), null);
 
-        Globals groupGlobals = LuaGlobalsFactory.newGlobals();
+        Globals groupGlobals = LuaGlobalsFactory.newGlobals(new File(this.dataContainer.getDataDirectory(), "lua"));
         LuaValue groupScript = groupGlobals.loadfile(this.scriptPathBase + "_group" + id + ".lua");
         groupScript.call();
         this.loadedGroups.put(id, new Group(groupGlobals, groupScript, id, area, position));

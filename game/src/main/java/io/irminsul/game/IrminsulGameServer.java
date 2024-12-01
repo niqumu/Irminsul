@@ -57,7 +57,7 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
     /**
      * This server's {@link EventBus}
      */
-    private final EventBus eventBus = new SimpleEventBus();
+    private final EventBus eventBus = new SimpleEventBus(this);
 
     /**
      * The port this server is running on

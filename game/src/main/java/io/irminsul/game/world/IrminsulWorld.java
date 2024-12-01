@@ -1,5 +1,6 @@
 package io.irminsul.game.world;
 
+import io.irminsul.common.game.event.WorldTickEvent;
 import io.irminsul.game.GameConstants;
 import io.irminsul.common.game.GameServer;
 import io.irminsul.common.game.player.Player;
@@ -143,6 +144,10 @@ public class IrminsulWorld implements World {
      */
     @Override
     public void tick() {
+
+        // Create and fire event
+        WorldTickEvent event = new WorldTickEvent(this);
+        this.server.getEventBus().postEvent(event);
 
         // Tick scenes
         this.scenes.values().forEach(Scene::tick);

@@ -3,6 +3,10 @@ package io.irminsul.game.event;
 import io.irminsul.common.event.Event;
 import io.irminsul.common.event.EventBus;
 import io.irminsul.common.event.EventHandler;
+import io.irminsul.common.game.GameServer;
+import io.irminsul.common.game.ServerSystem;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,9 +17,14 @@ import java.util.ArrayList;
 /**
  * Simple, fast implementation of an {@link EventBus}.
  */
-public final class SimpleEventBus implements EventBus {
+@RequiredArgsConstructor
+public final class SimpleEventBus implements EventBus, ServerSystem {
 
-    Logger logger = LoggerFactory.getLogger("Event Bus");
+    /**
+     * The {@link GameServer} this system belongs to
+     */
+    @Getter
+    private final GameServer server;
 
     /**
      * A list of objects that are subscribed to receive posted events to eligible methods
@@ -35,7 +44,7 @@ public final class SimpleEventBus implements EventBus {
         // Ensure that the new subscriber isn't already registered as a subscriber. If it is, log a warning
         //   and ignore the request to register it.
         if (this.subscribers.contains(subscriber)) {
-            logger.warn("Tried to register duplicate subscriber class: {}", subscriber.getClass().getName());
+            this.getLogger().warn("Tried to register duplicate subscriber class: {}", subscriber.getClass().getName());
             return;
         }
 
@@ -56,7 +65,7 @@ public final class SimpleEventBus implements EventBus {
         // Ensure that the subscriber to remove is indeed registered as a subscriber. If it is not, log a
         //   warning and ignore the request to unregister it.
         if (!this.subscribers.contains(subscriber)) {
-            logger.warn("Tried to unregister non-existent subscriber class: {}", subscriber.getClass().getName());
+            this.getLogger().warn("Tried to unregister non-existent subscriber class: {}", subscriber.getClass().getName());
             return;
         }
 
@@ -106,7 +115,7 @@ public final class SimpleEventBus implements EventBus {
                 try {
                     method.invoke(subscriber, event);
                 } catch (Exception e) {
-                    logger.error("Failed to pass event to {}#{}", subscriberClass.getName(), method.getName(), e);
+                    this.getLogger().error("Failed to pass event to {}#{}", subscriberClass.getName(), method.getName(), e);
                 }
 
                 return;

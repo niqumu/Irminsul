@@ -1,6 +1,5 @@
 package io.irminsul.common.event;
 
-
 public interface EventBus {
 
     /**

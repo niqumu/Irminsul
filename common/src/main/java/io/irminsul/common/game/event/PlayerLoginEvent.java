@@ -15,4 +15,9 @@ public class PlayerLoginEvent implements Event {
      * The player logging in
      */
     private final @NotNull Player player;
+
+    /**
+     * Whether the player is joining the server for the first time
+     */
+    private final boolean firstLogin;
 }

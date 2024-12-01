@@ -2,6 +2,7 @@ package io.irminsul.game.player;
 
 import io.irminsul.common.game.GameServer;
 import io.irminsul.common.game.event.PlayerTeleportEvent;
+import io.irminsul.common.game.event.PlayerTickEvent;
 import io.irminsul.common.game.world.Teleport;
 import io.irminsul.common.proto.EnterTypeOuterClass;
 import io.irminsul.game.GameConstants;
@@ -81,17 +82,17 @@ public class IrminsulPlayer implements Player {
     /**
      * A list, by ID, of gliders this player owns
      */
-    private List<Integer> ownedFlyCloaks = List.of(140001);
+    private List<Integer> ownedFlyCloaks = new ArrayList<>(List.of(140001));
 
     /**
      * A list, by ID, of avatar costumes this player owns
      */
-    private List<Integer> ownedCostumes = List.of();
+    private List<Integer> ownedCostumes = new ArrayList<>();
 
     /**
      * A list, by ID, of name cards this player owns
      */
-    private List<Integer> ownedNameCards = List.of(210001);
+    private List<Integer> ownedNameCards = new ArrayList<>(List.of(210001));
 
     // ================================================================ //
     //                               World                              //
@@ -186,12 +187,16 @@ public class IrminsulPlayer implements Player {
      * @return A map of properties that this player has
      */
     public @NotNull Map<Integer, Integer> getProperties() {
-        if (!this.getServer().getConfig().isSandbox()) {
-            return this.properties;
+
+        // Sandbox properties
+        if (this.getServer().getConfig().isSandbox()) {
+            Map<Integer, Integer> map = new HashMap<>(this.properties);
+            map.putAll(PlayerProperty.SANDBOX_PROPERTIES);
+            return map;
         }
-        Map<Integer, Integer> map = new HashMap<>(this.properties);
-        map.putAll(PlayerProperty.SANDBOX_PROPERTIES);
-        return map;
+
+        // Regular properties
+        return this.properties;
     }
 
     /**
@@ -229,14 +234,9 @@ public class IrminsulPlayer implements Player {
         this.getServer().getOnlinePlayers().put(this.uid, this);
 
         // If the player is joining for the first time
-        if (this.avatars.isEmpty()) {
-
-            // Give the player the traveler
-            this.avatars.add(new IrminsulAvatar(GameConstants.FEMALE_TRAVELER_AVATAR_ID, this));
-            this.teamManager.getActiveTeam().getAvatars().add(this.avatars.getFirst());
-
-            // Send the player the welcome mail
-            this.getServer().getMailManager().sendWelcomeMail(this);
+        boolean firstLogin = this.avatars.isEmpty();
+        if (firstLogin) {
+            this.firstLogin();
         }
 
         // Send player data
@@ -244,7 +244,7 @@ public class IrminsulPlayer implements Player {
         new PacketAvatarDataNotify(this.session).send();
 
         // Fire login event
-        this.session.getServer().getEventBus().postEvent(new PlayerLoginEvent(this));
+        this.session.getServer().getEventBus().postEvent(new PlayerLoginEvent(this, firstLogin));
 
         // Continue the login process
         this.sendToScene(GameConstants.OVERWORLD_SCENE, EnterReason.LOGIN);
@@ -253,6 +253,19 @@ public class IrminsulPlayer implements Player {
         // Done
         this.session.getServer().getLogger().info("{} ({}) joined the game from {}",
             this.profile.getNickname(), this.getUid(), this.getSession().getTunnel().getAddress().toString());
+    }
+
+    /**
+     * Called when the player logs in for the first time
+     */
+    private void firstLogin() {
+
+        // Give the player the traveler
+        this.avatars.add(new IrminsulAvatar(GameConstants.FEMALE_TRAVELER_AVATAR_ID, this));
+        this.teamManager.getActiveTeam().getAvatars().add(this.avatars.getFirst());
+
+        // Send the player the welcome mail
+        this.getServer().getMailManager().sendWelcomeMail(this);
     }
 
     /**
@@ -567,6 +580,10 @@ public class IrminsulPlayer implements Player {
      */
     @Override
     public void tick() {
+
+        // Create and fire event
+        PlayerTickEvent event = new PlayerTickEvent(this);
+        this.getServer().getEventBus().postEvent(event);
 
         // Update avatar stats
         this.teamManager.getActiveTeam().getAvatars().forEach(Avatar::updateStats);

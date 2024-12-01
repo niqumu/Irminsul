@@ -6,6 +6,10 @@ import io.irminsul.common.game.player.Player;
 import io.irminsul.common.util.i18n.I18n;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Comparator;
+import java.util.NoSuchElementException;
+import java.util.stream.Stream;
+
 @CommandInfo(name = "help", description = "game.command.help.description", usage = "game.command.help.usage")
 public class HelpCommand extends CommandHandler {
 
@@ -23,10 +27,13 @@ public class HelpCommand extends CommandHandler {
         if (args.length == 0) {
             StringBuilder message = new StringBuilder(I18n.translate("game.command.help.commands"));
 
-            for (CommandHandler handler : this.getCommandManager().getRegisteredCommands().values()) {
+            Stream<CommandHandler> commands = this.getCommandManager().getRegisteredCommands().values().stream();
+            commands = commands.sorted(Comparator.comparing(CommandHandler::getFullName));
+
+            for (CommandHandler handler : commands.toList()) {
                 message
                     .append("\n - ")
-                    .append(handler.getCommandInfo().name())
+                    .append(handler.getFullName())
                     .append(": <i><color=\"#aaaaaa\">")
                     .append(I18n.translate(handler.getCommandInfo().description()))
                     .append("</color></i>");
@@ -37,10 +44,34 @@ public class HelpCommand extends CommandHandler {
 
         // If a command was provided, list some information on it
         else {
+            String targetCommand = args[0];
+
+            // If the command doesn't have a namespace, resolve it and prepend it
+            if (!targetCommand.contains(":")) {
+                String resolvedCommand;
+                try {
+                    resolvedCommand = this.getCommandManager().resolveNamespace(targetCommand);
+                } catch (NoSuchElementException e) {
+
+                    // No such command exists (no matches found)
+                    this.sendError(sender, I18n.translate("game.command.help.not_found").replace("{}", targetCommand));
+                    return;
+                }
+
+                if (resolvedCommand == null) {
+                    // Multiple matches exist
+                    this.sendError(sender, I18n.translate("game.command.ambiguous").replace("{}", targetCommand));
+                    return;
+                }
+
+                targetCommand = resolvedCommand;
+            }
+
+            // Iterate over
             for (CommandHandler handler : this.getCommandManager().getRegisteredCommands().values()) {
                 CommandInfo info = handler.getCommandInfo();
 
-                if (info.name().equalsIgnoreCase(args[0])) {
+                if (handler.getFullName().equalsIgnoreCase(targetCommand)) {
                     String message = info.name();
 
                     // Description
@@ -65,8 +96,8 @@ public class HelpCommand extends CommandHandler {
                 }
             }
 
-            // We didn't find the plugin
-            this.sendError(sender, I18n.translate("game.command.help.not_found").replace("{}", args[0]));
+            // We didn't find the command
+            this.sendError(sender, I18n.translate("game.command.help.not_found").replace("{}", targetCommand));
         }
     }
 }

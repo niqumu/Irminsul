@@ -17,6 +17,7 @@ import io.irminsul.game.net.packet.PacketPullPrivateChatRsp;
 import io.irminsul.game.net.packet.PacketPullRecentChatRsp;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -82,7 +83,7 @@ public class IrminsulCommandManager implements CommandManager {
         command.setRegistrar(registrar);
 
         // Insert command into the commands map
-        this.registeredCommands.put(command.getCommandInfo().name(), command);
+        this.registeredCommands.put(command.getFullName(), command);
     }
 
     /**
@@ -111,6 +112,37 @@ public class IrminsulCommandManager implements CommandManager {
     @Override
     public void sendError(@NotNull Player player, @NotNull String message) {
         this.sendMessage(player, "<color=\"#f97575\">" + message + "</color>");
+    }
+
+    /**
+     * Attempts to resolve the namespace of a command
+     * @param command The namespace-less command to attempt to resolve
+     * @return The full name of the command, including the namespace, or {@code null} if multiple matches exist.
+     * @throws NoSuchElementException If no matches exist
+     */
+    @Override
+    public @Nullable String resolveNamespace(@NotNull String command) throws NoSuchElementException {
+        String fullCommand = null;
+
+        // Look over registered commands, looking for a match
+        for (String commandName : this.registeredCommands.keySet()) {
+            if (commandName.split(":")[1].equalsIgnoreCase(command)) {
+
+                // We already found a match, so we have a duplicate!
+                if (fullCommand != null) {
+                    return null;
+                }
+
+                // We found a match, but keep looking to find duplicates.
+                fullCommand = commandName;
+            }
+        }
+
+        if (fullCommand == null) {
+            throw new NoSuchElementException(); // the command doesn't exist
+        }
+
+        return fullCommand;
     }
 
     @Override
@@ -175,6 +207,27 @@ public class IrminsulCommandManager implements CommandManager {
             if (!this.config.isCommandsEnabled()) {
                 this.sendError(player, "<i>" + I18n.translate("game.command.disabled") + "</i>");
                 return;
+            }
+
+            // If the command doesn't have a namespace, resolve it and prepend it
+            if (!command.contains(":")) {
+                String resolvedCommand;
+                try {
+                    resolvedCommand = this.resolveNamespace(command);
+                } catch (NoSuchElementException e) {
+
+                    // No such command exists (no matches found)
+                    this.sendError(player, I18n.translate("game.command.unknown").replace("{}", command));
+                    return;
+                }
+
+                if (resolvedCommand == null) {
+                    // Multiple matches exist
+                    this.sendError(player, I18n.translate("game.command.ambiguous").replace("{}", command));
+                    return;
+                }
+
+                command = resolvedCommand;
             }
 
             // If we found the command in the command registry

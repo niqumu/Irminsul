@@ -5,8 +5,10 @@ import io.irminsul.common.game.ServerSystem;
 import io.irminsul.common.game.player.Player;
 import io.irminsul.common.proto.FriendBriefOuterClass.FriendBrief;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 public interface CommandManager extends ServerSystem {
 
@@ -40,6 +42,14 @@ public interface CommandManager extends ServerSystem {
      * @param message The message to send
      */
     void sendError(@NotNull Player player, @NotNull String message);
+
+    /**
+     * Attempts to resolve the namespace of a command
+     * @param command The namespace-less command to attempt to resolve
+     * @return The full name of the command, including the namespace, or {@code null} if multiple matches exist.
+     * @throws NoSuchElementException If no matches exist
+     */
+    @Nullable String resolveNamespace(@NotNull String command) throws NoSuchElementException;
 
     void handlePullRecentChatReq(@NotNull Player player);
 

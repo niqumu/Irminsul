@@ -73,4 +73,8 @@ public abstract class CommandHandler {
     public CommandInfo getCommandInfo() {
         return this.getClass().getAnnotation(CommandInfo.class);
     }
+
+    public @NotNull String getFullName() {
+        return "%s:%s".formatted(this.registrar, this.getCommandInfo().name());
+    }
 }

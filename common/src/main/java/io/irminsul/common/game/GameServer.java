@@ -11,6 +11,7 @@ import io.irminsul.common.game.player.Player;
 import io.irminsul.common.game.player.PlayerProfile;
 import io.irminsul.common.game.world.World;
 import io.irminsul.common.plugin.PluginInfo;
+import io.irminsul.common.plugin.PluginReloadChanges;
 import kcp.highway.Ukcp;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -74,6 +75,12 @@ public interface GameServer extends LoggerContainer {
      * Shuts down this game server, saving all player data and closing all connections
      */
     void shutdown();
+
+    /**
+     * Reloads this server and its plugins. This is relatively equivalent to restarting the server.
+     * @return The {@link PluginReloadChanges} that resulted from reloading the server
+     */
+    @NotNull PluginReloadChanges reload();
 
     /**
      * Attempt to fetch the social profile data of the player with the provided UID

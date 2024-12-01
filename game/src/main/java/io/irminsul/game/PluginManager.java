@@ -4,8 +4,10 @@ import io.irminsul.common.game.GameServer;
 import io.irminsul.common.game.ServerSystem;
 import io.irminsul.common.plugin.GamePlugin;
 import io.irminsul.common.plugin.PluginInfo;
+import io.irminsul.common.plugin.PluginReloadChanges;
 import io.irminsul.common.util.i18n.I18n;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -14,6 +16,8 @@ import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.Files;
+import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -73,8 +77,57 @@ public class PluginManager implements ServerSystem {
     public void disablePlugins() {
         for (GamePlugin plugin : this.loadedPlugins.values()) {
             plugin.onDisable();
+
+            // Remove any commands the plugin may have registered
+            this.server.getCommandManager().getRegisteredCommands().values()
+                .removeIf(c -> c.getRegistrar().equals(plugin.getPluginInfo().getId()));
+
             this.server.getLogger().info("Disabled plugin {}", plugin.getPluginInfo().toString());
         }
+    }
+
+    public @NonNull PluginReloadChanges reloadPlugins() {
+
+        // Save a list of old plugin hashes
+        Map<String, String> oldPluginHashes = new HashMap<>();
+        for (GamePlugin plugin : this.loadedPlugins.values()) {
+            oldPluginHashes.put(plugin.getPluginInfo().getId(), plugin.getPluginInfo().getHash());
+        }
+
+        // Disable and deregister all plugins
+        this.disablePlugins();
+        this.loadedPlugins.clear();
+
+        // Rescan and reload plugins
+        this.loadPlugins();
+        this.enablePlugins();
+
+        // Get a list of post-reload plugin hashes
+        Map<String, String> newPluginHashes = new HashMap<>();
+        for (GamePlugin plugin : this.loadedPlugins.values()) {
+            newPluginHashes.put(plugin.getPluginInfo().getId(), plugin.getPluginInfo().getHash());
+        }
+
+        // Check for differences
+        int added = 0, removed = 0, changed = 0;
+
+        for (Map.Entry<String, String> entry : oldPluginHashes.entrySet()) { // iterate over old plugins
+            if (!newPluginHashes.containsKey(entry.getKey())) {
+                removed++;
+            } else if (!newPluginHashes.get(entry.getKey()).equals(entry.getValue())) {
+                changed++;
+            }
+        }
+
+        for (Map.Entry<String, String> entry : newPluginHashes.entrySet()) { // iterate over new plugins
+            if (!oldPluginHashes.containsKey(entry.getKey())) {
+                added++;
+            }
+        }
+
+        // Done
+        this.getLogger().info(I18n.translate("game.plugin.hotswap_done"), added, removed, changed);
+        return new PluginReloadChanges(added, removed, changed);
     }
 
     /**
@@ -168,6 +221,15 @@ public class PluginManager implements ServerSystem {
             return; // Couldn't instantiate plugin, return early
         }
 
+        // Compute hash
+        String hash = "(unknown)";
+        try {
+            hash = new String(MessageDigest.getInstance("MD5").digest(Files.readAllBytes(file.toPath())));
+        } catch (Exception e) {
+            this.server.getLogger().error(I18n.translate("game.plugin.hashing"),
+                properties.getOrDefault("name", properties.get("id")), e);
+        }
+
         // Finish setting up the plugin
         pluginInstance.setServer(this.server);
         pluginInstance.setPluginInfo(new PluginInfo(
@@ -177,7 +239,8 @@ public class PluginManager implements ServerSystem {
             properties.getOrDefault("description", "(none)").toString(),
             properties.getOrDefault("author", "(unknown)").toString(),
             properties.getOrDefault("website", "(none)").toString(),
-            file.getName()
+            file.getName(),
+            hash
         ));
 
         // Done

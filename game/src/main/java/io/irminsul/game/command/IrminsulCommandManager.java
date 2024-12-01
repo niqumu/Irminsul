@@ -55,6 +55,7 @@ public class IrminsulCommandManager implements CommandManager {
         this.registerIrminsulCommand(new HelpCommand());
         this.registerIrminsulCommand(new ItemCommand()); // todo: broken!
         this.registerIrminsulCommand(new PluginsCommand());
+        this.registerIrminsulCommand(new ReloadCommand());
         this.registerIrminsulCommand(new SceneCommand());
     }
 

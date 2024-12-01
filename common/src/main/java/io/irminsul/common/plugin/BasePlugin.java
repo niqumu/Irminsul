@@ -32,4 +32,12 @@ abstract class BasePlugin {
      * Called by the plugin manager when this plugin is disabled by the server
      */
     public abstract void onDisable();
+
+    @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof BasePlugin plugin)) {
+            return false;
+        }
+        return this.pluginInfo.equals(plugin.pluginInfo);
+    }
 }

@@ -44,8 +44,21 @@ public class PluginInfo {
      */
     private final @NonNull String filename;
 
+    /**
+     * MD5 hash of the plugin
+     */
+    private final @NonNull String hash;
+
     @Override
     public String toString() {
         return "\"%s\" by %s (version %s)".formatted(this.name, this.author, this.version);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof PluginInfo info)) {
+            return false;
+        }
+        return this.hash.equals(info.hash);
     }
 }

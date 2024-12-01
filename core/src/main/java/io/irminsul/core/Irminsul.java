@@ -94,8 +94,7 @@ public class Irminsul {
         // Ignite the configured game servers
         for (int i = 0; i < this.gameServerConfigs.size(); i++) {
             GameServerConfig gameServerConfig = this.gameServerConfigs.get(i);
-            this.gameServers.add(new IrminsulGameServer(gameServerConfig,
-                "Game Server" + (this.gameServerConfigs.size() > 1 ? " #" + (i + 1) : "")));
+            this.gameServers.add(new IrminsulGameServer(gameServerConfig, i));
         }
         if (this.gameServers.isEmpty()) {
             this.logger.info(I18n.translate("core.info.game_skipped"));

@@ -1,5 +1,8 @@
 package io.irminsul.game;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import io.irminsul.common.config.ConfigLoader;
 import io.irminsul.common.config.GameServerConfig;
 import io.irminsul.common.game.GameServer;
 import io.irminsul.common.game.command.CommandManager;
@@ -12,6 +15,7 @@ import io.irminsul.common.game.player.PlayerProfile;
 import io.irminsul.common.game.world.World;
 import io.irminsul.common.plugin.GamePlugin;
 import io.irminsul.common.plugin.PluginInfo;
+import io.irminsul.common.plugin.PluginReloadChanges;
 import io.irminsul.common.util.CryptoUtil;
 import io.irminsul.common.util.i18n.I18n;
 import io.irminsul.game.command.IrminsulCommandManager;
@@ -29,12 +33,15 @@ import kcp.highway.KcpServer;
 import kcp.highway.Ukcp;
 import lombok.Getter;
 import lombok.NonNull;
+import org.hjson.JsonValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.net.InetSocketAddress;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -50,9 +57,14 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
     private final Logger logger;
 
     /**
+     * The ID of this game server, used in logging and configuration
+     */
+    private final int id;
+
+    /**
      * This GameServer's {@link GameServerConfig}
      */
-    private final GameServerConfig config;
+    private GameServerConfig config;
 
     /**
      * This server's {@link EventBus}
@@ -102,13 +114,14 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
     /**
      * Create a new game server using the provided configuration
      * @param config The {@link GameServerConfig} to use
-     * @param name The display name of this game server, used in logging
+     * @param serverId The ID of this game server, used in logging and configuration
      */
-    public IrminsulGameServer(@NonNull GameServerConfig config, @NonNull String name) {
+    public IrminsulGameServer(@NonNull GameServerConfig config, int serverId) {
         this.config = config;
+        this.id = serverId;
         this.port = this.config.getPort();
 
-        this.logger = LoggerFactory.getLogger(name);
+        this.logger = LoggerFactory.getLogger("Game Server #" + (serverId + 1));
         this.logger.info(I18n.translate("game.info.start"));
 
         // Create managers
@@ -161,6 +174,24 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
 
         // Stop KCP server
         this.stop();
+    }
+
+    /**
+     * Reloads this server and its plugins. This is relatively equivalent to restarting the server.
+     * @return The {@link PluginReloadChanges} that resulted from reloading the server
+     */
+    @Override
+    public @NotNull PluginReloadChanges reload() {
+        this.logger.info(I18n.translate("game.info.reload"));
+        this.logger.warn("================================================================");
+        this.logger.warn(I18n.translate("game.warn.reload"));
+        this.logger.warn("================================================================");
+
+        // Re-read server configuration
+        this.config = ConfigLoader.readGameServerConfig(this.id, this.logger, this.config.getGlobalConfig());
+
+        // Reload plugins
+        return this.pluginManager.reloadPlugins();
     }
 
     /**

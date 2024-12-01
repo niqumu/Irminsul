@@ -1,13 +1,12 @@
 package io.irminsul.game.item;
 
+import io.irminsul.common.game.GameServer;
 import io.irminsul.common.game.data.weapon.WeaponData;
 import io.irminsul.common.game.database.StateContainer;
 import io.irminsul.common.game.item.Weapon;
 import io.irminsul.common.game.player.Player;
 import io.irminsul.common.game.property.EntityIdType;
 import io.irminsul.common.proto.*;
-import io.irminsul.game.data.DataContainer;
-import io.irminsul.game.database.state.ItemState;
 import io.irminsul.game.database.state.WeaponState;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
@@ -67,9 +66,10 @@ public class IrminsulWeapon implements Weapon {
 
     /**
      * Loads an existing weapon from an exported {@link WeaponState}
+     * @param gameServer The {@link GameServer} this weapon is to be created under
      * @param state The state to load
      */
-    public IrminsulWeapon(@NotNull WeaponState state) {
+    public IrminsulWeapon(@NotNull GameServer gameServer, @NotNull WeaponState state) {
         this.itemId = state.getItemId();
         this.persistentId = state.getPersistentId();
         this.locked = state.isLocked();
@@ -78,7 +78,7 @@ public class IrminsulWeapon implements Weapon {
         this.promoteLevel = state.getPromoteLevel();
 
         // Load weapon data
-        this.weaponData = DataContainer.getOrLoadWeaponData(this.itemId);
+        this.weaponData = gameServer.getDataContainer().getOrLoadWeaponData(this.itemId);
 
         // todo assign guid and entity id (or maybe not?)
     }
@@ -98,7 +98,7 @@ public class IrminsulWeapon implements Weapon {
         this.entityId = owner.getWorld().getNextEntityId(EntityIdType.WEAPON);
 
         // Load weapon data
-        this.weaponData = DataContainer.getOrLoadWeaponData(this.itemId);
+        this.weaponData = owner.getServer().getDataContainer().getOrLoadWeaponData(this.itemId);
     }
 
     /**

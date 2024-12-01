@@ -9,7 +9,7 @@ import io.irminsul.common.game.data.scene.TransPoint;
 import io.irminsul.common.game.player.Player;
 import io.irminsul.common.game.player.PlayerProgress;
 import io.irminsul.game.data.ActionReason;
-import io.irminsul.game.data.DataContainer;
+import io.irminsul.game.data.IrminsulDataContainer;
 import io.irminsul.common.game.event.PlayerLoginEvent;
 import io.irminsul.game.net.packet.PacketOpenStateChangeNotify;
 import io.irminsul.game.net.packet.PacketOpenStateUpdateNotify;
@@ -53,7 +53,7 @@ public class IrminsulPlayerProgress implements PlayerProgress {
         this.player = player;
 
         // Load default open states
-        DataContainer.getAllOpenStateData().forEach(state -> this.openStates.put(state, state.isDefaultState()));
+        player.getServer().getDataContainer().getAllOpenStateData().forEach(state -> this.openStates.put(state, state.isDefaultState()));
 
         // Subscribe to events
         this.player.getServer().getEventBus().registerSubscriber(this);
@@ -80,7 +80,7 @@ public class IrminsulPlayerProgress implements PlayerProgress {
             return this.openStates;
         }
         Map<OpenStateData, Boolean> map = new HashMap<>(this.openStates);
-        DataContainer.getAllOpenStateData().forEach(state -> map.put(state, true)); // TODO one of them throws an npe!
+        this.player.getServer().getDataContainer().getAllOpenStateData().forEach(state -> map.put(state, true)); // TODO one of them throws an npe!
         return map;
     }
 

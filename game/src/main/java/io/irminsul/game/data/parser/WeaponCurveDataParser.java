@@ -1,27 +1,29 @@
 package io.irminsul.game.data.parser;
 
 import com.google.gson.*;
-import lombok.experimental.UtilityClass;
+import io.irminsul.common.game.data.DataContainer;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 
-@UtilityClass
 public class WeaponCurveDataParser {
 
-    private final Logger logger = LoggerFactory.getLogger("Weapon Curve Parser");
-
-    private final Gson gson = new Gson();
+    /**
+     * The {@link DataContainer} this parser belongs to
+     */
+    private final DataContainer parentContainer;
 
     private final Map<Integer, JsonObject> data = new HashMap<>();
-    static {
+
+    public WeaponCurveDataParser(@NotNull DataContainer parentContainer) {
+        this.parentContainer = parentContainer;
+
         try {
-            File excelFile = new File("data/client/ExcelBinOutput/WeaponCurveExcelConfigData.json");
+            File excelFile = new File(this.parentContainer.getDataDirectory(),
+                "client/ExcelBinOutput/WeaponCurveExcelConfigData.json");
             JsonArray curveExcel = JsonParser.parseString(Files.readString(excelFile.toPath())).getAsJsonArray();
 
             for (JsonElement element : curveExcel) {
@@ -30,9 +32,9 @@ public class WeaponCurveDataParser {
                 }
             }
 
-            logger.debug("Successfully loaded weapon curve excel!");
+            this.parentContainer.getLogger().debug("Successfully loaded weapon curve excel!");
         } catch (Exception e) {
-            logger.warn("Fatal: Failed to load weapon curve excel: {}", e.toString());
+            this.parentContainer.getLogger().error("Fatal: Failed to load weapon curve excel: {}", e.toString());
             System.exit(1);
         }
     }
@@ -55,8 +57,8 @@ public class WeaponCurveDataParser {
 
         // Sanity check
         if (levelData == null) {
-            logger.warn("Skipping parseWeaponCurve request for {} as the excel is missing data for the provided " +
-                "level of {}", curveType, level);
+            this.parentContainer.getLogger().warn("Skipping parseWeaponCurve request for {} as the excel is " +
+                "missing data for the provided level of {}", curveType, level);
             return 1; // fallback
         }
 

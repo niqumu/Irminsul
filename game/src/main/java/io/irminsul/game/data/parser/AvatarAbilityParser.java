@@ -4,27 +4,33 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import lombok.experimental.UtilityClass;
+import io.irminsul.common.game.data.DataContainer;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.nio.file.Files;
 import java.util.*;
 
-@UtilityClass
 public class AvatarAbilityParser {
 
-    private final Logger logger = LoggerFactory.getLogger("Avatar Ability Parser");
+    /**
+     * The {@link DataContainer} this parser belongs to
+     */
+    private final DataContainer parentContainer;
 
     private final Map<String, JsonArray> data = new HashMap<>();
-    static {
+
+
+    public AvatarAbilityParser(@NotNull DataContainer parentContainer) {
+        this.parentContainer = parentContainer;
+
         String name = "";
         try {
-            File excelDirectory = new File("data/client/BinOutput/Ability/Temp/AvatarAbilities");
+            File excelDirectory = new File(this.parentContainer.getDataDirectory(),
+                "client/BinOutput/Ability/Temp/AvatarAbilities");
+
             if (!excelDirectory.exists() || !excelDirectory.isDirectory()) {
-                logger.error("Fatal: Missing AvatarAbilities directory!");
+                this.parentContainer.getLogger().error("Fatal: Missing AvatarAbilities directory!");
                 System.exit(1);
             }
 
@@ -34,9 +40,9 @@ public class AvatarAbilityParser {
                 data.put(name, JsonParser.parseString(Files.readString(file.toPath())).getAsJsonArray());
             }
 
-            logger.debug("Successfully loaded {} avatar ability excels!", data.size());
+            this.parentContainer.getLogger().debug("Successfully loaded {} avatar ability excels!", data.size());
         } catch (Exception e) {
-            logger.error("Fatal: Failed to load {}'s avatar ability excel: {}", name, e.toString());
+            this.parentContainer.getLogger().error("Fatal: Failed to load {}'s avatar ability excel: {}", name, e.toString());
             System.exit(1);
         }
     }
@@ -50,7 +56,7 @@ public class AvatarAbilityParser {
 
         // Ensure that we have data on this avatar
         if (!data.containsKey(avatarName)) {
-            logger.warn("Skipping parseAvatarAbilities request for {} as the excels are missing this avatar!", avatarName);
+            this.parentContainer.getLogger().warn("Skipping parseAvatarAbilities request for {} as the excels are missing this avatar!", avatarName);
             return List.of(); // fallback
         }
 

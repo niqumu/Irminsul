@@ -40,7 +40,7 @@ public class Irminsul {
     /**
      * The configuration file version this version of Irminsul understands and uses
      */
-    private static final int CONFIGURATION_VERSION = 4;
+    private static final int CONFIGURATION_VERSION = 5;
 
     /**
      * SLF4J logger associated with this Irminsul instance
@@ -80,9 +80,6 @@ public class Irminsul {
         // Parse the configuration file
         this.loadAndVerifyConfig();
         this.logger.info(I18n.translate("core.info.game_version"), this.config.getTargetVersion());
-
-        // Check for unused plugins
-        this.checkForUnusedPlugins();
 
         // Ignite the HTTP server if enabled
         if (this.httpServerConfig.isEnabled()) {
@@ -182,12 +179,18 @@ public class Irminsul {
 
             // Read HTTP server config
             JsonObject httpObject = jsonContents.getAsJsonObject("http");
+
+            // Create run directory if needed
+            File httpRunDirectory = new File(httpObject.get("run_directory").getAsString());
+            httpRunDirectory.mkdirs();
+
             this.httpServerConfig = new HttpServerConfig(
                 this.config,
                 httpObject.get("enabled").getAsBoolean(),
                 httpObject.get("port").getAsInt(),
                 httpObject.get("ssl").getAsBoolean(),
-                httpObject.get("client_debugging").getAsBoolean()
+                httpObject.get("client_debugging").getAsBoolean(),
+                httpRunDirectory
             );
             for (JsonElement element : httpObject.getAsJsonArray("targets")) {
                 JsonObject target = element.getAsJsonObject();
@@ -206,10 +209,15 @@ public class Irminsul {
                 JsonObject serverAccount = server.getAsJsonObject("server_account");
                 JsonObject welcomeMail = server.getAsJsonObject("welcome_mail");
 
+                // Create run directory if needed
+                File gameRunDirectory = new File(server.get("run_directory").getAsString());
+                gameRunDirectory.mkdirs();
+
                 this.gameServerConfigs.add(new GameServerConfig(
                     this.config,
                     server.get("port").getAsInt(),
                     server.get("sandbox").getAsBoolean(),
+                    gameRunDirectory,
                     new ServerAccountConfig(
                         serverAccount.get("enabled").getAsBoolean(),
                         serverAccount.get("account_nickname").getAsString(),
@@ -223,11 +231,7 @@ public class Irminsul {
                         welcomeMail.get("file").getAsString(),
                         welcomeMail.get("subject").getAsString(),
                         welcomeMail.get("sender").getAsString()
-                    ),
-                    server.get("plugins").getAsJsonArray().asList()
-                        .stream()
-                        .map(JsonElement::getAsString)
-                        .collect(Collectors.toList())
+                    )
                 ));
             }
 
@@ -241,42 +245,6 @@ public class Irminsul {
         if (this.config.getTargetVersion().equals("not set")) {
             this.logger.error(I18n.translate("core.error.game_version_missing"));
             this.shutdown();
-        }
-    }
-
-    /**
-     * Looks at game server plugins in the /plugins directory and raises a warning if any are unused.
-     * This is necessary since people used to things like Minecraft might add plugins to their plugins directory and
-     * forget to add them to the game server's configuration file
-     */
-    private void checkForUnusedPlugins() {
-
-        // List of plugins used by game servers
-        List<String> usedPlugins = new ArrayList<>();
-
-        // Iterate over game server configs to build a list of used plugins
-        for (GameServerConfig gameServerConfig : this.gameServerConfigs) {
-            for (String plugin : gameServerConfig.getPlugins()) {
-                if (!usedPlugins.contains(plugin)) {
-                    usedPlugins.add(plugin);
-                }
-            }
-        }
-
-        File pluginsDirectory = new File("plugins");
-
-        // Create the plugins directory if it doesn't exist
-        if (pluginsDirectory.mkdirs()) {
-            this.logger.debug("Created plugins folder");
-        }
-
-        // Iterate over plugins in the directory and make sure they're used
-        for (File plugin : Objects.requireNonNull(pluginsDirectory.listFiles())) {
-            String pluginName = plugin.getName().replace(".jar", "");
-
-            if (!usedPlugins.contains(pluginName)) {
-                this.logger.warn(I18n.translate("core.warn.unused_plugin"), pluginName);
-            }
         }
     }
 }

@@ -4,12 +4,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import io.irminsul.common.game.data.DataContainer;
 import io.irminsul.common.game.data.scene.*;
 import io.irminsul.common.game.world.Position;
-import lombok.experimental.UtilityClass;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -17,28 +16,31 @@ import java.util.List;
 import java.util.Map;
 
 // todo ensure the resources exist ahead of time so the server crashes at startup rather than randomly
-@UtilityClass
+@RequiredArgsConstructor
 public class SceneDataParser {
 
-    private final Logger logger = LoggerFactory.getLogger("Scene Data Parser");
-
     private final Gson gson = new Gson();
+
+    /**
+     * The {@link DataContainer} this parser belongs to
+     */
+    private final DataContainer parentContainer;
 
     public @NotNull SceneData parseSceneData(int sceneId) {
         SceneData sceneData = new SceneData();
 
         // Scene points
-        File scenePoints = new File("data/lua/scene/" + sceneId + "/scene" + sceneId + "_point.json");
+        File scenePoints = new File(this.parentContainer.getDataDirectory(), "lua/scene/" + sceneId + "/scene" + sceneId + "_point.json");
         if (scenePoints.exists()) {
             try {
-                parseScenePoints(sceneData, scenePoints);
-                logger.info("Parsed and loaded scene points from {}", scenePoints.getName());
+                this.parseScenePoints(sceneData, scenePoints);
+                this.parentContainer.getLogger().debug("Parsed and loaded scene points from {}", scenePoints.getName());
             } catch (Exception e) {
-                logger.error("Fatal: Failed to load scene points file for scene {}: {}", sceneId, e.toString());
+                this.parentContainer.getLogger().error("Fatal: Failed to load scene points file for scene {}: {}", sceneId, e.toString());
                 System.exit(1);
             }
         } else {
-            logger.error("Fatal: Missing scene points file for for scene {}!", sceneId);
+            this.parentContainer.getLogger().error("Fatal: Missing scene points file for for scene {}!", sceneId);
             System.exit(1);
         }
 
@@ -59,9 +61,9 @@ public class SceneDataParser {
             }
 
             switch (entryObject.get("$type").getAsString()) {
-                case "SceneTransPoint" -> parseTransPoint(sceneData, pointId, entryObject);
-                case "DungeonEntry" -> parseDungeonEntry(sceneData, pointId, entryObject);
-                case "DungeonExit" -> parseDungeonExit(sceneData, pointId, entryObject);
+                case "SceneTransPoint" -> this.parseTransPoint(sceneData, pointId, entryObject);
+                case "DungeonEntry" -> this.parseDungeonEntry(sceneData, pointId, entryObject);
+                case "DungeonExit" -> this.parseDungeonExit(sceneData, pointId, entryObject);
             }
         }
     }

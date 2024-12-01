@@ -1,5 +1,6 @@
 package io.irminsul.game.world;
 
+import io.irminsul.common.game.data.DataContainer;
 import io.irminsul.common.game.world.Position;
 import io.irminsul.common.game.world.Scene;
 import io.irminsul.common.game.world.SceneScriptManager;
@@ -18,8 +19,6 @@ import java.util.HashMap;
 
 @Getter
 public class IrminsulSceneScriptManager implements SceneScriptManager {
-
-    private final Logger logger = LoggerFactory.getLogger("Scene Script Manager");
 
     /**
      * The {@link Scene} that this script manager belongs to
@@ -51,9 +50,10 @@ public class IrminsulSceneScriptManager implements SceneScriptManager {
      */
     private final HashMap<Integer, Group> loadedGroups = new HashMap<>();
 
-    public IrminsulSceneScriptManager(@NotNull Scene scene) {
+    public IrminsulSceneScriptManager(@NotNull Scene scene, @NotNull DataContainer dataContainer) {
         this.scene = scene;
-        this.scriptPathBase = "data/lua/scene/" + scene.getId() + "/scene" + scene.getId();
+        this.scriptPathBase = dataContainer.getDataDirectory().getAbsolutePath() +
+            "/lua/scene/" + scene.getId() + "/scene" + scene.getId();
 
         // Load and call main script
         this.mainScript = this.globals.loadfile(this.scriptPathBase + ".lua");
@@ -67,7 +67,7 @@ public class IrminsulSceneScriptManager implements SceneScriptManager {
 //        }
 
         // Done
-        this.logger.info("Finished loading scripts for scene {} - loaded {} blocks with {} groups in total!",
+        dataContainer.getLogger().info("Finished loading scripts for scene {} - loaded {} blocks with {} groups in total!",
             this.scene.getId(), this.loadedBlocks.size(), this.loadedGroups.size());
     }
 

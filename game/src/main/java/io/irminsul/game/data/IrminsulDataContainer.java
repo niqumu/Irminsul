@@ -1,5 +1,7 @@
 package io.irminsul.game.data;
 
+import io.irminsul.common.game.GameServer;
+import io.irminsul.common.game.data.DataContainer;
 import io.irminsul.common.game.data.avatar.AvatarData;
 import io.irminsul.common.game.data.avatar.AvatarSkillDepotData;
 import io.irminsul.common.game.data.dungeon.DungeonData;
@@ -8,11 +10,10 @@ import io.irminsul.common.game.data.weapon.WeaponData;
 import io.irminsul.common.game.data.scene.SceneData;
 import io.irminsul.common.game.data.weapon.WeaponPromotionData;
 import io.irminsul.game.data.parser.*;
-import lombok.experimental.UtilityClass;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,21 +22,35 @@ import java.util.Map;
 /**
  * Container class for game data.
  * <p>
- * This class is responsible for storing and loading game data. This class is entirely static, and contains several
- * maps for accessing cached data by ID, or some other key that is relevant for the data type. Data is accessed via
- * {@code getOrLoad___} methods that cache the requested data if not already cached.
+ * This class is responsible for storing and loading game data. This class contains several maps for accessing cached
+ * data by ID, or some other key that is relevant for the data type. Data is accessed via {@code getOrLoad___} methods
+ * that cache the requested data if not already cached.
  * <p>
  * This class utilizes the parsers within the {@code io.irminsul.game.data.parser} package to parse data from the raw
  * files into high level forms.
  */
-@UtilityClass
-public class DataContainer {
+public class IrminsulDataContainer implements DataContainer {
 
-    private final Logger logger = LoggerFactory.getLogger("Data Container");
+    /**
+     * The server that this data container belongs to
+     */
+    @Getter
+    private final GameServer server;
+
+    /**
+     * The directory this data container is pulling data from, as a {@link File}
+     */
+    @Getter
+    private final File dataDirectory;
 
     // ================================================================ //
     //                              Scenes                              //
     // ================================================================ //
+
+    /**
+     * Parsers
+     */
+    private final SceneDataParser sceneDataParser;
 
     /**
      * A map of loaded scenes and their {@link SceneData}, keyed by scene IDs
@@ -45,6 +60,13 @@ public class DataContainer {
     // ================================================================ //
     //                              Avatars                             //
     // ================================================================ //
+
+    /**
+     * Parsers
+     */
+    private final AvatarAbilityParser avatarAbilityParser;
+    private final AvatarDataParser avatarDataParser;
+    private final AvatarSkillDepotDataParser avatarSkillDepotDataParser;
 
     /**
      * A map of loaded avatars and their {@link AvatarData}, keyed by avatar IDs
@@ -64,6 +86,13 @@ public class DataContainer {
     // ================================================================ //
     //                             Weapons                              //
     // ================================================================ //
+
+    /**
+     * Parsers
+     */
+    private final WeaponDataParser weaponDataParser;
+    private final WeaponCurveDataParser weaponCurveDataParser;
+    private final WeaponPromotionDataParser weaponPromotionDataParser;
 
     /**
      * A map of loaded weapons and their {@link WeaponData}, keyed by weapon IDs
@@ -86,6 +115,11 @@ public class DataContainer {
     // ================================================================ //
 
     /**
+     * Parsers
+     */
+    private final DungeonDataParser dungeonDataParser;
+
+    /**
      * A map of loaded dungeons (domains) and their {@link DungeonData}, keyed by dungeon IDs
      */
     private final Map<Integer, DungeonData> loadedDungeons = new HashMap<>();
@@ -95,11 +129,40 @@ public class DataContainer {
     // ================================================================ //
 
     /**
+     * Parsers
+     */
+    private final OpenStateDataParser openStateDataParser;
+
+    /**
      * A map of loaded open states and their {@link OpenStateData}
      */
     private final Map<Integer, OpenStateData> loadedOpenStates = new HashMap<>();
 
     // ================================================================ //
+
+    public IrminsulDataContainer(@NotNull GameServer server) {
+        this.server = server;
+        this.dataDirectory = new File(this.server.getConfig().getRunDirectory(), "data");
+
+        // Scene parsers
+        this.sceneDataParser = new SceneDataParser(this);
+
+        // Avatar parsers
+        this.avatarAbilityParser = new AvatarAbilityParser(this);
+        this.avatarDataParser = new AvatarDataParser(this);
+        this.avatarSkillDepotDataParser = new AvatarSkillDepotDataParser(this);
+
+        // Weapon parsers
+        this.weaponDataParser = new WeaponDataParser(this);
+        this.weaponCurveDataParser = new WeaponCurveDataParser(this);
+        this.weaponPromotionDataParser = new WeaponPromotionDataParser(this);
+
+        // Dungeon parsers
+        this.dungeonDataParser = new DungeonDataParser(this);
+
+        // Misc parsers
+        this.openStateDataParser = new OpenStateDataParser(this);
+    }
 
     /**
      * Gets a scene's {@link SceneData} by scene ID, attempting to load the scene data if not already loaded
@@ -114,12 +177,12 @@ public class DataContainer {
     }
 
     private @NotNull SceneData loadSceneData(int sceneId) {
-        logger.debug("Loading scene {}", sceneId);
+        this.getLogger().debug("Loading scene {}", sceneId);
 
-        SceneData sceneData = SceneDataParser.parseSceneData(sceneId);
+        SceneData sceneData = this.sceneDataParser.parseSceneData(sceneId);
         loadedScenes.put(sceneId, sceneData);
 
-        logger.debug("Finished loading scene {}!", sceneId);
+        this.getLogger().debug("Finished loading scene {}!", sceneId);
         return sceneData;
     }
 
@@ -136,12 +199,12 @@ public class DataContainer {
     }
 
     private @NotNull AvatarData loadAvatarData(int avatarId) {
-        logger.debug("Loading avatar {}", avatarId);
+        this.getLogger().debug("Loading avatar {}", avatarId);
 
-        AvatarData avatarData = AvatarDataParser.parseAvatarData(avatarId);
+        AvatarData avatarData = this.avatarDataParser.parseAvatarData(avatarId);
         loadedAvatars.put(avatarId, avatarData);
 
-        logger.debug("Finished loading avatar {}!", avatarId);
+        this.getLogger().debug("Finished loading avatar {}!", avatarId);
         return avatarData;
     }
 
@@ -159,12 +222,12 @@ public class DataContainer {
     }
 
     private @NotNull AvatarSkillDepotData loadSkillDepotData(int avatarId) {
-        logger.debug("Loading skill depot {}", avatarId);
+        this.getLogger().debug("Loading skill depot {}", avatarId);
 
-        AvatarSkillDepotData skillDepotData = AvatarSkillDepotDataParser.parseSkillDepotData(avatarId);
+        AvatarSkillDepotData skillDepotData = this.avatarSkillDepotDataParser.parseSkillDepotData(avatarId);
         loadedSkillDepots.put(avatarId, skillDepotData);
 
-        logger.debug("Finished loading skill depot {}!", avatarId);
+        this.getLogger().debug("Finished loading skill depot {}!", avatarId);
         return skillDepotData;
     }
 
@@ -182,12 +245,12 @@ public class DataContainer {
     }
 
     private @NotNull List<String> loadAbilities(String avatarName) {
-        logger.debug("Loading {}'s abilities", avatarName);
+        this.getLogger().debug("Loading {}'s abilities", avatarName);
 
-        List<String> abilities = AvatarAbilityParser.parseAvatarAbilities(avatarName);
+        List<String> abilities = this.avatarAbilityParser.parseAvatarAbilities(avatarName);
         loadedAbilities.put(avatarName, abilities);
 
-        logger.debug("Finished loading {}'s abilities!", avatarName);
+        this.getLogger().debug("Finished loading {}'s abilities!", avatarName);
         return abilities;
     }
 
@@ -204,12 +267,12 @@ public class DataContainer {
     }
 
     private @NotNull WeaponData loadWeaponData(int weaponId) {
-        logger.debug("Loading weapon {}", weaponId);
+        this.getLogger().debug("Loading weapon {}", weaponId);
 
-        WeaponData weaponData = WeaponDataParser.parseWeaponData(weaponId);
+        WeaponData weaponData = this.weaponDataParser.parseWeaponData(weaponId);
         loadedWeapons.put(weaponId, weaponData);
 
-        logger.debug("Finished loading weapon {}!", weaponId);
+        this.getLogger().debug("Finished loading weapon {}!", weaponId);
         return weaponData;
     }
 
@@ -230,12 +293,12 @@ public class DataContainer {
     }
 
     private @NotNull Map<Integer, Float> loadWeaponCurve(String curveType) {
-        logger.debug("Loading weapon stat curve {}", curveType);
+        this.getLogger().debug("Loading weapon stat curve {}", curveType);
 
-        Map<Integer, Float> curve = WeaponCurveDataParser.parseWeaponCurve(curveType);
+        Map<Integer, Float> curve = this.weaponCurveDataParser.parseWeaponCurve(curveType);
         loadedWeaponCurves.put(curveType, curve);
 
-        logger.debug("Finished loading weapon stat curve {}!", curveType);
+        this.getLogger().debug("Finished loading weapon stat curve {}!", curveType);
         return curve;
     }
 
@@ -253,12 +316,12 @@ public class DataContainer {
     }
 
     private @NotNull Map<Integer, WeaponPromotionData> loadWeaponPromotions(int weaponId) {
-        logger.debug("Loading weapon promotions for {}", weaponId);
+        this.getLogger().debug("Loading weapon promotions for {}", weaponId);
 
-        Map<Integer, WeaponPromotionData> promotionData = WeaponPromotionDataParser.parsePromotionData(weaponId);
+        Map<Integer, WeaponPromotionData> promotionData = this.weaponPromotionDataParser.parsePromotionData(weaponId);
         loadedWeaponPromotions.put(weaponId, promotionData);
 
-        logger.debug("Finished loaded weapon promotions for {}!", weaponId);
+        this.getLogger().debug("Finished loaded weapon promotions for {}!", weaponId);
         return promotionData;
     }
 
@@ -275,12 +338,12 @@ public class DataContainer {
     }
 
     private @NotNull DungeonData loadDungeonData(int dungeonId) {
-        logger.debug("Loading dungeon {}", dungeonId);
+        this.getLogger().debug("Loading dungeon {}", dungeonId);
 
-        DungeonData dungeonData = DungeonDataParser.parseDungeonData(dungeonId);
+        DungeonData dungeonData = this.dungeonDataParser.parseDungeonData(dungeonId);
         loadedDungeons.put(dungeonId, dungeonData);
 
-        logger.debug("Finished loading dungeon {}!", dungeonId);
+        this.getLogger().debug("Finished loading dungeon {}!", dungeonId);
         return dungeonData;
     }
 
@@ -308,6 +371,6 @@ public class DataContainer {
     }
 
     private void loadOpenStates() {
-        OpenStateDataParser.loadOpenStates().forEach(state -> loadedOpenStates.put(state.getId(), state));
+        this.openStateDataParser.loadOpenStates().forEach(state -> loadedOpenStates.put(state.getId(), state));
     }
 }

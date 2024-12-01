@@ -9,11 +9,9 @@ import io.irminsul.common.game.world.Teleport;
 import io.irminsul.common.proto.EnterTypeOuterClass;
 import io.irminsul.common.util.Pair;
 import io.irminsul.game.GameConstants;
-import io.irminsul.game.data.DataContainer;
+import io.irminsul.game.data.IrminsulDataContainer;
 import io.irminsul.game.data.EnterReason;
 import lombok.Data;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +37,7 @@ public class IrminsulDungeonManager implements DungeonManager {
      */
     @Override
     public void enterDungeon(Player player, int point, int dungeon) {
-        int sceneId = DataContainer.getOrLoadDungeonData(dungeon).getSceneId();
+        int sceneId = player.getServer().getDataContainer().getOrLoadDungeonData(dungeon).getSceneId();
         Scene scene = player.getWorld().getOrCreateScene(sceneId);
 
         // Sanity check

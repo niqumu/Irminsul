@@ -1,11 +1,9 @@
 package io.irminsul.game.data.parser;
 
 import com.google.gson.*;
+import io.irminsul.common.game.data.DataContainer;
 import io.irminsul.common.game.data.avatar.AvatarSkillDepotData;
-import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -14,17 +12,23 @@ import java.util.List;
 import java.util.Map;
 
 // todo ensure the resources exist ahead of time so the server crashes at startup rather than randomly
-@UtilityClass
 public class AvatarSkillDepotDataParser {
-
-    private final Logger logger = LoggerFactory.getLogger("Avatar Skill Depot Data Parser");
 
     private final Gson gson = new Gson();
 
+    /**
+     * The {@link DataContainer} this parser belongs to
+     */
+    private final DataContainer parentContainer;
+
     private final Map<Integer, JsonObject> data = new HashMap<>();
-    static {
+
+    public AvatarSkillDepotDataParser(@NotNull DataContainer parentContainer) {
+        this.parentContainer = parentContainer;
+
         try {
-            File excelFile = new File("data/client/ExcelBinOutput/AvatarSkillDepotExcelConfigData.json");
+            File excelFile = new File(this.parentContainer.getDataDirectory(),
+                "client/ExcelBinOutput/AvatarSkillDepotExcelConfigData.json");
             JsonArray avatarExcel = JsonParser.parseString(Files.readString(excelFile.toPath())).getAsJsonArray();
 
             for (JsonElement element : avatarExcel) {
@@ -33,9 +37,9 @@ public class AvatarSkillDepotDataParser {
                 }
             }
 
-            logger.debug("Successfully loaded avatar skill depot config excel!");
+            this.parentContainer.getLogger().debug("Successfully loaded avatar skill depot config excel!");
         } catch (Exception e) {
-            logger.warn("Fatal: Failed to load avatar skill depot config excel: {}", e.toString());
+            this.parentContainer.getLogger().warn("Fatal: Failed to load avatar skill depot config excel: {}", e.toString());
             System.exit(1);
         }
     }
@@ -46,7 +50,7 @@ public class AvatarSkillDepotDataParser {
 
         // Ensure that we have data on this skill depot
         if (skillDepotData == null) {
-            logger.warn("Skipping parseSkillDepotData request for {} as the excel is missing this ID!", skillDepotId);
+            this.parentContainer.getLogger().warn("Skipping parseSkillDepotData request for {} as the excel is missing this ID!", skillDepotId);
             return new AvatarSkillDepotData(); // fallback
         }
 

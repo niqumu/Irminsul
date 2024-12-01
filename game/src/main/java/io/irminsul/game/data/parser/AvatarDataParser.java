@@ -1,12 +1,9 @@
 package io.irminsul.game.data.parser;
 
 import com.google.gson.*;
+import io.irminsul.common.game.data.DataContainer;
 import io.irminsul.common.game.data.avatar.AvatarData;
-import io.irminsul.game.data.DataContainer;
-import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -15,17 +12,22 @@ import java.util.List;
 import java.util.Map;
 
 // todo ensure the resources exist ahead of time so the server crashes at startup rather than randomly
-@UtilityClass
 public class AvatarDataParser {
-
-    private final Logger logger = LoggerFactory.getLogger("Avatar Data Parser");
 
     private final Gson gson = new Gson();
 
+    /**
+     * The {@link DataContainer} this parser belongs to
+     */
+    private final DataContainer parentContainer;
+
     private final Map<Integer, JsonObject> data = new HashMap<>();
-    static {
+
+    public AvatarDataParser(@NotNull DataContainer parentContainer) {
+        this.parentContainer = parentContainer;
+
         try {
-            File excelFile = new File("data/client/ExcelBinOutput/AvatarExcelConfigData.json");
+            File excelFile = new File(this.parentContainer.getDataDirectory(), "client/ExcelBinOutput/AvatarExcelConfigData.json");
             JsonArray avatarExcel = JsonParser.parseString(Files.readString(excelFile.toPath())).getAsJsonArray();
 
             for (JsonElement element : avatarExcel) {
@@ -34,9 +36,9 @@ public class AvatarDataParser {
                 }
             }
 
-            logger.debug("Successfully loaded avatar config excel!");
+            this.parentContainer.getLogger().debug("Successfully loaded avatar config excel!");
         } catch (Exception e) {
-            logger.warn("Fatal: Failed to load avatar config excel: {}", e.toString());
+            this.parentContainer.getLogger().warn("Fatal: Failed to load avatar config excel: {}", e.toString());
             System.exit(1);
         }
     }
@@ -47,7 +49,7 @@ public class AvatarDataParser {
 
         // Ensure that we have data on this avatar
         if (avatarData == null) {
-            logger.warn("Skipping parseAvatarData request for {} as the excel is missing this avatar!", avatarId);
+            this.parentContainer.getLogger().warn("Skipping parseAvatarData request for {} as the excel is missing this avatar!", avatarId);
            return new AvatarData(); // fallback
         }
 
@@ -56,14 +58,14 @@ public class AvatarDataParser {
         return new AvatarData(
             name,
             avatarData.get("initialWeapon").getAsInt(),
-            DataContainer.getOrLoadSkillDepotData(avatarData.get("skillDepotId").getAsInt()),
+            this.parentContainer.getOrLoadSkillDepotData(avatarData.get("skillDepotId").getAsInt()),
             List.of(gson.fromJson(avatarData.get("candSkillDepotIds"), Integer[].class)),
             avatarData.get("hpBase").getAsFloat(),
             avatarData.get("attackBase").getAsFloat(),
             avatarData.get("defenseBase").getAsFloat(),
             avatarData.get("critical").getAsFloat(),
             avatarData.get("criticalHurt").getAsFloat(),
-            DataContainer.getOrLoadAbilities(name)
+            this.parentContainer.getOrLoadAbilities(name)
         );
     }
 }

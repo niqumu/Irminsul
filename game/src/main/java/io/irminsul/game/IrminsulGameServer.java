@@ -6,6 +6,7 @@ import io.irminsul.common.config.ConfigLoader;
 import io.irminsul.common.config.GameServerConfig;
 import io.irminsul.common.game.GameServer;
 import io.irminsul.common.game.command.CommandManager;
+import io.irminsul.common.game.data.DataContainer;
 import io.irminsul.common.game.dungeon.DungeonManager;
 import io.irminsul.common.event.EventBus;
 import io.irminsul.common.game.mail.MailManager;
@@ -19,6 +20,7 @@ import io.irminsul.common.plugin.PluginReloadChanges;
 import io.irminsul.common.util.CryptoUtil;
 import io.irminsul.common.util.i18n.I18n;
 import io.irminsul.game.command.IrminsulCommandManager;
+import io.irminsul.game.data.IrminsulDataContainer;
 import io.irminsul.game.dungeon.IrminsulDungeonManager;
 import io.irminsul.game.event.SimpleEventBus;
 import io.irminsul.game.mail.IrminsulMailManager;
@@ -72,6 +74,11 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
     private final EventBus eventBus = new SimpleEventBus(this);
 
     /**
+     * This server's {@link DataContainer}
+     */
+    private final DataContainer dataContainer;
+
+    /**
      * The port this server is running on
      */
     private final int port;
@@ -123,6 +130,9 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
 
         this.logger = LoggerFactory.getLogger("Game Server #" + (serverId + 1));
         this.logger.info(I18n.translate("game.info.start"));
+
+        // Load data
+        this.dataContainer = new IrminsulDataContainer(this);
 
         // Create managers
         this.packetManager = new PacketManager(this);

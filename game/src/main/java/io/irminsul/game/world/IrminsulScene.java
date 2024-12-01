@@ -4,7 +4,7 @@ import io.irminsul.common.game.world.*;
 import io.irminsul.common.game.data.scene.SceneData;
 import io.irminsul.common.game.player.Player;
 import io.irminsul.common.proto.VisionTypeOuterClass;
-import io.irminsul.game.data.DataContainer;
+import io.irminsul.game.data.IrminsulDataContainer;
 import io.irminsul.game.net.packet.PacketPlayerGameTimeNotify;
 import io.irminsul.game.net.packet.PacketSceneEntityAppearNotify;
 import io.irminsul.game.net.packet.PacketSceneEntityDisappearNotify;
@@ -76,10 +76,10 @@ public class IrminsulScene implements Scene {
         this.id = id;
 
         // Load scene data
-        this.sceneData = DataContainer.getOrLoadSceneData(this.id);
+        this.sceneData = world.getServer().getDataContainer().getOrLoadSceneData(this.id);
 
         // Set up scripts
-        this.scriptManager = new IrminsulSceneScriptManager(this);
+        this.scriptManager = new IrminsulSceneScriptManager(this, world.getServer().getDataContainer());
         this.spawnPoint = this.scriptManager.getSceneSpawn();
     }
 

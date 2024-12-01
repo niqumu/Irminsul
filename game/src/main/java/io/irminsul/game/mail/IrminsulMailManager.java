@@ -42,7 +42,8 @@ public class IrminsulMailManager implements MailManager {
         // Fallback
         this.welcomeMailContents = I18n.translate("generic.error");
 
-        File welcomeMailFile = new File(this.server.getConfig().getWelcomeMailConfig().getFile());
+        File welcomeMailFile = new File(this.server.getConfig().getRunDirectory(),
+            this.server.getConfig().getWelcomeMailConfig().getFile());
 
         // Try to read the welcome mail file
         try {

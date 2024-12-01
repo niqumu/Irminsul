@@ -46,10 +46,15 @@ public class ConfigLoader {
             JsonObject serverAccount = server.getAsJsonObject("server_account");
             JsonObject welcomeMail = server.getAsJsonObject("welcome_mail");
 
+            // Create run directory if needed
+            File gameRunDirectory = new File(server.get("run_directory").getAsString());
+            gameRunDirectory.mkdirs();
+
             return new GameServerConfig(
                 globalConfig,
                 server.get("port").getAsInt(),
                 server.get("sandbox").getAsBoolean(),
+                gameRunDirectory,
                 new ServerAccountConfig(
                     serverAccount.get("enabled").getAsBoolean(),
                     serverAccount.get("account_nickname").getAsString(),
@@ -63,11 +68,7 @@ public class ConfigLoader {
                     welcomeMail.get("file").getAsString(),
                     welcomeMail.get("subject").getAsString(),
                     welcomeMail.get("sender").getAsString()
-                ),
-                server.get("plugins").getAsJsonArray().asList()
-                    .stream()
-                    .map(JsonElement::getAsString)
-                    .collect(Collectors.toList())
+                )
             );
         } catch (Exception e) {
             logger.error(I18n.translate("core.error.config_load_failed"), e);

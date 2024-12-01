@@ -13,7 +13,7 @@ import io.irminsul.common.proto.*;
 import io.irminsul.common.proto.AbilityControlBlockOuterClass.AbilityControlBlock;
 import io.irminsul.common.util.MiscUtil;
 import io.irminsul.game.data.ActionReason;
-import io.irminsul.game.data.DataContainer;
+import io.irminsul.game.data.IrminsulDataContainer;
 import io.irminsul.game.data.PlayerProperty;
 import io.irminsul.game.item.IrminsulWeapon;
 import io.irminsul.game.net.packet.PacketAvatarFightPropNotify;
@@ -128,7 +128,7 @@ public class IrminsulAvatar implements Avatar {
         this.guid = owner.getNextGuid();
         this.owner = owner;
         this.entityId = owner.getWorld().getNextEntityId(EntityIdType.AVATAR);
-        this.avatarData = DataContainer.getOrLoadAvatarData(this.avatarId);
+        this.avatarData = owner.getServer().getDataContainer().getOrLoadAvatarData(this.avatarId);
 
         // Start skills at level 1
         this.skillLevels.put(this.avatarData.getSkillDepotData().getEnergySkill(), 1);
@@ -243,14 +243,14 @@ public class IrminsulAvatar implements Avatar {
             // TODO: this is still off by 0.09%... I have no clue why
             float progressToMax = (float) this.weapon.getLevel() / this.weapon.getWeaponData().getMaxLevel();
             int level = Math.round(progressToMax * 100);
-            float multiplier = DataContainer.getOrLoadWeaponCurve(property.getGrowthType()).get(level);
+            float multiplier = this.owner.getServer().getDataContainer().getOrLoadWeaponCurve(property.getGrowthType()).get(level);
             this.addFightProperty(property.getPropertyType(), property.getValue() * multiplier);
         });
 
         // Weapon promotion stats
         // todo: why is this, again, slightly off?
-        WeaponPromotionData data =
-            DataContainer.getOrLoadWeaponPromotions(this.weapon.getItemId()).get(this.weapon.getPromoteLevel());
+        WeaponPromotionData data = this.owner.getServer().getDataContainer().getOrLoadWeaponPromotions(
+            this.weapon.getItemId()).get(this.weapon.getPromoteLevel());
         if (data != null) {
             data.getNewProperties().forEach(prop -> this.addFightProperty(prop.getPropertyType(), prop.getValue()));
         }

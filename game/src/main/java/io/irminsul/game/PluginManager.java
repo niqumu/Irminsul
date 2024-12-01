@@ -20,6 +20,7 @@ import java.nio.file.Files;
 import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
@@ -43,23 +44,18 @@ public class PluginManager implements ServerSystem {
 
     public void loadPlugins() {
 
+        File pluginsDir = new File(this.server.getConfig().getRunDirectory(), "plugins");
+
         // Create the plugins directory if it doesn't exist
-        if (new File("plugins").mkdirs()) {
+        if (pluginsDir.mkdirs()) {
             this.server.getLogger().debug("Created plugins folder");
         }
 
-        // Iterate over listed plugins in the server config
-        for (String plugin : this.server.getConfig().getPlugins()) {
+        // Iterate over file in the plugins directory
+        for (File pluginFile : Objects.requireNonNull(pluginsDir.listFiles())) {
 
-            // Add .jar to the end of the plugin name if it's not already there
-            String pluginName = plugin.endsWith(".jar") ? plugin : plugin + ".jar";
-
-            File pluginFile = new File("plugins/" + pluginName);
-
-            // Verify that the plugin exists
-            if (!pluginFile.exists()) {
-                this.server.getLogger().warn(I18n.translate("game.plugin.missing"), plugin);
-                continue;
+            if (!pluginFile.isFile() || !pluginFile.getName().endsWith(".jar")) {
+                continue; // Not a plugin
             }
 
             // Try to load the plugin

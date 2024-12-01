@@ -1,29 +1,29 @@
 package io.irminsul.game.data.parser;
 
 import com.google.gson.*;
+import io.irminsul.common.game.data.DataContainer;
 import io.irminsul.common.game.data.dungeon.DungeonData;
-import io.irminsul.common.game.data.weapon.WeaponData;
-import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 
-@UtilityClass
 public class DungeonDataParser {
 
-    private final Logger logger = LoggerFactory.getLogger("Dungeon Data Parser");
-
-    private final Gson gson = new Gson();
+    /**
+     * The {@link DataContainer} this parser belongs to
+     */
+    private final DataContainer parentContainer;
 
     private final Map<Integer, JsonObject> data = new HashMap<>();
-    static {
+
+    public DungeonDataParser(@NotNull DataContainer parentContainer) {
+        this.parentContainer = parentContainer;
+
         try {
-            File excelFile = new File("data/client/ExcelBinOutput/DungeonExcelConfigData.json");
+            File excelFile = new File(this.parentContainer.getDataDirectory(), "client/ExcelBinOutput/DungeonExcelConfigData.json");
             JsonArray dungeonExcel = JsonParser.parseString(Files.readString(excelFile.toPath())).getAsJsonArray();
 
             for (JsonElement element : dungeonExcel) {
@@ -32,9 +32,9 @@ public class DungeonDataParser {
                 }
             }
 
-            logger.debug("Successfully loaded dungeon data excel!");
+            this.parentContainer.getLogger().debug("Successfully loaded dungeon data excel!");
         } catch (Exception e) {
-            logger.error("Fatal: Failed to load dungeon data excel: {}", e.toString());
+            this.parentContainer.getLogger().error("Fatal: Failed to load dungeon data excel: {}", e.toString());
             System.exit(1);
         }
     }
@@ -45,7 +45,7 @@ public class DungeonDataParser {
 
         // Ensure that we have data on this dungeon
         if (dungeonData == null) {
-            logger.warn("Skipped parseDungeonData request for {} as the excel is missing this dungeon!", dungeonId);
+            this.parentContainer.getLogger().warn("Skipped parseDungeonData request for {} as the excel is missing this dungeon!", dungeonId);
             return new DungeonData(); // fallback
         }
 

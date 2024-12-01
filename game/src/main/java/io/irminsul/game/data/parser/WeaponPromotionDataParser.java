@@ -1,14 +1,12 @@
 package io.irminsul.game.data.parser;
 
 import com.google.gson.*;
+import io.irminsul.common.game.data.DataContainer;
 import io.irminsul.common.game.data.weapon.WeaponPromotionData;
 import io.irminsul.common.game.data.weapon.WeaponProperty;
 import io.irminsul.common.util.Pair;
 import io.irminsul.game.data.FightProperty;
-import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -17,17 +15,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@UtilityClass
 public class WeaponPromotionDataParser {
 
-    private final Logger logger = LoggerFactory.getLogger("Weapon Promotion Parser");
-
-    private final Gson gson = new Gson();
+    /**
+     * The {@link DataContainer} this parser belongs to
+     */
+    private final DataContainer parentContainer;
 
     private final Map<Integer, Map<Integer, JsonObject>> data = new HashMap<>();
-    static {
+
+    public WeaponPromotionDataParser(@NotNull DataContainer parentContainer) {
+        this.parentContainer = parentContainer;
+
         try {
-            File excelFile = new File("data/client/ExcelBinOutput/WeaponPromoteExcelConfigData.json");
+            File excelFile = new File(this.parentContainer.getDataDirectory(),
+                "client/ExcelBinOutput/WeaponPromoteExcelConfigData.json");
             JsonArray promoteExcel = JsonParser.parseString(Files.readString(excelFile.toPath())).getAsJsonArray();
 
             for (JsonElement element : promoteExcel) {
@@ -43,9 +45,9 @@ public class WeaponPromotionDataParser {
                 data.get(weaponId).put(promoteLevel, object);
             }
 
-            logger.debug("Successfully loaded weapon promotion excel!");
+            this.parentContainer.getLogger().debug("Successfully loaded weapon promotion excel!");
         } catch (Exception e) {
-            logger.warn("Fatal: Failed to load weapon promotion excel: {}", e.toString());
+            this.parentContainer.getLogger().error("Fatal: Failed to load weapon promotion excel: {}", e.toString());
             System.exit(1);
         }
     }
@@ -54,7 +56,7 @@ public class WeaponPromotionDataParser {
         Map<Integer, WeaponPromotionData> map = new HashMap<>();
 
         if (!data.containsKey(weaponId)) {
-            logger.warn("Skipping parsePromotionData request for {} as the excel is missing this weapon!", weaponId);
+            this.parentContainer.getLogger().warn("Skipping parsePromotionData request for {} as the excel is missing this weapon!", weaponId);
             return map; // fallback
         }
 

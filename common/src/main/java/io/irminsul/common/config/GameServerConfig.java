@@ -5,7 +5,7 @@ import io.irminsul.common.config.game.WelcomeMailConfig;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+import java.io.File;
 
 @Data
 public class GameServerConfig {
@@ -28,6 +28,11 @@ public class GameServerConfig {
     private final boolean sandbox;
 
     /**
+     * The run directory of this game server
+     */
+    private final @NotNull File runDirectory;
+
+    /**
      * Configuration for in-game server account, a way to provide an interactive message bot for users
      */
     private final @NotNull ServerAccountConfig serverAccountConfig;
@@ -36,9 +41,4 @@ public class GameServerConfig {
      * Configuration for mail sent to players when they join the server for the first time
      */
     private final @NotNull WelcomeMailConfig welcomeMailConfig;
-
-    /**
-     * List of enabled plugins on this server
-     */
-    private final @NotNull List<String> plugins;
 }

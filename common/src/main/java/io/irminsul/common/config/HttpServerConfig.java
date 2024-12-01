@@ -4,6 +4,7 @@ import io.irminsul.common.http.DispatchRegion;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +37,11 @@ public class HttpServerConfig {
      * Whether to enable integration with the game client's debugging/logging system
      */
     private final boolean clientDebugging;
+
+    /**
+     * The run directory of the HTTP server
+     */
+    private final @NotNull File runDirectory;
 
     /**
      * A list of target game servers this HTTP server will dispatch to

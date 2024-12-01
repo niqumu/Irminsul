@@ -144,6 +144,26 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
     }
 
     /**
+     * Shuts down this game server, saving all player data and closing all connections
+     */
+    @Override
+    public void shutdown() {
+        this.logger.info(I18n.translate("game.info.stop"));
+
+        // Disconnect all players
+        this.onlinePlayers.values().forEach(Player::logout);
+
+        // Stop ticking
+        this.tickService.shutdown();
+
+        // Disable all plugins
+        this.pluginManager.disablePlugins();
+
+        // Stop KCP server
+        this.stop();
+    }
+
+    /**
      * @return A list of loaded and enabled plugins on the server
      */
     @Override

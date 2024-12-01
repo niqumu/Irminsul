@@ -34,7 +34,7 @@ public class IrminsulSession implements Session {
     private SessionState state = SessionState.CLOSED;
 
     /**
-     * The {@link Player} associated with the session, or null if none exists yet
+     * The {@link Player} associated with the session, or null if none exists
      */
     @Setter
     private Player player = null;
@@ -58,7 +58,7 @@ public class IrminsulSession implements Session {
     @Override
     public void onClose() {
         if (this.player != null) {
-            this.server.getLogger().info("{} ({}) left the game", this.player.getProfile().getNickname(), this.player.getUid());
+            this.player.logout();
         }
 
         this.server.getLogger().info("Connection to {} closed", this.tunnel.getAddress().toString());

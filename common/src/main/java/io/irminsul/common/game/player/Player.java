@@ -159,6 +159,11 @@ public interface Player extends Tickable {
     void login();
 
     /**
+     * Executes the logout process for this player, saving their data and closing their connection
+     */
+    void logout();
+
+    /**
      * Create a new world for this player and register it
      */
     void createWorld();

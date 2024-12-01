@@ -77,6 +77,7 @@ public class PacketManager implements ServerSystem {
         this.registerHandler(new HandlerNpcTalkReq());
         this.registerHandler(new HandlerPingReq());
         this.registerHandler(new HandlerPlayerEnterDungeonReq());
+        this.registerHandler(new HandlerPlayerForceExitReq());
         this.registerHandler(new HandlerPlayerLoginReq());
         this.registerHandler(new HandlerPlayerSetPauseReq());
         this.registerHandler(new HandlerPlayerQuitDungeonReq());

@@ -251,8 +251,8 @@ public class IrminsulPlayer implements Player {
         this.session.setState(SessionState.ACTIVE);
 
         // Done
-        this.session.getServer().getLogger().info("{} ({}) joined the game from {}",
-            this.profile.getNickname(), this.getUid(), this.getSession().getTunnel().getAddress().toString());
+        this.getServer().getLogger().info("{} ({}) joined the game from {}", this.profile.getNickname(), this.uid,
+            this.getSession().getTunnel().getAddress().toString());
     }
 
     /**
@@ -266,6 +266,26 @@ public class IrminsulPlayer implements Player {
 
         // Send the player the welcome mail
         this.getServer().getMailManager().sendWelcomeMail(this);
+    }
+
+    /**
+     * Executes the logout process for this player, saving their data and closing their connection
+     */
+    @Override
+    public void logout() {
+
+        // Remove the player to the online players list
+        this.getServer().getOnlinePlayers().remove(this.uid);
+
+        // Log
+        this.getServer().getLogger().info("{} ({}) left the game", this.getProfile().getNickname(), this.uid);
+
+        // Save
+        // TODO
+
+        // Close connection
+        this.session.setPlayer(null);
+        this.session.getTunnel().close();
     }
 
     /**

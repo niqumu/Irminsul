@@ -71,6 +71,11 @@ public interface GameServer extends LoggerContainer {
     @NotNull List<PluginInfo> getPlugins();
 
     /**
+     * Shuts down this game server, saving all player data and closing all connections
+     */
+    void shutdown();
+
+    /**
      * Attempt to fetch the social profile data of the player with the provided UID
      * @param uid The UID of the player to fetch social data for
      * @return The provided player's social profile, or null, if the player doesn't exist

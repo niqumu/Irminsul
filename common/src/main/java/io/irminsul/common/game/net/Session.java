@@ -32,7 +32,7 @@ public interface Session extends KcpChannel {
     void setState(@NotNull SessionState state);
 
     /**
-     * @return The {@link Player} associated with the session, or null if none exists yet
+     * @return The {@link Player} associated with the session, or null if none exists
      */
     @Nullable Player getPlayer();
 
@@ -45,7 +45,7 @@ public interface Session extends KcpChannel {
      * Sets the {@link Player} associated with the session
      * @param player The new player of the session
      */
-    void setPlayer(@NotNull Player player);
+    void setPlayer(@Nullable Player player);
 
     /**
      * @return The next client sequence to use

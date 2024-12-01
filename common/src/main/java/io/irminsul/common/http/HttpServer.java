@@ -28,4 +28,9 @@ public interface HttpServer extends LoggerContainer {
      * @return A list of {@link DispatchRegion}s registered on this web server
      */
     @NotNull List<DispatchRegion> getRegions();
+
+    /**
+     * Shuts down this HTTP server
+     */
+    void shutdown();
 }

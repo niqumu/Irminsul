@@ -26,6 +26,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 @Getter
@@ -64,6 +65,11 @@ public class Irminsul {
     private final List<GameServer> gameServers = new ArrayList<>();
 
     /**
+     * Whether this Irminsul instance is currently in the shutdown process
+     */
+    private final AtomicBoolean isShuttingDown = new AtomicBoolean(false);
+
+    /**
      * Ignite this Irminsul instance
      */
     public void startup() {
@@ -96,7 +102,7 @@ public class Irminsul {
         }
 
         // Register shutdown hook
-        Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
+        Runtime.getRuntime().addShutdownHook(new Thread(this::onShutdown));
 
         // Done
         double bootTime = (System.currentTimeMillis() - startTime) / 1000D;
@@ -107,14 +113,27 @@ public class Irminsul {
      * Shut down this Irminsul instance
      */
     public void shutdown() {
+        System.exit(0);
+    }
+
+    /**
+     * Called by the JVM when it shuts down
+     */
+    private void onShutdown() {
+        if (this.isShuttingDown.get()) {
+            return;
+        }
+
+        this.isShuttingDown.set(true);
         this.logger.info(I18n.translate("core.info.stop"));
 
         // Stop the HTTP server if it exists
         if (this.httpServer != null) {
-            this.httpServer.getSpark().stop();
+            this.httpServer.shutdown();
         }
 
-        Runtime.getRuntime().exit(0);
+        // Stop all game servers
+        this.gameServers.forEach(GameServer::shutdown);
     }
 
     /**

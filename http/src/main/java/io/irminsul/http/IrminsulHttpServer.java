@@ -96,4 +96,14 @@ public class IrminsulHttpServer implements HttpServer {
         // Done
         this.logger.info(I18n.translate("http.info.done"), this.port);
     }
+
+    /**
+     * Shuts down this HTTP server
+     */
+    @Override
+    public void shutdown() {
+        this.logger.info(I18n.translate("http.info.stop"));
+
+        this.spark.awaitStop();
+    }
 }

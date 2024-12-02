@@ -77,7 +77,7 @@ public class IrminsulAvatar implements Avatar {
     /**
      * This entity's current {@link Position} within their scene
      */
-    private final Position position;
+    private final Position position = Position.ORIGIN();
 
     /**
      * This entity's current {@link MotionStateOuterClass.MotionState}
@@ -158,7 +158,6 @@ public class IrminsulAvatar implements Avatar {
         this.avatarId = avatarId;
         this.type = type;
         this.guid = owner.getNextGuid();
-        this.position = owner.getPosition();
         this.owner = owner;
         this.entityId = owner.getWorld().getNextEntityId(EntityIdType.AVATAR);
         this.avatarData = owner.getServer().getDataContainer().getOrLoadAvatarData(this.avatarId);

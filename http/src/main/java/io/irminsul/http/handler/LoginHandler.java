@@ -46,7 +46,7 @@ public class LoginHandler implements Route {
         account.addProperty("country", "US");
         account.addProperty("cx_name", "");
         account.addProperty("device_grant_ticket", "");
-        account.addProperty("email", "irminsul@gmail.com");
+        account.addProperty("email", "Irminsul user");
         account.addProperty("facebook_name", "");
         account.addProperty("game_center_name", "");
         account.addProperty("google_name", "");
@@ -62,7 +62,7 @@ public class LoginHandler implements Route {
         account.addProperty("tap_name", "");
         account.addProperty("token", "token");
         account.addProperty("twitter_name", "");
-        account.addProperty("uid", "1");
+        account.addProperty("uid", "2");
         account.addProperty("unmasked_email", "");
         account.addProperty("unmasked_email_type", 0);
         return account;

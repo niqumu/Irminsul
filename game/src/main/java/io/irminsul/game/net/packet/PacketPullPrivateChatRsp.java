@@ -10,7 +10,7 @@ import java.util.List;
 
 public class PacketPullPrivateChatRsp extends OutboundPacket {
     public PacketPullPrivateChatRsp(Session session, List<ChatInfoOuterClass.ChatInfo> messages) {
-        super(PacketIds.PullRecentChatRsp, session);
+        super(PacketIds.PullPrivateChatRsp, session);
 
         PullPrivateChatRspOuterClass.PullPrivateChatRsp response =
             PullPrivateChatRspOuterClass.PullPrivateChatRsp.newBuilder()

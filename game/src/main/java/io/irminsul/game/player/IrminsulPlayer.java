@@ -227,7 +227,6 @@ public class IrminsulPlayer implements Player {
             throw new IllegalStateException("No world to log into!");
         }
 
-
         // Add the player to the online players list
         this.getServer().getOnlinePlayers().put(this.uid, this);
 
@@ -678,7 +677,7 @@ public class IrminsulPlayer implements Player {
         this.getServer().getEventBus().postEvent(event);
 
         // Read position and rotation from current avatar entity
-        this.position = this.teamManager.getActiveAvatar().getPosition();
+//        this.position = this.teamManager.getActiveAvatar().getPosition();
 
         // Update avatar stats
         this.teamManager.getActiveTeam().getAvatars().forEach(Avatar::updateStats);

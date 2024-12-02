@@ -3,6 +3,7 @@ package io.irminsul.game.player;
 import com.google.gson.JsonObject;
 import io.irminsul.common.game.database.StateContainer;
 import io.irminsul.common.game.player.PlayerProfile;
+import io.irminsul.game.GameConstants;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,7 +31,7 @@ public class IrminsulPlayerProfile implements PlayerProfile {
     /**
      * This player's profile avatar
      */
-    private int profilePicture = 1001;
+    private int profilePicture = GameConstants.FEMALE_TRAVELER_AVATAR_ID;
 
     /**
      * This player's profile name card

@@ -39,7 +39,7 @@ public class HandlerGetPlayerTokenReq implements PacketHandler {
         // TODO authentication, this just always works!
 
         // TODO load from database
-        session.setPlayer(new IrminsulPlayer(session, 1));
+        session.setPlayer(new IrminsulPlayer(session, 2));
 
         session.enableEncryption();
         session.setState(SessionState.WAITING_FOR_LOGIN);

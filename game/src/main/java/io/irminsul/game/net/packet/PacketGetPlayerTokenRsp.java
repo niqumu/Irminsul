@@ -15,7 +15,7 @@ public class PacketGetPlayerTokenRsp extends OutboundPacket {
         this.setEncryptionMode(PacketEncryptionMode.DISPATCH);
 
         GetPlayerTokenRspOuterClass.GetPlayerTokenRsp response = GetPlayerTokenRspOuterClass.GetPlayerTokenRsp.newBuilder()
-            .setUid(1)
+            .setUid(2)
             .setToken("token")
             .setAccountType(1)
             .setIsProficientPlayer(false)

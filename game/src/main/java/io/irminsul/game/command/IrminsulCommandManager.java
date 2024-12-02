@@ -10,6 +10,7 @@ import io.irminsul.common.game.player.Player;
 import io.irminsul.common.proto.*;
 import io.irminsul.common.proto.ChatInfoOuterClass.ChatInfo;
 import io.irminsul.common.util.i18n.I18n;
+import io.irminsul.game.GameConstants;
 import io.irminsul.game.command.impl.*;
 import io.irminsul.game.net.packet.PacketPrivateChatNotify;
 import io.irminsul.game.net.packet.PacketPrivateChatRsp;
@@ -24,7 +25,7 @@ import java.util.*;
 @Getter
 public class IrminsulCommandManager implements CommandManager {
 
-    private final static int SERVER_UID = 0;
+    private final static int SERVER_UID = 1;
 
     /**
      * The {@link ServerAccountConfig} configuring this command manager
@@ -165,7 +166,7 @@ public class IrminsulCommandManager implements CommandManager {
                 this.sendWelcomeMessages(player);
             }
 
-            new PacketPullPrivateChatRsp(player.getSession(), this.serverChatHistory.get(player)).send();
+            new PacketPullPrivateChatRsp(player.getSession(), history).send();
         }
     }
 
@@ -177,18 +178,22 @@ public class IrminsulCommandManager implements CommandManager {
             String messageToLog = icon != 0 ? "(emote " + icon + ")" : message;
             this.server.getLogger().info(I18n.translate("game.info.command_executed"), player, messageToLog);
 
-            ChatInfo messageInfo = ChatInfo.newBuilder()
+            ChatInfo.Builder messageInfo = ChatInfo.newBuilder()
                 .setUid(player.getUid())
                 .setToUid(SERVER_UID)
-                .setText(message)
-                .setTime((int) (System.currentTimeMillis() / 1000))
-                .build();
-            this.serverChatHistory.get(player).add(messageInfo);
+                .setText(icon != 0 ? "" : message)
+                .setTime((int) (System.currentTimeMillis() / 1000));
+
+            if (icon != 0) {
+                messageInfo.setIcon(icon);
+            }
+
+            this.serverChatHistory.get(player).add(messageInfo.build());
 
             // We have to do this before handling the command so the order is right on the client
             // I also think it's stupid to need both of these. But here we are.
             new PacketPrivateChatRsp(player.getSession()).send();
-            new PacketPrivateChatNotify(player.getSession(), messageInfo).send(); // needed for the player to see their message
+            new PacketPrivateChatNotify(player.getSession(), messageInfo.build()).send(); // needed for the player to see their message
 
             String[] args = message.split(" ");
             String command = args[0].toLowerCase();
@@ -253,15 +258,15 @@ public class IrminsulCommandManager implements CommandManager {
     public @NotNull FriendBriefOuterClass.FriendBrief getServerFriendBrief() {
         return FriendBriefOuterClass.FriendBrief.newBuilder()
             .setUid(SERVER_UID)
-            .setNickname("<color=\"#00a8b7\">" + this.config.getNickname() + "</color>")
-            .setProfilePicture(ProfilePictureOuterClass.ProfilePicture.newBuilder().setAvatarId(0).build())
-            .setNameCardId(210001)
+            .setNickname(this.config.getNickname())
+            .setProfilePicture(ProfilePictureOuterClass.ProfilePicture.newBuilder().setAvatarId(GameConstants.FEMALE_TRAVELER_AVATAR_ID).build())
+            .setNameCardId(210020)
             .setFriendEnterHomeOption(FriendEnterHomeOptionOuterClass.FriendEnterHomeOption.FRIEND_ENTER_HOME_OPTION_REFUSE)
             .setWorldLevel(0)
             .setLevel(1)
             .setLastActiveTime((int) (System.currentTimeMillis() / 1000))
             .setOnlineState(FriendOnlineStateOuterClass.FriendOnlineState.FRIEND_ONLINE_STATE_ONLINE)
-            .setSignature(this.config.getSignature())
+            .setSignature("<color=\"#00a8b7\">" + this.config.getSignature() + "</color>")
             .setPlatformType(PlatformTypeOuterClass.PlatformType.PLATFORM_TYPE_CLOUD_PC)
             .setIsGameSource(true)
             .setParam(1)

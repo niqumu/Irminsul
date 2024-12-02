@@ -4,6 +4,7 @@ import io.irminsul.common.LoggerContainer;
 import io.irminsul.common.config.GameServerConfig;
 import io.irminsul.common.game.command.CommandManager;
 import io.irminsul.common.game.data.DataContainer;
+import io.irminsul.common.game.database.PlayerDataManager;
 import io.irminsul.common.game.dungeon.DungeonManager;
 import io.irminsul.common.event.EventBus;
 import io.irminsul.common.game.mail.MailManager;
@@ -36,6 +37,11 @@ public interface GameServer extends LoggerContainer {
      * @return This server's {@link DataContainer}
      */
     @NotNull DataContainer getDataContainer();
+
+    /**
+     * @return This server's {@link PlayerDataManager}
+     */
+    @NotNull PlayerDataManager getPlayerDataManager();
 
     /**
      * @return The port this game server is running on
@@ -87,6 +93,11 @@ public interface GameServer extends LoggerContainer {
      * @return The {@link PluginReloadChanges} that resulted from reloading the server
      */
     @NotNull PluginReloadChanges reload();
+
+    /**
+     * Saves all player data on this game server
+     */
+    void save();
 
     /**
      * Attempt to fetch the social profile data of the player with the provided UID

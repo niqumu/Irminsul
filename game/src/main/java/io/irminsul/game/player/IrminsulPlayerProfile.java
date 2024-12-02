@@ -1,7 +1,10 @@
 package io.irminsul.game.player;
 
+import com.google.gson.JsonObject;
+import io.irminsul.common.game.database.StateContainer;
 import io.irminsul.common.game.player.PlayerProfile;
 import lombok.Data;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Implementation of {@link PlayerProfile}, representing a player's social profile
@@ -53,5 +56,39 @@ public class IrminsulPlayerProfile implements PlayerProfile {
     public void setBirthday(int month, int day) {
         this.birthdayMonth = month;
         this.birthdayDay = day;
+    }
+
+    /**
+     * Load the state of this object from a json object, as exported by {@link StateContainer#exportState()}
+     *
+     * @param state The state to load, as a json object
+     */
+    @Override
+    public void loadState(@NotNull JsonObject state) {
+        this.nickname = state.get("nickname").getAsString();
+        this.signature = state.get("signature").getAsString();
+        this.profilePicture = state.get("profile_picture").getAsInt();
+        this.nameCard = state.get("name_card").getAsInt();
+        this.birthdayMonth = Integer.parseInt(state.get("birthday").getAsString().split("/")[0]);
+        this.birthdayDay = Integer.parseInt(state.get("birthday").getAsString().split("/")[1]);
+    }
+
+    /**
+     * Exports the state of this object to a json object, which can be imported by
+     * {@link StateContainer#loadState(JsonObject)}
+     *
+     * @return The state of this object, exported as a json object
+     */
+    @Override
+    public @NotNull JsonObject exportState() {
+        JsonObject state = new JsonObject();
+
+        state.addProperty("nickname", this.nickname);
+        state.addProperty("signature", this.signature);
+        state.addProperty("profile_picture", this.profilePicture);
+        state.addProperty("name_card", this.nameCard);
+        state.addProperty("birthday", "%d/%d".formatted(this.birthdayMonth, this.birthdayDay));
+
+        return state;
     }
 }

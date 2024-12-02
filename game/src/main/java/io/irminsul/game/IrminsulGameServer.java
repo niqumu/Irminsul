@@ -7,6 +7,7 @@ import io.irminsul.common.config.GameServerConfig;
 import io.irminsul.common.game.GameServer;
 import io.irminsul.common.game.command.CommandManager;
 import io.irminsul.common.game.data.DataContainer;
+import io.irminsul.common.game.database.PlayerDataManager;
 import io.irminsul.common.game.dungeon.DungeonManager;
 import io.irminsul.common.event.EventBus;
 import io.irminsul.common.game.mail.MailManager;
@@ -21,6 +22,7 @@ import io.irminsul.common.util.CryptoUtil;
 import io.irminsul.common.util.i18n.I18n;
 import io.irminsul.game.command.IrminsulCommandManager;
 import io.irminsul.game.data.IrminsulDataContainer;
+import io.irminsul.game.database.IrminsulPlayerDataManager;
 import io.irminsul.game.dungeon.IrminsulDungeonManager;
 import io.irminsul.game.event.SimpleEventBus;
 import io.irminsul.game.mail.IrminsulMailManager;
@@ -79,6 +81,11 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
     private final DataContainer dataContainer;
 
     /**
+     * This server's {@link PlayerDataManager}
+     */
+    private final PlayerDataManager playerDataManager;
+
+    /**
      * The port this server is running on
      */
     private final int port;
@@ -135,6 +142,7 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
         this.dataContainer = new IrminsulDataContainer(this);
 
         // Create managers
+        this.playerDataManager = new IrminsulPlayerDataManager(this);
         this.packetManager = new PacketManager(this);
         this.commandManager = new IrminsulCommandManager(this);
         this.pluginManager = new PluginManager(this);
@@ -174,7 +182,7 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
         this.logger.info(I18n.translate("game.info.stop"));
 
         // Disconnect all players
-        this.onlinePlayers.values().forEach(Player::logout);
+        new ArrayList<>(this.onlinePlayers.values()).forEach(Player::logout);
 
         // Stop ticking
         this.tickService.shutdown();
@@ -184,6 +192,9 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
 
         // Stop KCP server
         this.stop();
+
+        // Save everything
+        this.save();
     }
 
     /**
@@ -197,11 +208,23 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
         this.logger.warn(I18n.translate("game.warn.reload"));
         this.logger.warn("================================================================");
 
+        // Save data
+        this.save();
+
         // Re-read server configuration
         this.config = ConfigLoader.readGameServerConfig(this.id, this.logger, this.config.getGlobalConfig());
 
         // Reload plugins
         return this.pluginManager.reloadPlugins();
+    }
+
+    /**
+     * Saves all player data on this game server
+     */
+    @Override
+    public void save() {
+        this.onlinePlayers.forEach((uid, player) -> this.playerDataManager.save(player.exportData(), uid));
+        this.logger.info("Saved");
     }
 
     /**

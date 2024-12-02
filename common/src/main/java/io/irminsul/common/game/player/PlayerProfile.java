@@ -1,13 +1,12 @@
 package io.irminsul.common.game.player;
 
+import io.irminsul.common.game.database.StateContainer;
 import org.jetbrains.annotations.NotNull;
-
-import java.io.Serializable;
 
 /**
  * Representation of a player's social profile
  */
-public interface PlayerProfile {
+public interface PlayerProfile extends StateContainer {
 
     /**
      * @return This player's UID

@@ -1,6 +1,7 @@
 package io.irminsul.game.player;
 
 import io.irminsul.common.game.GameServer;
+import io.irminsul.common.game.database.PlayerData;
 import io.irminsul.common.game.event.PlayerTeleportEvent;
 import io.irminsul.common.game.event.PlayerTickEvent;
 import io.irminsul.common.game.world.Teleport;
@@ -17,6 +18,7 @@ import io.irminsul.game.avatar.IrminsulAvatar;
 import io.irminsul.game.data.EnterReason;
 import io.irminsul.game.data.PlayerProperty;
 import io.irminsul.common.game.event.PlayerLoginEvent;
+import io.irminsul.game.database.IrminsulPlayerData;
 import io.irminsul.game.net.packet.*;
 import io.irminsul.game.world.IrminsulWorld;
 import lombok.Data;
@@ -44,10 +46,9 @@ public class IrminsulPlayer implements Player {
     // ================================================================ //
 
     /**
-     * The {@link Session} this player is connecting through. Excluded from serialization as this is not a persistent
-     * piece of data; the session is different every time the player connects.
+     * The {@link Session} this player is connecting through
      */
-    private transient Session session;
+    private Session session;
 
     /**
      * This player's UID
@@ -57,7 +58,7 @@ public class IrminsulPlayer implements Player {
     /**
      * This player's social profile
      */
-    private final PlayerProfile profile;
+    private PlayerProfile profile;
 
     // ================================================================ //
     //                               Data                               //
@@ -99,34 +100,29 @@ public class IrminsulPlayer implements Player {
     // ================================================================ //
 
     /**
-     * This player's current {@link World}. Excluded from serialization as a world is created for the player every time
-     * they connect
+     * This player's current {@link World}
      */
-    private transient World world;
+    private World world;
 
     /**
-     * This player's current {@link Position} within their scene. Excluded from serialization as a world is created for
-     * the player every time they connect
+     * This player's current {@link Position} within their scene
      */
-    private transient Position position;
+    private Position position;
 
     /**
-     * The ID of this player's current scene. Excluded from serialization as a world is created for the player every
-     * time they connect
+     * The ID of this player's current scene
      */
-    private transient int sceneId = 0;
+    private int sceneId = 0;
 
     /**
-     * This player's current token used to transfer between scenes. Excluded from serialization as a world is created
-     * for the player every time they connect
+     * This player's current token used to transfer between scenes
      */
-    private transient int enterSceneToken = 0;
+    private int enterSceneToken = 0;
 
     /**
-     * This player's peer ID to their world. Excluded from serialization as a world is created for the player every
-     * time they connect
+     * This player's peer ID to their world
      */
-    private transient int peerId;
+    private int peerId;
 
     // ================================================================ //
     //                             Managers                             //
@@ -230,13 +226,21 @@ public class IrminsulPlayer implements Player {
             throw new IllegalStateException("No world to log into!");
         }
 
+
         // Add the player to the online players list
         this.getServer().getOnlinePlayers().put(this.uid, this);
 
-        // If the player is joining for the first time
-        boolean firstLogin = this.avatars.isEmpty();
+        // Load data
+        PlayerData saveData = this.getServer().getPlayerDataManager().load(this.uid);
+        boolean firstLogin = saveData == null;
         if (firstLogin) {
             this.firstLogin();
+        } else {
+            this.importData(saveData);
+
+            // TODO temporary until avatars are saved/loaded
+            this.avatars.add(new IrminsulAvatar(GameConstants.FEMALE_TRAVELER_AVATAR_ID, this));
+            this.teamManager.getActiveTeam().getAvatars().add(this.avatars.getFirst());
         }
 
         // Send player data
@@ -246,11 +250,15 @@ public class IrminsulPlayer implements Player {
         // Fire login event
         this.session.getServer().getEventBus().postEvent(new PlayerLoginEvent(this, firstLogin));
 
-        // Continue the login process
-        this.sendToScene(GameConstants.OVERWORLD_SCENE, EnterReason.LOGIN);
-        this.session.setState(SessionState.ACTIVE);
+        // Send player to their scene and position
+        this.world.getOrCreateScene(this.sceneId);
+        this.generateEnterSceneToken();
+        this.world.getScenes().get(this.sceneId).addPlayer(this);
+        new PacketPlayerEnterSceneNotify(this.session, new Teleport(this.sceneId, this.position,
+            EnterTypeOuterClass.EnterType.ENTER_TYPE_SELF, EnterReason.LOGIN)).send();
 
         // Done
+        this.session.setState(SessionState.ACTIVE);
         this.getServer().getLogger().info("{} ({}) joined the game from {}", this.profile.getNickname(), this.uid,
             this.getSession().getTunnel().getAddress().toString());
     }
@@ -263,6 +271,10 @@ public class IrminsulPlayer implements Player {
         // Give the player the traveler
         this.avatars.add(new IrminsulAvatar(GameConstants.FEMALE_TRAVELER_AVATAR_ID, this));
         this.teamManager.getActiveTeam().getAvatars().add(this.avatars.getFirst());
+
+        // Teleport the player to the spawn point of the overworld
+        this.sceneId = GameConstants.OVERWORLD_SCENE;
+        this.position = this.world.getOrCreateScene(this.sceneId).getSpawnPoint();
 
         // Send the player the welcome mail
         this.getServer().getMailManager().sendWelcomeMail(this);
@@ -281,11 +293,18 @@ public class IrminsulPlayer implements Player {
         this.getServer().getLogger().info("{} ({}) left the game", this.getProfile().getNickname(), this.uid);
 
         // Save
-        // TODO
+        this.getServer().getPlayerDataManager().save(this.exportData(), this.uid);
 
-        // Close connection
-        this.session.setPlayer(null);
-        this.session.getTunnel().close();
+        // Close connection in 1000 ms
+        new Thread(() -> {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                this.getServer().getLogger().error("Somehow failed to disconnect player {}?", this.uid);
+            }
+            this.session.setPlayer(null);
+            this.session.getTunnel().close();
+        }).start();
     }
 
     /**
@@ -605,6 +624,34 @@ public class IrminsulPlayer implements Player {
     public void setHomeCoins(int homeCoins) {
         this.properties.put(PlayerProperty.PLAYER_HOME_COIN.getId(), homeCoins);
         new PacketPlayerDataNotify(this.session).send();
+    }
+
+    /**
+     * Exports this player's data
+     *
+     * @return This player's data, as a {@link PlayerData} instance
+     */
+    @Override
+    public @NotNull PlayerData exportData() {
+        PlayerData data = new IrminsulPlayerData(this.uid);
+
+        data.setProfile(this.profile);
+        data.setPosition(this.position);
+        data.setScene(this.sceneId);
+
+        return data;
+    }
+
+    /**
+     * Imports this player's data
+     *
+     * @param data The data to load, as a {@link PlayerData} instance
+     */
+    @Override
+    public void importData(@NotNull PlayerData data) {
+        this.profile = data.getProfile();
+        this.position = data.getPosition();
+        this.sceneId = data.getScene();
     }
 
     // ================================================================ //

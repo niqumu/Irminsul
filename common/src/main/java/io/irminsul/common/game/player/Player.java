@@ -1,6 +1,7 @@
 package io.irminsul.common.game.player;
 
 import io.irminsul.common.game.GameServer;
+import io.irminsul.common.game.database.PlayerData;
 import io.irminsul.common.game.net.Session;
 import io.irminsul.common.game.Tickable;
 import io.irminsul.common.game.avatar.Avatar;
@@ -48,6 +49,7 @@ public interface Player extends Tickable {
      * @return This player's social profile
      */
     @NotNull PlayerProfile getProfile();
+
 
     // ================================================================ //
     //                               Data                               //
@@ -275,4 +277,16 @@ public interface Player extends Tickable {
      * @param homeCoins The new amount of home coins
      */
     void setHomeCoins(int homeCoins);
+
+    /**
+     * Exports this player's data
+     * @return This player's data, as a {@link PlayerData} instance
+     */
+    @NotNull PlayerData exportData();
+
+    /**
+     * Imports this player's data
+     * @param data The data to load, as a {@link PlayerData} instance
+     */
+    void importData(@NotNull PlayerData data);
 }

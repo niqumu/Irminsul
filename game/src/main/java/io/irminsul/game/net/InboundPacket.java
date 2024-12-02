@@ -3,6 +3,7 @@ package io.irminsul.game.net;
 import io.irminsul.common.game.net.Session;
 import io.irminsul.common.net.PacketIds;
 import io.netty.buffer.ByteBuf;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 // +---------+---------+-------------------+-------------+------------------+------------------+---------+
@@ -11,6 +12,7 @@ import lombok.Data;
 // | 2 bytes | 2 bytes | 2 bytes           | 4 bytes     | size = 3rd field | size = 4th field | 2 bytes |
 // +---------+---------+-------------------+-------------+------------------+------------------+---------+
 @Data
+@AllArgsConstructor
 public class InboundPacket {
     public static final short TOP_MAGIC = 17767;
     public static final short BOTTOM_MAGIC = -30293;

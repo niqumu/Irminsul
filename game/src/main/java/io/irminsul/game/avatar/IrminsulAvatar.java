@@ -4,6 +4,7 @@ import static io.irminsul.game.data.FightProperty.*;
 
 import io.irminsul.common.game.avatar.AvatarType;
 import io.irminsul.common.game.data.weapon.WeaponPromotionData;
+import io.irminsul.common.game.world.Position;
 import io.irminsul.game.GameConstants;
 import io.irminsul.common.game.avatar.Avatar;
 import io.irminsul.common.game.data.avatar.AvatarData;
@@ -45,11 +46,6 @@ public class IrminsulAvatar implements Avatar {
     private final long guid;
 
     /**
-     * The entity id of this entity, or 0 if none exists
-     */
-    private final int entityId;
-
-    /**
      * The {@link Player} who owns this instance
      */
     private final Player owner;
@@ -68,6 +64,25 @@ public class IrminsulAvatar implements Avatar {
      * The {@link AvatarType} of this avatar: normal or trial
      */
     private final AvatarType type;
+
+    // ================================================================ //
+    //                             Entity                               //
+    // ================================================================ //
+
+    /**
+     * The entity id of this entity, or 0 if none exists
+     */
+    private final int entityId;
+
+    /**
+     * This entity's current {@link Position} within their scene
+     */
+    private final Position position;
+
+    /**
+     * This entity's current {@link MotionStateOuterClass.MotionState}
+     */
+    private @NotNull MotionStateOuterClass.MotionState motionState;
 
     // ================================================================ //
     //                            Cosmetics                             //
@@ -143,6 +158,7 @@ public class IrminsulAvatar implements Avatar {
         this.avatarId = avatarId;
         this.type = type;
         this.guid = owner.getNextGuid();
+        this.position = owner.getPosition();
         this.owner = owner;
         this.entityId = owner.getWorld().getNextEntityId(EntityIdType.AVATAR);
         this.avatarData = owner.getServer().getDataContainer().getOrLoadAvatarData(this.avatarId);

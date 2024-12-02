@@ -6,6 +6,7 @@ import io.irminsul.common.game.event.PlayerTeleportEvent;
 import io.irminsul.common.game.event.PlayerTickEvent;
 import io.irminsul.common.game.world.Teleport;
 import io.irminsul.common.proto.EnterTypeOuterClass;
+import io.irminsul.common.proto.MotionStateOuterClass;
 import io.irminsul.game.GameConstants;
 import io.irminsul.common.game.avatar.Avatar;
 import io.irminsul.common.game.player.*;
@@ -532,6 +533,14 @@ public class IrminsulPlayer implements Player {
     }
 
     /**
+     * @return This player's current {@link MotionStateOuterClass.MotionState}
+     */
+    @Override
+    public @NotNull MotionStateOuterClass.MotionState getMotionState() {
+        return this.getTeamManager().getActiveAvatar().getMotionState();
+    }
+
+    /**
      * @return This next free GUID to assign. Calling this method will mark the returned value as used.
      */
     @Override
@@ -667,6 +676,9 @@ public class IrminsulPlayer implements Player {
         // Create and fire event
         PlayerTickEvent event = new PlayerTickEvent(this);
         this.getServer().getEventBus().postEvent(event);
+
+        // Read position and rotation from current avatar entity
+        this.position = this.teamManager.getActiveAvatar().getPosition();
 
         // Update avatar stats
         this.teamManager.getActiveTeam().getAvatars().forEach(Avatar::updateStats);

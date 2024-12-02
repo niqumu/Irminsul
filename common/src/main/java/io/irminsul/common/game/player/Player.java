@@ -9,6 +9,7 @@ import io.irminsul.common.game.world.Position;
 import io.irminsul.common.game.world.Scene;
 import io.irminsul.common.game.world.Teleport;
 import io.irminsul.common.game.world.World;
+import io.irminsul.common.proto.MotionStateOuterClass;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -103,6 +104,11 @@ public interface Player extends Tickable {
      * @return This player's current {@link Position} within their scene
      */
     @NotNull Position getPosition();
+
+    /**
+     * @return This player's current {@link MotionStateOuterClass.MotionState}
+     */
+    @NotNull MotionStateOuterClass.MotionState getMotionState();
 
     /**
      * @return The ID of this player's current scene

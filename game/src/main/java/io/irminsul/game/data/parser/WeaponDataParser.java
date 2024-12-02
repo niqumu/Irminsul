@@ -80,6 +80,8 @@ public class WeaponDataParser {
 
         return new WeaponData(
             WeaponType.of(weaponData.get("weaponType").getAsString()),
+            weaponData.get("icon").getAsString(),
+            weaponData.get("rankLevel").getAsInt(),
             weaponData.get("rankLevel").getAsInt() > 2 ? 90 : 70,
             weaponData.get("gadgetId").getAsInt(),
             skills,

@@ -20,6 +20,16 @@ public class WeaponData {
     private final WeaponType type;
 
     /**
+     * The icon texture name of the weapon
+     */
+    private final String iconName;
+
+    /**
+     * The rarity of the weapon
+     */
+    private final int rarity;
+
+    /**
      * The maximum level of this weapon, derived from the weapon rarity (70 for 1 and 2 stars, 90 for 3+)
      */
     private final int maxLevel;
@@ -43,6 +53,6 @@ public class WeaponData {
      * Construct a new fallback WeaponData with default/placeholder values
      */
     public WeaponData() {
-        this(WeaponType.SWORD, 0, 0, List.of(), List.of());
+        this(WeaponType.SWORD, "", 0, 0, 0, List.of(), List.of());
     }
 }

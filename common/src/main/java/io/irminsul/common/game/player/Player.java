@@ -180,6 +180,13 @@ public interface Player extends Tickable {
     void addAvatar(@NotNull Avatar avatar);
 
     /**
+     * Attempts to look up an avatar this player owns by GUID
+     * @param guid The GUID of the avatar to look up
+     * @return An {@link Avatar} instance if one was found, otherwise {@code null}
+     */
+    @Nullable Avatar getAvatar(long guid);
+
+    /**
      * Sends this player to a specified scene at the default spawn position
      * @param sceneId The scene to send the player to
      */

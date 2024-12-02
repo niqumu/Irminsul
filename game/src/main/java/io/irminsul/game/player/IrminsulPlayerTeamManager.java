@@ -5,6 +5,7 @@ import io.irminsul.common.game.avatar.Avatar;
 import io.irminsul.common.game.player.PlayerTeam;
 import io.irminsul.common.game.player.PlayerTeamManager;
 import io.irminsul.common.game.event.PlayerSwitchAvatarEvent;
+import io.irminsul.game.net.packet.PacketAvatarTeamUpdateNotify;
 import io.irminsul.game.net.packet.PacketChangeAvatarRsp;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -95,5 +96,36 @@ public class IrminsulPlayerTeamManager implements PlayerTeamManager {
 
         // Respond
         new PacketChangeAvatarRsp(this.player.getSession(), guid).send();
+    }
+
+    /**
+     * Changes the composition of a party based on a list of avatar GUIDs to use
+     *
+     * @param teamIndex   The <b>zero-indexed</b> ID of the team to modify
+     * @param avatarGuids A list of avatar GUIDs to compose the team of
+     */
+    @Override
+    public void handleSetupTeam(int teamIndex, @NotNull List<Long> avatarGuids) {
+
+        // Team cannot be empty
+        if (avatarGuids.isEmpty()) {
+            this.getLogger().warn("{} attempted to set team {} to an empty team!", this.player, teamIndex);
+            return;
+        }
+
+        // Ensure team index is valid
+        if (teamIndex < 0 || teamIndex >= this.getTeams().size()) {
+            this.getLogger().warn("{} attempted to setup a non-existent team ({})!", this.player, teamIndex);
+            return;
+        }
+
+        PlayerTeam team = this.getTeams().get(teamIndex);
+
+        // Clear team and add new avatars
+        team.getAvatars().clear();
+        avatarGuids.forEach(guid -> team.getAvatars().add(this.player.getAvatar(guid)));
+
+        // Inform the client
+        new PacketAvatarTeamUpdateNotify(this.player.getSession()).send();
     }
 }

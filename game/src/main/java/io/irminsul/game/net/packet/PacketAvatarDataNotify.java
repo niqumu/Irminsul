@@ -18,7 +18,7 @@ public class PacketAvatarDataNotify extends OutboundPacket {
 
         AvatarDataNotifyOuterClass.AvatarDataNotify.Builder avatarDataNotifyBuilder =
             AvatarDataNotifyOuterClass.AvatarDataNotify.newBuilder()
-                .setCurAvatarTeamId(session.getPlayer().getTeamManager().getActiveTeamIndex())
+                .setCurAvatarTeamId(session.getPlayer().getTeamManager().getActiveTeamIndex() + 1) // one-indexed
                 .setChooseAvatarGuid(session.getPlayer().getTeamManager().getActiveAvatar().getGuid())
                 .addAllOwnedCostumeList(session.getPlayer().getOwnedCostumes())
                 .addAllOwnedFlycloakList(session.getPlayer().getOwnedFlyCloaks());
@@ -35,7 +35,7 @@ public class PacketAvatarDataNotify extends OutboundPacket {
                     .setTeamName(team.getName());
 
             team.getAvatars().forEach(avatar -> avatarTeamBuilder.addAvatarGuidList(avatar.getGuid()));
-            avatarDataNotifyBuilder.putAvatarTeamMap(index, avatarTeamBuilder.build());
+            avatarDataNotifyBuilder.putAvatarTeamMap(index + 1, avatarTeamBuilder.build()); // one-indexed
         }
 
         this.setData(avatarDataNotifyBuilder.build().toByteArray());

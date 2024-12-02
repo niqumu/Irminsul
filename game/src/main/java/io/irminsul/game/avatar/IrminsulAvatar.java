@@ -2,6 +2,7 @@ package io.irminsul.game.avatar;
 
 import static io.irminsul.game.data.FightProperty.*;
 
+import io.irminsul.common.game.avatar.AvatarType;
 import io.irminsul.common.game.data.weapon.WeaponPromotionData;
 import io.irminsul.game.GameConstants;
 import io.irminsul.common.game.avatar.Avatar;
@@ -34,7 +35,7 @@ public class IrminsulAvatar implements Avatar {
     // ================================================================ //
 
     /**
-     * The ID of the avatar type
+     * The ID of the avatar
      */
     private final int avatarId;
 
@@ -62,6 +63,11 @@ public class IrminsulAvatar implements Avatar {
      * The {@link AvatarData} of this avatar
      */
     private final AvatarData avatarData;
+
+    /**
+     * The {@link AvatarType} of this avatar: normal or trial
+     */
+    private final AvatarType type;
 
     // ================================================================ //
     //                            Cosmetics                             //
@@ -124,7 +130,18 @@ public class IrminsulAvatar implements Avatar {
      * @param owner The player who this avatar should belong to
      */
     public IrminsulAvatar(int avatarId, @NotNull Player owner) {
+        this(avatarId, owner, AvatarType.NORMAL);
+    }
+
+    /**
+     * Creates a new avatar with fresh/blank data
+     * @param avatarId The ID of the avatar to create an instance of
+     * @param owner The player who this avatar should belong to
+     * @param type The {@link AvatarType} of this avatar: normal or trial
+     */
+    public IrminsulAvatar(int avatarId, @NotNull Player owner, @NotNull AvatarType type) {
         this.avatarId = avatarId;
+        this.type = type;
         this.guid = owner.getNextGuid();
         this.owner = owner;
         this.entityId = owner.getWorld().getNextEntityId(EntityIdType.AVATAR);
@@ -290,6 +307,7 @@ public class IrminsulAvatar implements Avatar {
 
             // Core
             .setAvatarId(this.avatarId)
+            .setAvatarType(this.type.getId())
             .setGuid(this.guid)
             .setBornTime(this.bornTime)
             .setLifeState(1)

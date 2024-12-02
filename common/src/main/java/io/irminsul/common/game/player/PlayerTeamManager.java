@@ -39,4 +39,11 @@ public interface PlayerTeamManager extends PlayerSystem {
      * @param guid The GUID of the avatar to switch to
      */
     void switchActiveAvatar(long guid);
+
+    /**
+     * Changes the composition of a party based on a list of avatar GUIDs to use
+     * @param teamIndex The <b>zero-indexed</b> ID of the team to modify
+     * @param avatarGuids A list of avatar GUIDs to compose the team of
+     */
+    void handleSetupTeam(int teamIndex, @NotNull List<Long> avatarGuids);
 }

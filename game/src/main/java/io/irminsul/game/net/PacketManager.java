@@ -22,7 +22,7 @@ public class PacketManager implements ServerSystem {
     /**
      * Whether warnings about incoming packets without a handler should be raised by the server
      */
-    public static final boolean MISSING_HANDLER_LOGGING = false;
+    public static final boolean MISSING_HANDLER_LOGGING = true;
 
     /**
      * Packets that are excluded from logging (too much spam)
@@ -92,6 +92,7 @@ public class PacketManager implements ServerSystem {
         this.registerHandler(new HandlerSetPlayerBirthdayReq());
         this.registerHandler(new HandlerSetPlayerNameReq());
         this.registerHandler(new HandlerSetPlayerSignatureReq());
+        this.registerHandler(new HandlerSetUpAvatarTeamReq());
         this.registerHandler(new HandlerUnionCmdNotify());
         this.registerHandler(new HandlerUnlockTransPointReq());
     }

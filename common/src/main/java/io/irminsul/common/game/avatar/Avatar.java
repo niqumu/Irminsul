@@ -9,7 +9,6 @@ import io.irminsul.common.proto.AvatarInfoOuterClass.AvatarInfo;
 import io.irminsul.common.proto.SceneAvatarInfoOuterClass.SceneAvatarInfo;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.Serializable;
 import java.util.Map;
 
 /**
@@ -22,7 +21,7 @@ public interface Avatar extends Entity {
     // ================================================================ //
 
     /**
-     * @return The ID of the avatar type
+     * @return The ID of the avatar
      */
     int getAvatarId();
 
@@ -45,6 +44,11 @@ public interface Avatar extends Entity {
      * @return The {@link AvatarData} of this avatar
      */
     @NotNull AvatarData getAvatarData();
+
+    /**
+     * @return The {@link AvatarType} of this avatar: normal or trial
+     */
+    @NotNull AvatarType getType();
 
     // ================================================================ //
     //                            Cosmetics                             //

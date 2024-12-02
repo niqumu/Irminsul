@@ -181,7 +181,7 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
     public void shutdown() {
         this.logger.info(I18n.translate("game.info.stop"));
 
-        // Disconnect all players
+        // Disconnect and save all players
         new ArrayList<>(this.onlinePlayers.values()).forEach(Player::logout);
 
         // Stop ticking
@@ -192,9 +192,6 @@ public class IrminsulGameServer extends KcpServer implements GameServer {
 
         // Stop KCP server
         this.stop();
-
-        // Save everything
-        this.save();
     }
 
     /**

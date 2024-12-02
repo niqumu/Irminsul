@@ -90,6 +90,7 @@ public class PacketManager implements ServerSystem {
         this.registerHandler(new HandlerSetEquipLockStateReq());
         this.registerHandler(new HandlerSetNameCardReq());
         this.registerHandler(new HandlerSetPlayerBirthdayReq());
+        this.registerHandler(new HandlerSetPlayerHeadImageReq());
         this.registerHandler(new HandlerSetPlayerNameReq());
         this.registerHandler(new HandlerSetPlayerSignatureReq());
         this.registerHandler(new HandlerSetUpAvatarTeamReq());

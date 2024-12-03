@@ -1,11 +1,17 @@
 package io.irminsul.common.game.mail;
 
+import io.irminsul.common.game.database.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents an entry in a player's mailbox
  */
-public interface Mail {
+public interface Mail extends StateContainer {
+
+    /**
+     * @return This mail's persistent ID
+     */
+    int getId();
 
     /**
      * @return The title/subject of this mail
@@ -36,9 +42,4 @@ public interface Mail {
      * @return The timestamp, in seconds, at which this mail expires
      */
     int getExpireTime();
-
-    /**
-     * @return This mail's persistent ID
-     */
-    int getId();
 }

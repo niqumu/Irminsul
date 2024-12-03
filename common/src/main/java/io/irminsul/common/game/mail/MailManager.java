@@ -1,5 +1,6 @@
 package io.irminsul.common.game.mail;
 
+import com.google.gson.JsonArray;
 import io.irminsul.common.game.ServerSystem;
 import io.irminsul.common.game.player.Player;
 import org.jetbrains.annotations.NotNull;
@@ -55,4 +56,18 @@ public interface MailManager extends ServerSystem {
      * @return A list of unexpired and undeleted mail this player has in their mailbox
      */
     @NotNull List<Mail> getMailbox(int player);
+
+    /**
+     * Exports a player's mailbox as an array of exported {@link Mail} objects
+     * @param player The UID of the player to export the mail of
+     * @return A list of unexpired and undeleted mail this player has in their mailbox, exported to a JSON array
+     */
+    @NotNull JsonArray exportMailbox(int player);
+
+    /**
+     * Loads a player's mailbox from an array of exported {@link Mail} objects and sends it to the client if online
+     * @param player The UID of the player to load the mail of
+     * @param mailbox A JSON array of objects generated via {@link Mail#exportState()}
+     */
+    void loadAndSendMailbox(int player, @NotNull JsonArray mailbox);
 }

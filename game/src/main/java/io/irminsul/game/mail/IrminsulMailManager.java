@@ -1,5 +1,7 @@
 package io.irminsul.game.mail;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import io.irminsul.common.game.GameServer;
 import io.irminsul.common.game.mail.Mail;
 import io.irminsul.common.game.mail.MailManager;
@@ -150,7 +152,7 @@ public class IrminsulMailManager implements MailManager {
      */
     @Override
     public @NotNull List<Mail> getMailbox(@NotNull Player player) {
-        return this.mailboxes.getOrDefault(player.getUid(), List.of());
+        return this.mailboxes.getOrDefault(player.getUid(), new ArrayList<>());
     }
 
     /**
@@ -161,6 +163,35 @@ public class IrminsulMailManager implements MailManager {
      */
     @Override
     public @NotNull List<Mail> getMailbox(int player) {
-        return this.mailboxes.getOrDefault(player, List.of());
+        return this.mailboxes.getOrDefault(player, new ArrayList<>());
+    }
+
+    /**
+     * Exports a player's mailbox as an array of exported {@link Mail} objects
+     *
+     * @param player The UID of the player to export the mail of
+     * @return A list of unexpired and undeleted mail this player has in their mailbox, exported to a JSON array
+     */
+    @Override
+    public @NotNull JsonArray exportMailbox(int player) {
+        JsonArray mailbox = new JsonArray();
+        this.getMailbox(player).forEach(mail -> mailbox.add(mail.exportState()));
+        return mailbox;
+    }
+
+    /**
+     * Loads a player's mailbox from an array of exported {@link Mail} objects and sends it to the client if online
+     *
+     * @param player  The UID of the player to load the mail of
+     * @param mailbox A JSON array of objects generated via {@link Mail#exportState()}
+     */
+    @Override
+    public void loadAndSendMailbox(int player, @NotNull JsonArray mailbox) {
+        this.getMailbox(player).clear();
+        for (JsonElement element : mailbox) {
+            Mail mail = this.generateMail(null, null, "", 0);
+            mail.loadState(element.getAsJsonObject());
+            this.sendMail(mail);
+        }
     }
 }

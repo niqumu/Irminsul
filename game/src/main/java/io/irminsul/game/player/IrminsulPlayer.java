@@ -646,6 +646,7 @@ public class IrminsulPlayer implements Player {
         data.setProfile(this.profile);
         data.setPosition(this.position);
         data.setScene(this.sceneId);
+        data.setMailbox(this.getServer().getMailManager().exportMailbox(this.uid));
 
         return data;
     }
@@ -660,6 +661,7 @@ public class IrminsulPlayer implements Player {
         this.profile = data.getProfile();
         this.position = data.getPosition();
         this.sceneId = data.getScene();
+        this.getServer().getMailManager().loadAndSendMailbox(this.uid, data.getMailbox());
     }
 
     // ================================================================ //

@@ -1,9 +1,14 @@
 package io.irminsul.game.script;
 
 import io.irminsul.common.game.world.Position;
+import io.irminsul.game.script.object.Gadget;
 import lombok.Data;
+import lombok.ToString;
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.LuaValue;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Data
 public class Group {
@@ -32,4 +37,9 @@ public class Group {
      * Group position
      */
     private final Position position;
+
+    /**
+     * Objects, keyed by config ID
+     */
+    private final Map<Integer, Gadget> gadgets = new HashMap<>();
 }

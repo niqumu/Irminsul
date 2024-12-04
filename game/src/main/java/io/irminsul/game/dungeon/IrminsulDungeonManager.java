@@ -1,22 +1,24 @@
 package io.irminsul.game.dungeon;
 
+import io.irminsul.common.event.EventHandler;
 import io.irminsul.common.game.GameServer;
 import io.irminsul.common.game.data.scene.TransPoint;
 import io.irminsul.common.game.dungeon.DungeonManager;
+import io.irminsul.common.game.event.PlayerLogoutEvent;
 import io.irminsul.common.game.player.Player;
 import io.irminsul.common.game.world.Scene;
 import io.irminsul.common.game.world.Teleport;
 import io.irminsul.common.proto.EnterTypeOuterClass;
 import io.irminsul.common.util.Pair;
 import io.irminsul.game.GameConstants;
-import io.irminsul.game.data.IrminsulDataContainer;
 import io.irminsul.game.data.EnterReason;
-import lombok.Data;
+import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Data
+@Getter
 public class IrminsulDungeonManager implements DungeonManager {
 
     /**
@@ -28,6 +30,13 @@ public class IrminsulDungeonManager implements DungeonManager {
      * A map of players and a nullable (point, dungeon ID) pair representing their current dungeon
      */
     private final Map<Player, Pair<Integer, Integer>> currentDungeons = new HashMap<>();
+
+    public IrminsulDungeonManager(@NotNull GameServer server) {
+        this.server = server;
+
+        // Used for player logout event
+        this.getServer().getEventBus().registerSubscriber(this);
+    }
 
     /**
      * Sends the provided player to a new instance of the provided dungeon within their current world
@@ -78,5 +87,16 @@ public class IrminsulDungeonManager implements DungeonManager {
         this.currentDungeons.remove(player);
         player.sendToScene(new Teleport(overworld.getId(), dungeonExit.getTransPosition(),
             EnterTypeOuterClass.EnterType.ENTER_TYPE_BACK, EnterReason.DUNGEON_QUIT));
+    }
+
+    @EventHandler
+    public void onPlayerLogout(PlayerLogoutEvent event) {
+
+        // When a player disconnects, remove them from a dungeon if they're in one
+        if (this.currentDungeons.containsKey(event.getPlayer()) && this.currentDungeons.get(event.getPlayer()) != null) {
+            this.getLogger().info("Removing {} from dungeon {} as they disconnected!",
+                event.getPlayer(), this.currentDungeons.get(event.getPlayer()).getRight());
+            this.currentDungeons.remove(event.getPlayer());
+        }
     }
 }

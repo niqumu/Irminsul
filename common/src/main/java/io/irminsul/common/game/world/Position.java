@@ -49,10 +49,10 @@ public class Position implements StateContainer {
     }
 
     /**
-     * @return A new position with the same x, y, and z values as this one
+     * @return A new position with the same position and rotation values as this one
      */
     public Position copy() {
-        return new Position(this.x, this.y, this.z);
+        return new Position(this.x, this.y, this.z, this.xRot, this.yRot, this.zRot);
     }
 
     /**

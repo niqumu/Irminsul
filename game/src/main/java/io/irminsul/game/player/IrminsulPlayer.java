@@ -2,6 +2,7 @@ package io.irminsul.game.player;
 
 import io.irminsul.common.game.GameServer;
 import io.irminsul.common.game.database.PlayerData;
+import io.irminsul.common.game.event.PlayerLogoutEvent;
 import io.irminsul.common.game.event.PlayerTeleportEvent;
 import io.irminsul.common.game.event.PlayerTickEvent;
 import io.irminsul.common.game.world.Teleport;
@@ -294,6 +295,9 @@ public class IrminsulPlayer implements Player {
 
         // Save
         this.getServer().getPlayerDataManager().save(this.exportData(), this.uid);
+
+        // Fire event
+        this.getServer().getEventBus().postEvent(new PlayerLogoutEvent(this));
 
         // Close connection in 1000 ms
         new Thread(() -> {

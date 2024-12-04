@@ -7,6 +7,7 @@ import io.irminsul.common.game.world.SceneScriptManager;
 import io.irminsul.game.script.Block;
 import io.irminsul.game.script.Group;
 import io.irminsul.game.script.LuaGlobalsFactory;
+import io.irminsul.game.script.object.Gadget;
 import io.irminsul.game.util.LuaUtil;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -66,11 +67,13 @@ public class IrminsulSceneScriptManager implements SceneScriptManager {
         this.mainScript.call();
 
         // Disabled until I'm finished, as it crashes in this state
-//        // Load blocks (recursively loads groups)
-//        LuaValue blocks = this.globals.get("blocks");
-//        for (int i = 1; i < blocks.length(); i++) {
-//            this.loadBlock(blocks.get(i).toint());
-//        }
+        // Load blocks (recursively loads groups)
+        if (scene.getId() == 40501) { // artifact domain near beach
+            LuaValue blocks = this.globals.get("blocks");
+            for (int i = 0; i < blocks.length(); i++) {
+                this.loadBlock(blocks.get(i + 1).toint());
+            }
+        }
 
         // Done
         this.dataContainer.getLogger().info("Finished loading scripts for scene {} - loaded {} blocks with {} groups in total!",
@@ -100,8 +103,8 @@ public class IrminsulSceneScriptManager implements SceneScriptManager {
 
         // Load groups
         LuaValue groups = blockGlobals.get("groups");
-        for (int i = 1; i < groups.length(); i++) {
-            this.loadGroup(groups.get(i));
+        for (int i = 0; i < groups.length(); i++) {
+            this.loadGroup(groups.get(i + 1));
         }
     }
 
@@ -117,6 +120,20 @@ public class IrminsulSceneScriptManager implements SceneScriptManager {
         Globals groupGlobals = LuaGlobalsFactory.newGlobals(new File(this.dataContainer.getDataDirectory(), "lua"));
         LuaValue groupScript = groupGlobals.loadfile(this.scriptPathBase + "_group" + id + ".lua");
         groupScript.call();
-        this.loadedGroups.put(id, new Group(groupGlobals, groupScript, id, area, position));
+
+        Group group = new Group(groupGlobals, groupScript, id, area, position);
+
+        // ================================
+        // OBJECTS
+        // ================================
+
+        // Gadgets
+        LuaValue gadgets = groupGlobals.get("gadgets");
+        for (int i = 0; i < gadgets.length(); i++) {
+            group.getGadgets().put(gadgets.get(i + 1).get("config_id").toint(), new Gadget(gadgets.get(i + 1)));
+        }
+
+        // Done
+        this.loadedGroups.put(id, group);
     }
 }

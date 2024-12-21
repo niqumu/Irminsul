@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
-@CommandInfo(name = "reload", description = "game.command.reload.description", usage = "reload", privileged = true)
+@CommandInfo(name = "reload", description = "game.command.reload.description", usage = "game.command.reload.usage", privileged = true)
 public class ReloadCommand extends CommandHandler {
 
     /**

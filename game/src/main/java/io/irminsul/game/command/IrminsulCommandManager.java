@@ -59,6 +59,8 @@ public class IrminsulCommandManager implements CommandManager {
         this.registerIrminsulCommand(new PluginsCommand());
         this.registerIrminsulCommand(new ReloadCommand());
         this.registerIrminsulCommand(new SceneCommand());
+        this.registerIrminsulCommand(new KickCommand());
+        this.registerIrminsulCommand(new PlayersCommand());
     }
 
     private void registerIrminsulCommand(@NotNull CommandHandler command) {
@@ -85,6 +87,11 @@ public class IrminsulCommandManager implements CommandManager {
 
         // Insert command into the commands map
         this.registeredCommands.put(command.getFullName(), command);
+
+        // Insert command aliases into the commands map
+        for (String alias : command.getCommandInfo().aliases()) {
+            this.registeredCommands.put("%s:%s".formatted(command.getRegistrar(), alias), command);
+        }
     }
 
     /**

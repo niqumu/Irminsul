@@ -6,7 +6,9 @@ import io.irminsul.common.game.player.Player;
 import io.irminsul.common.util.i18n.I18n;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Stream;
 
@@ -28,9 +30,15 @@ public class HelpCommand extends CommandHandler {
             StringBuilder message = new StringBuilder(I18n.translate("game.command.help.commands"));
 
             Stream<CommandHandler> commands = this.getCommandManager().getRegisteredCommands().values().stream();
+
+            // Remove duplicate command entries (caused by aliases)
+            commands = commands.distinct();
+
+            // Sort commands alphabetically
             commands = commands.sorted(Comparator.comparing(CommandHandler::getFullName));
 
             for (CommandHandler handler : commands.toList()) {
+
                 message
                     .append("\n - ")
                     .append(handler.getFullName())
@@ -67,11 +75,13 @@ public class HelpCommand extends CommandHandler {
                 targetCommand = resolvedCommand;
             }
 
-            // Iterate over
-            for (CommandHandler handler : this.getCommandManager().getRegisteredCommands().values()) {
-                CommandInfo info = handler.getCommandInfo();
+            // Iterate over commands
+            for (Map.Entry<String, CommandHandler> entry : this.getCommandManager().getRegisteredCommands().entrySet()) {
+                CommandInfo info = entry.getValue().getCommandInfo();
 
-                if (handler.getFullName().equalsIgnoreCase(targetCommand)) {
+                // We found the provided command
+                if (entry.getValue().getFullName().equalsIgnoreCase(targetCommand)) {
+
                     String message = info.name();
 
                     // Description
@@ -87,10 +97,28 @@ public class HelpCommand extends CommandHandler {
                         .replace("{}", "<i><color=\"#aaaaaa\">" +
                             I18n.translate(info.privileged() ? "generic.yes" : "generic.no") + "</color></i>");
 
+                    // Aliases
+                    if (info.aliases().length != 0) {
+                        message += "\n" + I18n.translate("game.command.help.list_aliases")
+                            .replace("{}", "<i><color=\"#aaaaaa\">" +
+                                Arrays.toString(info.aliases()) + "</color></i>");
+                    }
+
                     // Registrar
                     message += "\n\n" + I18n.translate("game.command.help.list_registrar")
-                        .replace("{}", "<i><color=\"#aaaaaa\">\"" + handler.getRegistrar()+ "\"</color></i>");
+                        .replace("{}", "<i><color=\"#aaaaaa\">\"" + entry.getValue().getRegistrar()+ "\"</color></i>");
 
+                    this.sendMessage(sender, message);
+                    return;
+                }
+
+                // We found the provided command, as an alias
+                else if (entry.getKey().equalsIgnoreCase(targetCommand)) {
+
+                    String message = entry.getKey();
+
+                    message += "\n" + I18n.translate("game.command.help.alias")
+                        .replace("{}", "<i><color=\"#aaaaaa\">" + entry.getValue().getFullName() + "</color></i>");
                     this.sendMessage(sender, message);
                     return;
                 }

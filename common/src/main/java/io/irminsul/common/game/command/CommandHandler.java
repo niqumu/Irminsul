@@ -77,4 +77,12 @@ public abstract class CommandHandler {
     public @NotNull String getFullName() {
         return "%s:%s".formatted(this.registrar, this.getCommandInfo().name());
     }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof CommandHandler handler) {
+            return handler.getFullName().equals(this.getFullName());
+        }
+        return false;
+    }
 }

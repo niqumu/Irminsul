@@ -30,4 +30,6 @@ public @interface CommandInfo {
      * @return Whether executing this command requires operator status
      */
     boolean privileged() default false;
+
+    String[] aliases() default {};
 }
